@@ -600,8 +600,13 @@
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // URL сервера для таблицы лидеровconst 
-        const SERVER_URL = 'https://telegram-git-main-egrbiznes-projects.vercel.app/api';
+        // URL сервера для таблицы лидеров - динамически подставляется
+        const SERVER_URL = (function() {
+          const currentHost = window.location.origin;
+          return currentHost.includes('vercel.app')
+            ? `${currentHost}/api`
+            : 'https://telegram-git-main-egrbiznes-projects.vercel.app/api';
+        })();
 
         // Настройки призов
         const prizes = [
@@ -1283,6 +1288,11 @@ ID: <code>${userId}</code>
                     // Добавляем активный класс к выбранной вкладке и контенту
                     tab.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
+                    
+                    // Если переключились на вкладку лидеров, обновляем таблицу
+                    if (tabId === 'leaders-tab') {
+                        displayLeaderboard();
+                    }
                 });
             });
             
@@ -1308,4 +1318,4 @@ ID: <code>${userId}</code>
         });
     </script>
 </body>
-    </html>
+</html>
