@@ -1,3 +1,4 @@
+// Та же переменная что и в update-score.js
 let leaderboardData = { leaderboard: [] };
 
 export default async function handler(req, res) {
