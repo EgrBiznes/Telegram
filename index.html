@@ -600,6 +600,9 @@
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
+        // URL сервера для таблицы лидеров (замените на ваш домен Vercel)
+        const SERVER_URL = 'https://your-app.vercel.app/api';
+
         // Настройки призов (ЗАМЕНИТЕ ССЫЛКИ НА ВАШИ КАРТИНКИ!)
         const prizes = [
             { 
@@ -607,42 +610,42 @@
                 name: 'Алмаз', 
                 value: 500, 
                 probability: 5, 
-                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'  // Замените на свою ссылку
+                image: 'https://example.com/diamond.jpg'  // Замените на свою ссылку
             },
             { 
                 id: 2,
                 name: 'Ракета', 
                 value: 300, 
                 probability: 10, 
-                image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'  // Замените на свою ссылку
+                image: 'https://example.com/rocket.jpg'  // Замените на свою ссылку
             },
             { 
                 id: 3,
                 name: 'Деньги', 
                 value: 200, 
                 probability: 15, 
-                image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'  // Замените на свою ссылку
+                image: 'https://example.com/money.jpg'  // Замените на свою ссылку
             },
             { 
                 id: 4,
                 name: 'Корона', 
                 value: 150, 
                 probability: 20, 
-                image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'  // Замените на свою ссылку
+                image: 'https://example.com/crown.jpg'  // Замените на свою ссылку
             },
             { 
                 id: 5,
                 name: 'Звезда', 
                 value: 100, 
                 probability: 25, 
-                image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'  // Замените на свою ссылку
+                image: 'https://example.com/star.jpg'  // Замените на свою ссылку
             },
             { 
                 id: 6,
                 name: 'Клевер', 
                 value: 50, 
                 probability: 25, 
-                image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'  // Замените на свою ссылку
+                image: 'https://example.com/clover.jpg'  // Замените на свою ссылку
             }
         ];
 
@@ -654,7 +657,8 @@
             balance: 1000,
             history: [],
             userId: null,
-            username: 'Пользователь'
+            username: 'Пользователь',
+            firstName: 'Пользователь'
         };
 
         // Элементы DOM
@@ -731,8 +735,42 @@
             }
         }
 
+        // Функции для работы с сервером таблицы лидеров
+        async function updateLeaderboardOnServer(userId, username, firstName, balance) {
+            try {
+                const response = await fetch(`${SERVER_URL}/update-score`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        username,
+                        firstName,
+                        balance
+                    })
+                });
+                
+                return response.ok;
+            } catch (error) {
+                console.error('Ошибка обновления таблицы лидеров:', error);
+                return false;
+            }
+        }
+
+        async function getLeaderboardFromServer() {
+            try {
+                const response = await fetch(`${SERVER_URL}/leaderboard`);
+                const data = await response.json();
+                return data.leaderboard || [];
+            } catch (error) {
+                console.error('Ошибка загрузки таблицы лидеров:', error);
+                return [];
+            }
+        }
+
         // Функция для сохранения данных
-        function saveGameData() {
+        async function saveGameData() {
             gameData.balance = balance;
             
             // Сохраняем в localStorage для резервного копирования
@@ -750,7 +788,7 @@
                 
                 const dataToSave = {
                     balance: balance,
-                    history: gameData.history.slice(-10), // Сохраняем последние 10 записей
+                    history: gameData.history.slice(-10),
                     username: username,
                     firstName: firstName
                 };
@@ -758,8 +796,8 @@
                 // Сохраняем в localStorage с ключом пользователя
                 localStorage.setItem(`nftCaseData_${userId}`, JSON.stringify(dataToSave));
                 
-                // Сохраняем в таблицу лидеров
-                updateLeaderboard(userId, username, firstName, balance);
+                // Сохраняем в таблицу лидеров на сервере
+                await updateLeaderboardOnServer(userId, username, firstName, balance);
             } else {
                 // Для демо-версии создаем случайного пользователя
                 if (!gameData.userId) {
@@ -768,45 +806,13 @@
                     gameData.firstName = 'Демо-пользователь';
                 }
                 
-                updateLeaderboard(gameData.userId, gameData.username, gameData.firstName, balance);
+                await updateLeaderboardOnServer(gameData.userId, gameData.username, gameData.firstName, balance);
             }
-        }
-
-        // Функция для обновления таблицы лидеров
-        function updateLeaderboard(userId, username, firstName, balance) {
-            let leaderboard = JSON.parse(localStorage.getItem('nftCaseLeaderboard')) || [];
-            
-            // Проверяем, есть ли пользователь уже в таблице лидеров
-            const existingUserIndex = leaderboard.findIndex(user => user.id === userId);
-            
-            if (existingUserIndex !== -1) {
-                // Обновляем баланс пользователя
-                leaderboard[existingUserIndex].balance = balance;
-                leaderboard[existingUserIndex].username = username;
-                leaderboard[existingUserIndex].firstName = firstName;
-            } else {
-                // Добавляем нового пользователя
-                leaderboard.push({
-                    id: userId,
-                    username: username,
-                    firstName: firstName,
-                    balance: balance
-                });
-            }
-            
-            // Сортируем по убыванию баланса
-            leaderboard.sort((a, b) => b.balance - a.balance);
-            
-            // Сохраняем обновленную таблицу лидеров
-            localStorage.setItem('nftCaseLeaderboard', JSON.stringify(leaderboard));
-            
-            // Обновляем отображение таблицы лидеров
-            displayLeaderboard();
         }
 
         // Функция для отображения таблицы лидеров
-        function displayLeaderboard() {
-            const leaderboard = JSON.parse(localStorage.getItem('nftCaseLeaderboard')) || [];
+        async function displayLeaderboard() {
+            const leaderboard = await getLeaderboardFromServer();
             leaderboardList.innerHTML = '';
             
             if (leaderboard.length === 0) {
@@ -842,7 +848,7 @@
         }
 
         // Функция для загрузки данных
-        function loadGameData() {
+        async function loadGameData() {
             showLoading(true);
             
             // Если мы в Telegram Mini App, загружаем данные из облака Telegram
@@ -921,7 +927,7 @@
             updateButtonsState();
             
             // Загружаем таблицу лидеров
-            displayLeaderboard();
+            await displayLeaderboard();
             
             // Инициализируем рулетку
             initRoulette();
@@ -1029,7 +1035,7 @@
         }
 
         // Показать результат открытия
-        function showResult() {
+        async function showResult() {
             // Добавляем выигрыш к балансу
             balance += currentPrize.value;
             balanceElement.textContent = `${balance}₽`;
@@ -1062,7 +1068,7 @@
             });
             
             // Сохраняем данные
-            saveGameData();
+            await saveGameData();
             
             // Обновляем состояние кнопки
             updateButtonsState();
@@ -1072,7 +1078,7 @@
         }
 
         // Функция открытия кейса
-        function openCase(isQuick = false) {
+        async function openCase(isQuick = false) {
             if (isCaseOpened && !isQuick) {
                 resetCase();
                 return;
@@ -1127,7 +1133,7 @@
                 });
                 
                 // Сохраняем данные
-                saveGameData();
+                await saveGameData();
                 
                 // Обновляем состояние кнопки
                 updateButtonsState();
@@ -1190,7 +1196,7 @@
             balanceElement.textContent = `${balance}₽`;
             
             // Сохраняем данные
-            saveGameData();
+            await saveGameData();
             
             // Обновляем состояние кнопок
             updateButtonsState();
@@ -1302,4 +1308,4 @@ ID: <code>${userId}</code>
         });
     </script>
 </body>
-    </html>
+                    </html>
