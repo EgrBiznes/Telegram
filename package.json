@@ -1,0 +1,11 @@
+{
+  "name": "nft-case-telegram-app",
+  "version": "1.0.0",
+  "description": "Telegram Mini App for NFT Case opening",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node server.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
