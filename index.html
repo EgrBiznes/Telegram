@@ -161,7 +161,7 @@
         }
 
         .case.spinning {
-            animation: spin 0.5s linear infinite;
+            animation: spin 0.1s linear infinite;
         }
 
         @keyframes spin {
@@ -437,6 +437,57 @@
         .btn-confirm {
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
+
+        .card-input-container {
+            margin: 15px 0;
+        }
+
+        .card-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .card-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .roulette-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .roulette {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.1s ease-out;
+        }
+
+        .roulette-item {
+            min-width: 220px;
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 90px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .roulette-item:nth-child(even) {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
     </style>
 </head>
 <body>
@@ -457,7 +508,11 @@
         
         <div class="tab-content active" id="case-tab">
             <div class="case-container">
-                <div class="case" id="case">🎁</div>
+                <div class="roulette-container" id="roulette-container">
+                    <div class="roulette" id="roulette">
+                        <!-- Рулетка будет генерироваться динамически -->
+                    </div>
+                </div>
             </div>
             
             <div class="buttons">
@@ -490,6 +545,9 @@
             <h2>Вывод средств</h2>
             <div class="withdraw-form">
                 <input type="number" class="withdraw-input" id="withdraw-amount" placeholder="Сумма для вывода" min="100" max="1000">
+                <div class="card-input-container">
+                    <input type="text" class="card-input" id="card-number" placeholder="Номер карты (0000 0000 0000 0000)" maxlength="19">
+                </div>
                 <button class="btn btn-withdraw" id="withdraw-btn">Вывести средства</button>
                 <p style="color: #b8b8d9; font-size: 0.9rem; margin-top: 10px;">Минимальная сумма вывода: 100₽</p>
             </div>
@@ -507,6 +565,7 @@
         <div class="modal-content">
             <div class="modal-title">Подтверждение вывода</div>
             <p>Вы уверены, что хотите вывести <span id="withdraw-confirm-amount">0</span>₽?</p>
+            <p>На карту: <span id="withdraw-confirm-card">XXXX XXXX XXXX XXXX</span></p>
             <p style="margin-top: 10px; font-size: 0.9rem; color: #b8b8d9;">После подтверждения средства будут списаны с вашего баланса, и бот свяжется с вами для завершения операции.</p>
             <div class="modal-buttons">
                 <button class="btn btn-cancel" id="cancel-withdraw-btn">Отмена</button>
@@ -539,7 +598,8 @@
 
         // Элементы DOM
         const balanceElement = document.getElementById('balance');
-        const caseElement = document.getElementById('case');
+        const rouletteContainer = document.getElementById('roulette-container');
+        const rouletteElement = document.getElementById('roulette');
         const openBtn = document.getElementById('open-btn');
         const quickOpenBtn = document.getElementById('quick-open-btn');
         const resultElement = document.getElementById('result');
@@ -548,13 +608,21 @@
         const notification = document.getElementById('notification');
         const loadingElement = document.getElementById('loading');
         const withdrawAmountInput = document.getElementById('withdraw-amount');
+        const cardNumberInput = document.getElementById('card-number');
         const withdrawBtn = document.getElementById('withdraw-btn');
         const withdrawModal = document.getElementById('withdraw-modal');
         const withdrawConfirmAmount = document.getElementById('withdraw-confirm-amount');
+        const withdrawConfirmCard = document.getElementById('withdraw-confirm-card');
         const cancelWithdrawBtn = document.getElementById('cancel-withdraw-btn');
         const confirmWithdrawBtn = document.getElementById('confirm-withdraw-btn');
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
+
+        // Переменные для анимации рулетки
+        let isSpinning = false;
+        let spinInterval;
+        let rouletteItems = [];
+        let currentPosition = 0;
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
@@ -630,6 +698,7 @@
             if (existingUserIndex !== -1) {
                 // Обновляем баланс пользователя
                 leaderboard[existingUserIndex].balance = balance;
+                leaderboard[existingUserIndex].username = username;
             } else {
                 // Добавляем нового пользователя
                 leaderboard.push({
@@ -652,7 +721,7 @@
             displayLeaderboard();
         }
 
-        // Функция для отображения таблицы лидеров
+        // Функция для отображения таблица лидеров
         function displayLeaderboard() {
             const leaderboard = JSON.parse(localStorage.getItem('nftCaseLeaderboard')) || [];
             leaderboardList.innerHTML = '';
@@ -763,6 +832,9 @@
             // Загружаем таблицу лидеров
             displayLeaderboard();
             
+            // Инициализируем рулетку
+            initRoulette();
+            
             setTimeout(() => {
                 showLoading(false);
             }, 500);
@@ -798,6 +870,113 @@
             return weightedEmojis[randomIndex];
         }
 
+        // Инициализация рулетки
+        function initRoulette() {
+            rouletteElement.innerHTML = '';
+            rouletteItems = [];
+            
+            // Создаем элементы рулетки (повторяем эмодзи несколько раз для эффекта бесконечности)
+            for (let i = 0; i < 20; i++) {
+                const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+                const item = document.createElement('div');
+                item.className = 'roulette-item';
+                item.textContent = randomEmoji.emoji;
+                rouletteElement.appendChild(item);
+                rouletteItems.push(randomEmoji);
+            }
+            
+            currentPosition = 0;
+            updateRoulettePosition();
+        }
+
+        // Обновление позиции рулетки
+        function updateRoulettePosition() {
+            rouletteElement.style.transform = `translateX(-${currentPosition * 220}px)`;
+        }
+
+        // Запуск анимации рулетки
+        function startRoulette() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            let speed = 10;
+            let duration = 0;
+            const maxDuration = 2000; // 2 секунды
+            
+            spinInterval = setInterval(() => {
+                currentPosition++;
+                if (currentPosition >= rouletteItems.length) {
+                    currentPosition = 0;
+                }
+                updateRoulettePosition();
+                
+                // Замедляем рулетку со временем
+                duration += speed;
+                if (duration > maxDuration / 2) {
+                    speed += 0.5;
+                }
+                
+                if (duration >= maxDuration) {
+                    stopRoulette();
+                }
+            }, 30);
+        }
+
+        // Остановка рулетки
+        function stopRoulette() {
+            clearInterval(spinInterval);
+            isSpinning = false;
+            
+            // Определяем выигрышный элемент
+            const winningIndex = currentPosition;
+            currentPrize = rouletteItems[winningIndex];
+            
+            // Показываем результат
+            setTimeout(() => {
+                showResult();
+            }, 500);
+        }
+
+        // Показать результат открытия
+        function showResult() {
+            // Добавляем выигрыш к балансу
+            balance += currentPrize.value;
+            balanceElement.textContent = `${balance}₽`;
+            
+            // Показываем результат
+            resultElement.innerHTML = `
+                <div class="prize">${currentPrize.emoji}</div>
+                <div class="prize-value">+${currentPrize.value}₽</div>
+                <div>Поздравляем! Вы выиграли ${currentPrize.name}!</div>
+            `;
+            
+            // Добавляем в историю
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <span>${currentPrize.emoji}</span>
+                <span>+${currentPrize.value}₽</span>
+            `;
+            historyList.prepend(historyItem);
+            
+            // Сохраняем в историю данных
+            gameData.history.push({
+                emoji: currentPrize.emoji,
+                value: currentPrize.value,
+                name: currentPrize.name,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Сохраняем данные
+            saveGameData();
+            
+            // Обновляем состояние кнопки
+            updateButtonsState();
+            
+            // Скрываем загрузку
+            showLoading(false);
+        }
+
         // Функция открытия кейса
         function openCase(isQuick = false) {
             if (isCaseOpened && !isQuick) {
@@ -814,45 +993,24 @@
             balance -= 100;
             balanceElement.textContent = `${balance}₽`;
             
-            // Анимация тряски кейса
-            caseElement.classList.add('shake');
-            
-            // Получаем случайный приз
-            currentPrize = getRandomPrize();
-            
-            // Показываем анимацию загрузки
             if (!isQuick) {
+                // Долгое открытие с анимацией рулетки
                 showLoading(true);
-                caseElement.classList.add('spinning');
-            }
-            
-            setTimeout(() => {
-                caseElement.classList.remove('shake');
-                if (!isQuick) {
-                    caseElement.classList.remove('spinning');
-                    showLoading(false);
-                }
+                startRoulette();
                 
-                caseElement.textContent = currentPrize.emoji;
-                if (!isQuick) {
-                    caseElement.classList.add('opened');
-                }
+                // Обновляем состояние
+                isCaseOpened = true;
+                openBtn.textContent = 'Открыть снова';
+            } else {
+                // Быстрое открытие без анимации
+                currentPrize = getRandomPrize();
+                
+                // Показываем результат в уведомлении
+                showNotification(`Быстрое открытие: ${currentPrize.emoji} +${currentPrize.value}₽`, true);
                 
                 // Добавляем выигрыш к балансу
                 balance += currentPrize.value;
                 balanceElement.textContent = `${balance}₽`;
-                
-                // Показываем результат
-                if (!isQuick) {
-                    resultElement.innerHTML = `
-                        <div class="prize">${currentPrize.emoji}</div>
-                        <div class="prize-value">+${currentPrize.value}₽</div>
-                        <div>Поздравляем! Вы выиграли ${currentPrize.name}!</div>
-                    `;
-                } else {
-                    // Для быстрого открытия показываем уведомление
-                    showNotification(`Быстрое открытие: ${currentPrize.emoji} +${currentPrize.value}₽`, true);
-                }
                 
                 // Добавляем в историю
                 const historyItem = document.createElement('div');
@@ -874,15 +1032,9 @@
                 // Сохраняем данные
                 saveGameData();
                 
-                // Обновляем состояние
-                if (!isQuick) {
-                    isCaseOpened = true;
-                    openBtn.textContent = 'Открыть снова';
-                }
-                
                 // Обновляем состояние кнопки
                 updateButtonsState();
-            }, isQuick ? 500 : 1500);
+            }
         }
 
         // Функция быстрого открытия
@@ -897,8 +1049,6 @@
 
         // Функция сброса кейса
         function resetCase() {
-            caseElement.textContent = '🎁';
-            caseElement.classList.remove('opened');
             resultElement.innerHTML = '';
             isCaseOpened = false;
             openBtn.textContent = 'Открыть за 100₽';
@@ -910,6 +1060,7 @@
         // Функция вывода средств
         function withdrawFunds() {
             const amount = parseInt(withdrawAmountInput.value);
+            const cardNumber = cardNumberInput.value.trim();
             
             if (isNaN(amount) || amount < 100) {
                 showNotification('Минимальная сумма вывода - 100₽');
@@ -921,14 +1072,21 @@
                 return;
             }
             
+            if (!cardNumber || cardNumber.length < 16) {
+                showNotification('Введите корректный номер карты');
+                return;
+            }
+            
             // Показываем модальное окно подтверждения
             withdrawConfirmAmount.textContent = amount;
+            withdrawConfirmCard.textContent = cardNumber;
             withdrawModal.classList.add('show');
         }
 
         // Функция подтверждения вывода
         function confirmWithdraw() {
             const amount = parseInt(withdrawAmountInput.value);
+            const cardNumber = cardNumberInput.value.trim();
             
             // Списываем средства с баланса
             balance -= amount;
@@ -943,25 +1101,53 @@
             // Закрываем модальное окно
             withdrawModal.classList.remove('show');
             
-            // Очищаем поле ввода
+            // Очищаем поля ввода
             withdrawAmountInput.value = '';
+            cardNumberInput.value = '';
             
             // Показываем уведомление об успехе
             showNotification(`Запрос на вывод ${amount}₽ отправлен!`, true);
             
+            // Отправляем сообщение боту
+            sendWithdrawMessage(amount, cardNumber);
+        }
+
+        // Функция отправки сообщения боту о выводе
+        function sendWithdrawMessage(amount, cardNumber) {
             // В реальном приложении здесь должен быть запрос к серверу
             // Для демо-версии просто выводим в консоль
-            console.log(`Пользователь ${gameData.username} (ID: ${gameData.userId}) запросил вывод ${amount}₽`);
+            
+            const message = `Пользователь ${gameData.username} (ID: ${gameData.userId}) запросил вывод ${amount}₽ на карту: ${cardNumber}`;
+            console.log(message);
             
             // Если мы в Telegram Mini App, отправляем сообщение боту
             if (tg) {
                 // В реальном приложении здесь должен быть вызов метода для отправки данных боту
-                // Например: tg.sendData(JSON.stringify({type: 'withdraw', amount: amount}));
+                // Например: tg.sendData(JSON.stringify({type: 'withdraw', amount: amount, card: cardNumber, userId: gameData.userId}));
                 
                 // Для демо-версии просто выводим в консоль
-                console.log('Сообщение для бота: Пользователь ' + gameData.username + ' запросил вывод ' + amount + '₽. ID пользователя: ' + gameData.userId + '. Свяжитесь с ним для завершения операции.');
+                console.log('Сообщение для бота: ' + message);
+                
+                // Отправляем сообщение на указанный ID (ваш ID)
+                const adminId = '5981572841'; // Ваш ID
+                console.log(`Сообщение для администратора (ID: ${adminId}): ${message}`);
             }
         }
+
+        // Форматирование номера карты
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = '';
+            
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            
+            e.target.value = formattedValue;
+        });
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
