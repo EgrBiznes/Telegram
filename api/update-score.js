@@ -1,13 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+let leaderboardData = { leaderboard: [] };
 
-module.exports = async (req, res) => {
-  // Настройка CORS
+export default async function handler(req, res) {
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Обработка предварительного запроса OPTIONS
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -20,32 +18,19 @@ module.exports = async (req, res) => {
     const { userId, username, firstName, balance } = req.body;
 
     if (!userId || balance === undefined) {
-      return res.status(400).json({ error: 'Missing required fields: userId and balance' });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Путь к файлу leaderboard.json
-    const filePath = path.join(process.cwd(), 'leaderboard.json');
-    
-    // Чтение существующих данных
-    let leaderboardData = { leaderboard: [] };
-    try {
-      const fileContent = fs.readFileSync(filePath, 'utf8');
-      leaderboardData = JSON.parse(fileContent);
-    } catch (error) {
-      // Если файла нет, создаем новый
-      console.log('Creating new leaderboard file...');
-    }
-
-    // Поиск существующего пользователя
+    // Находим существующего пользователя
     const existingUserIndex = leaderboardData.leaderboard.findIndex(user => user.userId === userId);
 
     if (existingUserIndex !== -1) {
-      // Обновление существующего пользователя
+      // Обновляем существующего
       leaderboardData.leaderboard[existingUserIndex].balance = balance;
       leaderboardData.leaderboard[existingUserIndex].username = username || leaderboardData.leaderboard[existingUserIndex].username;
       leaderboardData.leaderboard[existingUserIndex].firstName = firstName || leaderboardData.leaderboard[existingUserIndex].firstName;
     } else {
-      // Добавление нового пользователя
+      // Добавляем нового
       leaderboardData.leaderboard.push({
         userId,
         username: username || `user_${userId}`,
@@ -54,18 +39,15 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Сортировка по балансу (по убыванию)
+    // Сортируем по убыванию баланса
     leaderboardData.leaderboard.sort((a, b) => b.balance - a.balance);
 
-    // Сохранение обновленных данных
-    fs.writeFileSync(filePath, JSON.stringify(leaderboardData, null, 2));
-
-    // Возврат топ-10 пользователей
+    // Возвращаем топ-10
     const top10 = leaderboardData.leaderboard.slice(0, 10);
     res.status(200).json({ leaderboard: top10, success: true });
 
   } catch (error) {
-    console.error('Error updating score:', error);
+    console.error('Error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
