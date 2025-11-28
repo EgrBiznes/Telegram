@@ -1,36 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+const path = require('path');
 
-const filePath = path.join(process.cwd(), 'leaderboard.json');
-
-// Вспомогательная функция для чтения файла
-function readData() {
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      return JSON.parse(data);
-    }
-  } catch (err) {
-    console.error('Ошибка чтения leaderboard.json:', err);
-  }
-  return { leaderboard: [] };
-}
-
-// Вспомогательная функция для записи
-function writeData(data) {
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-  } catch (err) {
-    console.error('Ошибка записи leaderboard.json:', err);
-  }
-}
-
-export default function handler(req, res) {
-  // Разрешаем CORS
+module.exports = async (req, res) => {
+  // Настройка CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // Обработка предварительного запроса OPTIONS
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -39,42 +16,56 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, username, firstName, balance } = req.body;
+  try {
+    const { userId, username, firstName, balance } = req.body;
 
-  if (!userId || balance === undefined) {
-    return res.status(400).json({ error: 'Missing userId or balance' });
-  }
-
-  const data = readData();
-
-  // Проверяем, есть ли пользователь уже в таблице
-  const existingIndex = data.leaderboard.findIndex(u => u.userId === userId);
-
-  if (existingIndex >= 0) {
-    // Обновляем баланс, если он выше
-    if (balance > data.leaderboard[existingIndex].balance) {
-      data.leaderboard[existingIndex].balance = balance;
-    } else {
-      data.leaderboard[existingIndex].balance = balance; // просто обновляем
+    if (!userId || balance === undefined) {
+      return res.status(400).json({ error: 'Missing required fields: userId and balance' });
     }
-  } else {
-    // Добавляем нового пользователя
-    data.leaderboard.push({
-      userId,
-      username,
-      firstName,
-      balance
-    });
+
+    // Путь к файлу leaderboard.json
+    const filePath = path.join(process.cwd(), 'leaderboard.json');
+    
+    // Чтение существующих данных
+    let leaderboardData = { leaderboard: [] };
+    try {
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      leaderboardData = JSON.parse(fileContent);
+    } catch (error) {
+      // Если файла нет, создаем новый
+      console.log('Creating new leaderboard file...');
+    }
+
+    // Поиск существующего пользователя
+    const existingUserIndex = leaderboardData.leaderboard.findIndex(user => user.userId === userId);
+
+    if (existingUserIndex !== -1) {
+      // Обновление существующего пользователя
+      leaderboardData.leaderboard[existingUserIndex].balance = balance;
+      leaderboardData.leaderboard[existingUserIndex].username = username || leaderboardData.leaderboard[existingUserIndex].username;
+      leaderboardData.leaderboard[existingUserIndex].firstName = firstName || leaderboardData.leaderboard[existingUserIndex].firstName;
+    } else {
+      // Добавление нового пользователя
+      leaderboardData.leaderboard.push({
+        userId,
+        username: username || `user_${userId}`,
+        firstName: firstName || 'Пользователь',
+        balance
+      });
+    }
+
+    // Сортировка по балансу (по убыванию)
+    leaderboardData.leaderboard.sort((a, b) => b.balance - a.balance);
+
+    // Сохранение обновленных данных
+    fs.writeFileSync(filePath, JSON.stringify(leaderboardData, null, 2));
+
+    // Возврат топ-10 пользователей
+    const top10 = leaderboardData.leaderboard.slice(0, 10);
+    res.status(200).json({ leaderboard: top10, success: true });
+
+  } catch (error) {
+    console.error('Error updating score:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
-
-  // Сортируем по балансу (по убыванию)
-  data.leaderboard.sort((a, b) => b.balance - a.balance);
-
-  // Сохраняем изменения
-  writeData(data);
-
-  return res.status(200).json({
-    success: true,
-    leaderboard: data.leaderboard
-  });
-}
+};
