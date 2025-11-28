@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFT Кейс в Telegram</title>
+    <title>NFT Кейс | Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -197,6 +198,36 @@
         .notification.show {
             opacity: 1;
         }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -228,6 +259,10 @@
     </div>
     
     <div class="notification" id="notification">Недостаточно средств!</div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
 
     <script>
         // Эмодзи и их стоимость
@@ -244,6 +279,10 @@
         let balance = 1000;
         let isCaseOpened = false;
         let currentPrize = null;
+        let gameData = {
+            balance: 1000,
+            history: []
+        };
 
         // Элементы DOM
         const balanceElement = document.getElementById('balance');
@@ -252,7 +291,11 @@
         const resultElement = document.getElementById('result');
         const historyList = document.getElementById('history-list');
         const notification = document.getElementById('notification');
+        const loadingElement = document.getElementById('loading');
 
+        // Инициализация Telegram Web App
+        let tg = window.Telegram?.WebApp;
+        
         // Функция для показа уведомления
         function showNotification(message) {
             notification.textContent = message;
@@ -260,6 +303,116 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
+        }
+
+        // Функция для показа загрузки
+        function showLoading(show) {
+            if (show) {
+                loadingElement.classList.add('show');
+            } else {
+                loadingElement.classList.remove('show');
+            }
+        }
+
+        // Функция для сохранения данных
+        function saveGameData() {
+            gameData.balance = balance;
+            
+            // Сохраняем в localStorage для резервного копирования
+            localStorage.setItem('nftCaseGameData', JSON.stringify(gameData));
+            
+            // Если мы в Telegram Mini App, сохраняем данные в облако Telegram
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const userId = tg.initDataUnsafe.user.id;
+                const dataToSave = {
+                    balance: balance,
+                    history: gameData.history.slice(-10) // Сохраняем последние 10 записей
+                };
+                
+                // В реальном приложении здесь должен быть запрос к вашему серверу
+                // для сохранения данных пользователя
+                console.log('Сохранение данных для пользователя:', userId, dataToSave);
+                
+                // В демо-версии просто сохраняем в localStorage с ключом пользователя
+                localStorage.setItem(`nftCaseData_${userId}`, JSON.stringify(dataToSave));
+            }
+        }
+
+        // Функция для загрузки данных
+        function loadGameData() {
+            showLoading(true);
+            
+            // Если мы в Telegram Mini App, загружаем данные из облака Telegram
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const userId = tg.initDataUnsafe.user.id;
+                
+                // В реальном приложении здесь должен быть запрос к вашему серверу
+                // для загрузки данных пользователя
+                
+                // В демо-версии загружаем из localStorage с ключом пользователя
+                const savedData = localStorage.getItem(`nftCaseData_${userId}`);
+                
+                if (savedData) {
+                    try {
+                        const parsedData = JSON.parse(savedData);
+                        gameData = parsedData;
+                        balance = gameData.balance;
+                        
+                        // Восстанавливаем историю
+                        if (gameData.history && gameData.history.length > 0) {
+                            gameData.history.forEach(item => {
+                                const historyItem = document.createElement('div');
+                                historyItem.className = 'history-item';
+                                historyItem.innerHTML = `
+                                    <span>${item.emoji}</span>
+                                    <span>+${item.value}₽</span>
+                                `;
+                                historyList.prepend(historyItem);
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Ошибка загрузки данных:', e);
+                    }
+                }
+            } else {
+                // Если не в Telegram, загружаем из localStorage
+                const savedData = localStorage.getItem('nftCaseGameData');
+                if (savedData) {
+                    try {
+                        const parsedData = JSON.parse(savedData);
+                        gameData = parsedData;
+                        balance = gameData.balance;
+                        
+                        // Восстанавливаем историю
+                        if (gameData.history && gameData.history.length > 0) {
+                            gameData.history.forEach(item => {
+                                const historyItem = document.createElement('div');
+                                historyItem.className = 'history-item';
+                                historyItem.innerHTML = `
+                                    <span>${item.emoji}</span>
+                                    <span>+${item.value}₽</span>
+                                `;
+                                historyList.prepend(historyItem);
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Ошибка загрузки данных:', e);
+                    }
+                }
+            }
+            
+            // Обновляем интерфейс
+            balanceElement.textContent = `${balance}₽`;
+            
+            // Обновляем состояние кнопки
+            if (balance < 100) {
+                openBtn.disabled = true;
+                openBtn.textContent = 'Недостаточно средств';
+            }
+            
+            setTimeout(() => {
+                showLoading(false);
+            }, 500);
         }
 
         // Функция для получения случайного приза на основе вероятностей
@@ -324,6 +477,16 @@
                 `;
                 historyList.prepend(historyItem);
                 
+                // Сохраняем в историю данных
+                gameData.history.push({
+                    emoji: currentPrize.emoji,
+                    value: currentPrize.value,
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Сохраняем данные
+                saveGameData();
+                
                 // Обновляем состояние
                 isCaseOpened = true;
                 openBtn.textContent = 'Открыть снова';
@@ -351,8 +514,33 @@
             }
         }
 
-        // Обработчик клика по кнопке
-        openBtn.addEventListener('click', openCase);
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализируем Telegram Web App
+            if (tg) {
+                tg.expand();
+                tg.enableClosingConfirmation();
+            }
+            
+            // Загружаем данные
+            loadGameData();
+            
+            // Обработчик клика по кнопке
+            openBtn.addEventListener('click', openCase);
+            
+            // Обработчик для закрытия приложения (только в Telegram)
+            if (tg) {
+                tg.onEvent('viewportChanged', function() {
+                    // Сохраняем данные при изменении размера окна (например, при сворачивании)
+                    saveGameData();
+                });
+                
+                // Сохраняем данные при закрытии
+                window.addEventListener('beforeunload', function() {
+                    saveGameData();
+                });
+            }
+        });
     </script>
 </body>
 </html>
