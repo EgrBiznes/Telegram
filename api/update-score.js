@@ -1,3 +1,4 @@
+// Храним данные в памяти (переменной)
 let leaderboardData = { leaderboard: [] };
 
 export default async function handler(req, res) {
