@@ -263,42 +263,6 @@
             object-fit: cover;
         }
 
-        .leaderboard {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .leaderboard-position {
-            font-weight: bold;
-            color: #ffde7d;
-            width: 30px;
-            text-align: center;
-        }
-
-        .leaderboard-name {
-            flex: 1;
-            text-align: left;
-            padding-left: 15px;
-        }
-
-        .leaderboard-balance {
-            color: #64ffda;
-            font-weight: bold;
-        }
-
         .withdraw-form {
             margin-top: 20px;
             display: flex;
@@ -520,7 +484,6 @@
         
         <div class="tabs">
             <div class="tab active" data-tab="case-tab">Кейс</div>
-            <div class="tab" data-tab="leaders-tab">Лидеры</div>
             <div class="tab" data-tab="withdraw-tab">Вывод</div>
         </div>
         
@@ -546,15 +509,6 @@
                 <div class="history-title">История открытий</div>
                 <div id="history-list">
                     <!-- История открытий будет добавляться сюда -->
-                </div>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="leaders-tab">
-            <h2>Таблица лидеров</h2>
-            <div class="leaderboard">
-                <div id="leaderboard-list">
-                    <!-- Список лидеров будет добавляться сюда -->
                 </div>
             </div>
         </div>
@@ -599,14 +553,6 @@
         const BOT_TOKEN = '7841086722:AAH2Jsb8zWbw7VPM7BCm1IJjtvY3nG3D8Hw';
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
-
-        // URL сервера для таблицы лидеров - динамически подставляется
-        const SERVER_URL = (function() {
-          const currentHost = window.location.origin;
-          return currentHost.includes('vercel.app')
-            ? `${currentHost}/api`
-            : 'https://telegram-git-main-egrbiznes-projects.vercel.app/api';
-        })();
 
         // Настройки призов
         const prizes = [
@@ -674,7 +620,6 @@
         const quickOpenBtn = document.getElementById('quick-open-btn');
         const resultElement = document.getElementById('result');
         const historyList = document.getElementById('history-list');
-        const leaderboardList = document.getElementById('leaderboard-list');
         const notification = document.getElementById('notification');
         const loadingElement = document.getElementById('loading');
         const withdrawAmountInput = document.getElementById('withdraw-amount');
@@ -740,40 +685,6 @@
             }
         }
 
-        // Функции для работы с сервером таблицы лидеров
-        async function updateLeaderboardOnServer(userId, username, firstName, balance) {
-            try {
-                const response = await fetch(`${SERVER_URL}/update-score`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId,
-                        username,
-                        firstName,
-                        balance
-                    })
-                });
-                
-                return response.ok;
-            } catch (error) {
-                console.error('Ошибка обновления таблицы лидеров:', error);
-                return false;
-            }
-        }
-
-        async function getLeaderboardFromServer() {
-            try {
-                const response = await fetch(`${SERVER_URL}/leaderboard`);
-                const data = await response.json();
-                return data.leaderboard || [];
-            } catch (error) {
-                console.error('Ошибка загрузки таблицы лидеров:', error);
-                return [];
-            }
-        }
-
         // Функция для сохранения данных
         async function saveGameData() {
             gameData.balance = balance;
@@ -800,9 +711,6 @@
                 
                 // Сохраняем в localStorage с ключом пользователя
                 localStorage.setItem(`nftCaseData_${userId}`, JSON.stringify(dataToSave));
-                
-                // Сохраняем в таблицу лидеров на сервере
-                await updateLeaderboardOnServer(userId, username, firstName, balance);
             } else {
                 // Для демо-версии создаем случайного пользователя
                 if (!gameData.userId) {
@@ -810,46 +718,7 @@
                     gameData.username = 'Демо-пользователь';
                     gameData.firstName = 'Демо-пользователь';
                 }
-                
-                await updateLeaderboardOnServer(gameData.userId, gameData.username, gameData.firstName, balance);
             }
-        }
-
-        // Функция для отображения таблицы лидеров
-        async function displayLeaderboard() {
-            const leaderboard = await getLeaderboardFromServer();
-            leaderboardList.innerHTML = '';
-            
-            if (leaderboard.length === 0) {
-                leaderboardList.innerHTML = '<div style="text-align: center; color: #b8b8d9; padding: 20px;">Пока нет данных</div>';
-                return;
-            }
-            
-            // Показываем топ-10
-            const topUsers = leaderboard.slice(0, 10);
-            
-            topUsers.forEach((user, index) => {
-                const leaderboardItem = document.createElement('div');
-                leaderboardItem.className = 'leaderboard-item';
-                
-                const position = document.createElement('div');
-                position.className = 'leaderboard-position';
-                position.textContent = index + 1;
-                
-                const name = document.createElement('div');
-                name.className = 'leaderboard-name';
-                name.textContent = user.firstName || user.username || 'Аноним';
-                
-                const balance = document.createElement('div');
-                balance.className = 'leaderboard-balance';
-                balance.textContent = `${user.balance}₽`;
-                
-                leaderboardItem.appendChild(position);
-                leaderboardItem.appendChild(name);
-                leaderboardItem.appendChild(balance);
-                
-                leaderboardList.appendChild(leaderboardItem);
-            });
         }
 
         // Функция для загрузки данных
@@ -930,9 +799,6 @@
             
             // Обновляем состояние кнопки
             updateButtonsState();
-            
-            // Загружаем таблицу лидеров
-            await displayLeaderboard();
             
             // Инициализируем рулетку
             initRoulette();
@@ -1288,11 +1154,6 @@ ID: <code>${userId}</code>
                     // Добавляем активный класс к выбранной вкладке и контенту
                     tab.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
-                    
-                    // Если переключились на вкладку лидеров, обновляем таблицу
-                    if (tabId === 'leaders-tab') {
-                        displayLeaderboard();
-                    }
                 });
             });
             
@@ -1318,4 +1179,4 @@ ID: <code>${userId}</code>
         });
     </script>
 </body>
-</html>
+    </html>
