@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Кейс в Telegram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #8892b0;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .balance-container {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .balance {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #64ffda;
+            margin: 10px 0;
+        }
+
+        .case-container {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .case {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            user-select: none;
+        }
+
+        .case:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .case.opened {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            transform: scale(0.95);
+        }
+
+        .open-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .open-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            margin-top: 30px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prize {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: pop 0.5s ease;
+        }
+
+        .prize-value {
+            font-size: 1.5rem;
+            color: #64ffda;
+            margin-bottom: 10px;
+        }
+
+        .history {
+            margin-top: 30px;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .history-title {
+            margin-bottom: 10px;
+            color: #8892b0;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f5576c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NFT Кейс</h1>
+        <p class="subtitle">Открой кейс и получи уникальный NFT</p>
+        
+        <div class="balance-container">
+            <div>Ваш баланс:</div>
+            <div class="balance" id="balance">1000₽</div>
+        </div>
+        
+        <div class="case-container">
+            <div class="case" id="case">🎁</div>
+        </div>
+        
+        <button class="open-btn" id="open-btn">Открыть за 100₽</button>
+        
+        <div class="result" id="result">
+            <!-- Здесь будет отображаться результат открытия -->
+        </div>
+        
+        <div class="history">
+            <div class="history-title">История открытий</div>
+            <div id="history-list">
+                <!-- История открытий будет добавляться сюда -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Недостаточно средств!</div>
+
+    <script>
+        // Эмодзи и их стоимость
+        const emojis = [
+            { emoji: '💎', value: 500, probability: 5 },
+            { emoji: '🚀', value: 300, probability: 10 },
+            { emoji: '💰', value: 200, probability: 15 },
+            { emoji: '👑', value: 150, probability: 20 },
+            { emoji: '⭐', value: 100, probability: 25 },
+            { emoji: '🍀', value: 50, probability: 25 }
+        ];
+
+        // Переменные состояния
+        let balance = 1000;
+        let isCaseOpened = false;
+        let currentPrize = null;
+
+        // Элементы DOM
+        const balanceElement = document.getElementById('balance');
+        const caseElement = document.getElementById('case');
+        const openBtn = document.getElementById('open-btn');
+        const resultElement = document.getElementById('result');
+        const historyList = document.getElementById('history-list');
+        const notification = document.getElementById('notification');
+
+        // Функция для показа уведомления
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Функция для получения случайного приза на основе вероятностей
+        function getRandomPrize() {
+            // Создаем массив, где каждый элемент повторяется probability раз
+            const weightedEmojis = [];
+            emojis.forEach(item => {
+                for (let i = 0; i < item.probability; i++) {
+                    weightedEmojis.push(item);
+                }
+            });
+            
+            // Выбираем случайный элемент
+            const randomIndex = Math.floor(Math.random() * weightedEmojis.length);
+            return weightedEmojis[randomIndex];
+        }
+
+        // Функция открытия кейса
+        function openCase() {
+            if (isCaseOpened) {
+                resetCase();
+                return;
+            }
+            
+            if (balance < 100) {
+                showNotification('Недостаточно средств для открытия кейса!');
+                return;
+            }
+            
+            // Снимаем деньги
+            balance -= 100;
+            balanceElement.textContent = `${balance}₽`;
+            
+            // Анимация тряски кейса
+            caseElement.classList.add('shake');
+            
+            // Получаем случайный приз
+            currentPrize = getRandomPrize();
+            
+            setTimeout(() => {
+                caseElement.classList.remove('shake');
+                caseElement.textContent = currentPrize.emoji;
+                caseElement.classList.add('opened');
+                
+                // Добавляем выигрыш к балансу
+                balance += currentPrize.value;
+                balanceElement.textContent = `${balance}₽`;
+                
+                // Показываем результат
+                resultElement.innerHTML = `
+                    <div class="prize">${currentPrize.emoji}</div>
+                    <div class="prize-value">+${currentPrize.value}₽</div>
+                    <div>Поздравляем!</div>
+                `;
+                
+                // Добавляем в историю
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <span>${currentPrize.emoji}</span>
+                    <span>+${currentPrize.value}₽</span>
+                `;
+                historyList.prepend(historyItem);
+                
+                // Обновляем состояние
+                isCaseOpened = true;
+                openBtn.textContent = 'Открыть снова';
+                
+                // Обновляем состояние кнопки
+                if (balance < 100) {
+                    openBtn.disabled = true;
+                    openBtn.textContent = 'Недостаточно средств';
+                }
+            }, 500);
+        }
+
+        // Функция сброса кейса
+        function resetCase() {
+            caseElement.textContent = '🎁';
+            caseElement.classList.remove('opened');
+            resultElement.innerHTML = '';
+            isCaseOpened = false;
+            openBtn.textContent = 'Открыть за 100₽';
+            
+            // Обновляем состояние кнопки
+            if (balance < 100) {
+                openBtn.disabled = true;
+                openBtn.textContent = 'Недостаточно средств';
+            }
+        }
+
+        // Обработчик клика по кнопке
+        openBtn.addEventListener('click', openCase);
+    </script>
+</body>
+</html>
