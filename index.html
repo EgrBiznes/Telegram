@@ -14,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -27,66 +27,132 @@
             max-width: 500px;
             width: 100%;
             text-align: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c, #ffde7d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
         }
 
         .subtitle {
-            color: #8892b0;
+            color: #b8b8d9;
             margin-bottom: 30px;
             font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 5px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .balance-container {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .balance {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: bold;
             color: #64ffda;
             margin: 10px 0;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
         }
 
         .case-container {
             position: relative;
             margin: 30px 0;
+            perspective: 1000px;
         }
 
         .case {
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             margin: 0 auto;
             background: linear-gradient(45deg, #667eea, #764ba2);
             border-radius: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 80px;
+            font-size: 90px;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
             user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .case:hover::before {
+            animation: shine 1.5s ease;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .case:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
         }
 
         .case.opened {
@@ -94,29 +160,51 @@
             transform: scale(0.95);
         }
 
-        .open-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .case.spinning {
+            animation: spin 0.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
         }
 
-        .open-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 180px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .open-btn:disabled {
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
             background: #555;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+        }
+
+        .btn-quick {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
         }
 
         .result {
@@ -129,7 +217,7 @@
         }
 
         .prize {
-            font-size: 60px;
+            font-size: 70px;
             margin-bottom: 10px;
             animation: pop 0.5s ease;
         }
@@ -138,6 +226,7 @@
             font-size: 1.5rem;
             color: #64ffda;
             margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
         }
 
         .history {
@@ -147,18 +236,81 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             padding: 15px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         .history-title {
             margin-bottom: 10px;
-            color: #8892b0;
+            color: #b8b8d9;
+            font-weight: 600;
         }
 
         .history-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leaderboard {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leaderboard-position {
+            font-weight: bold;
+            color: #ffde7d;
+            width: 30px;
+            text-align: center;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            text-align: left;
+            padding-left: 15px;
+        }
+
+        .leaderboard-balance {
+            color: #64ffda;
+            font-weight: bold;
+        }
+
+        .withdraw-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .withdraw-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .withdraw-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-withdraw {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
         @keyframes pop {
@@ -187,16 +339,21 @@
             transform: translateX(-50%);
             background: #f5576c;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             z-index: 100;
             opacity: 0;
             transition: opacity 0.3s;
+            font-weight: 600;
         }
 
         .notification.show {
             opacity: 1;
+        }
+
+        .notification.success {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
         .loading {
@@ -206,10 +363,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            flex-direction: column;
+            color: white;
         }
 
         .loading.show {
@@ -217,16 +376,66 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border: 5px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: #667eea;
             animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffde7d;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-cancel {
+            background: #555;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
     </style>
 </head>
@@ -240,20 +449,49 @@
             <div class="balance" id="balance">1000₽</div>
         </div>
         
-        <div class="case-container">
-            <div class="case" id="case">🎁</div>
+        <div class="tabs">
+            <div class="tab active" data-tab="case-tab">Кейс</div>
+            <div class="tab" data-tab="leaders-tab">Лидеры</div>
+            <div class="tab" data-tab="withdraw-tab">Вывод</div>
         </div>
         
-        <button class="open-btn" id="open-btn">Открыть за 100₽</button>
-        
-        <div class="result" id="result">
-            <!-- Здесь будет отображаться результат открытия -->
+        <div class="tab-content active" id="case-tab">
+            <div class="case-container">
+                <div class="case" id="case">🎁</div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" id="open-btn">Открыть за 100₽</button>
+                <button class="btn btn-quick" id="quick-open-btn">Быстрое открытие</button>
+            </div>
+            
+            <div class="result" id="result">
+                <!-- Здесь будет отображаться результат открытия -->
+            </div>
+            
+            <div class="history">
+                <div class="history-title">История открытий</div>
+                <div id="history-list">
+                    <!-- История открытий будет добавляться сюда -->
+                </div>
+            </div>
         </div>
         
-        <div class="history">
-            <div class="history-title">История открытий</div>
-            <div id="history-list">
-                <!-- История открытий будет добавляться сюда -->
+        <div class="tab-content" id="leaders-tab">
+            <h2>Таблица лидеров</h2>
+            <div class="leaderboard">
+                <div id="leaderboard-list">
+                    <!-- Список лидеров будет добавляться сюда -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="withdraw-tab">
+            <h2>Вывод средств</h2>
+            <div class="withdraw-form">
+                <input type="number" class="withdraw-input" id="withdraw-amount" placeholder="Сумма для вывода" min="100" max="1000">
+                <button class="btn btn-withdraw" id="withdraw-btn">Вывести средства</button>
+                <p style="color: #b8b8d9; font-size: 0.9rem; margin-top: 10px;">Минимальная сумма вывода: 100₽</p>
             </div>
         </div>
     </div>
@@ -262,17 +500,30 @@
     
     <div class="loading" id="loading">
         <div class="spinner"></div>
+        <div>Открываем кейс...</div>
+    </div>
+
+    <div class="modal" id="withdraw-modal">
+        <div class="modal-content">
+            <div class="modal-title">Подтверждение вывода</div>
+            <p>Вы уверены, что хотите вывести <span id="withdraw-confirm-amount">0</span>₽?</p>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #b8b8d9;">После подтверждения средства будут списаны с вашего баланса, и бот свяжется с вами для завершения операции.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" id="cancel-withdraw-btn">Отмена</button>
+                <button class="btn btn-confirm" id="confirm-withdraw-btn">Подтвердить</button>
+            </div>
+        </div>
     </div>
 
     <script>
         // Эмодзи и их стоимость
         const emojis = [
-            { emoji: '💎', value: 500, probability: 5 },
-            { emoji: '🚀', value: 300, probability: 10 },
-            { emoji: '💰', value: 200, probability: 15 },
-            { emoji: '👑', value: 150, probability: 20 },
-            { emoji: '⭐', value: 100, probability: 25 },
-            { emoji: '🍀', value: 50, probability: 25 }
+            { emoji: '💎', value: 500, probability: 5, name: 'Алмаз' },
+            { emoji: '🚀', value: 300, probability: 10, name: 'Ракета' },
+            { emoji: '💰', value: 200, probability: 15, name: 'Деньги' },
+            { emoji: '👑', value: 150, probability: 20, name: 'Корона' },
+            { emoji: '⭐', value: 100, probability: 25, name: 'Звезда' },
+            { emoji: '🍀', value: 50, probability: 25, name: 'Клевер' }
         ];
 
         // Переменные состояния
@@ -281,24 +532,38 @@
         let currentPrize = null;
         let gameData = {
             balance: 1000,
-            history: []
+            history: [],
+            userId: null,
+            username: 'Пользователь'
         };
 
         // Элементы DOM
         const balanceElement = document.getElementById('balance');
         const caseElement = document.getElementById('case');
         const openBtn = document.getElementById('open-btn');
+        const quickOpenBtn = document.getElementById('quick-open-btn');
         const resultElement = document.getElementById('result');
         const historyList = document.getElementById('history-list');
+        const leaderboardList = document.getElementById('leaderboard-list');
         const notification = document.getElementById('notification');
         const loadingElement = document.getElementById('loading');
+        const withdrawAmountInput = document.getElementById('withdraw-amount');
+        const withdrawBtn = document.getElementById('withdraw-btn');
+        const withdrawModal = document.getElementById('withdraw-modal');
+        const withdrawConfirmAmount = document.getElementById('withdraw-confirm-amount');
+        const cancelWithdrawBtn = document.getElementById('cancel-withdraw-btn');
+        const confirmWithdrawBtn = document.getElementById('confirm-withdraw-btn');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
         
         // Функция для показа уведомления
-        function showNotification(message) {
+        function showNotification(message, isSuccess = false) {
             notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(isSuccess ? 'success' : '');
             notification.classList.add('show');
             setTimeout(() => {
                 notification.classList.remove('show');
@@ -324,9 +589,15 @@
             // Если мы в Telegram Mini App, сохраняем данные в облако Telegram
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const userId = tg.initDataUnsafe.user.id;
+                const username = tg.initDataUnsafe.user.username || `user_${userId}`;
+                
+                gameData.userId = userId;
+                gameData.username = username;
+                
                 const dataToSave = {
                     balance: balance,
-                    history: gameData.history.slice(-10) // Сохраняем последние 10 записей
+                    history: gameData.history.slice(-10), // Сохраняем последние 10 записей
+                    username: username
                 };
                 
                 // В реальном приложении здесь должен быть запрос к вашему серверу
@@ -335,7 +606,84 @@
                 
                 // В демо-версии просто сохраняем в localStorage с ключом пользователя
                 localStorage.setItem(`nftCaseData_${userId}`, JSON.stringify(dataToSave));
+                
+                // Сохраняем в таблицу лидеров
+                updateLeaderboard(userId, username, balance);
+            } else {
+                // Для демо-версии создаем случайного пользователя
+                if (!gameData.userId) {
+                    gameData.userId = 'demo_' + Math.random().toString(36).substring(2, 9);
+                    gameData.username = 'Демо-пользователь';
+                }
+                
+                updateLeaderboard(gameData.userId, gameData.username, balance);
             }
+        }
+
+        // Функция для обновления таблицы лидеров
+        function updateLeaderboard(userId, username, balance) {
+            let leaderboard = JSON.parse(localStorage.getItem('nftCaseLeaderboard')) || [];
+            
+            // Проверяем, есть ли пользователь уже в таблице лидеров
+            const existingUserIndex = leaderboard.findIndex(user => user.id === userId);
+            
+            if (existingUserIndex !== -1) {
+                // Обновляем баланс пользователя
+                leaderboard[existingUserIndex].balance = balance;
+            } else {
+                // Добавляем нового пользователя
+                leaderboard.push({
+                    id: userId,
+                    username: username,
+                    balance: balance
+                });
+            }
+            
+            // Сортируем по убыванию баланса
+            leaderboard.sort((a, b) => b.balance - a.balance);
+            
+            // Ограничиваем топ-10
+            leaderboard = leaderboard.slice(0, 10);
+            
+            // Сохраняем обновленную таблицу лидеров
+            localStorage.setItem('nftCaseLeaderboard', JSON.stringify(leaderboard));
+            
+            // Обновляем отображение таблицы лидеров
+            displayLeaderboard();
+        }
+
+        // Функция для отображения таблицы лидеров
+        function displayLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem('nftCaseLeaderboard')) || [];
+            leaderboardList.innerHTML = '';
+            
+            if (leaderboard.length === 0) {
+                leaderboardList.innerHTML = '<div style="text-align: center; color: #b8b8d9; padding: 20px;">Пока нет данных</div>';
+                return;
+            }
+            
+            leaderboard.forEach((user, index) => {
+                const leaderboardItem = document.createElement('div');
+                leaderboardItem.className = 'leaderboard-item';
+                
+                const position = document.createElement('div');
+                position.className = 'leaderboard-position';
+                position.textContent = index + 1;
+                
+                const name = document.createElement('div');
+                name.className = 'leaderboard-name';
+                name.textContent = user.username;
+                
+                const balance = document.createElement('div');
+                balance.className = 'leaderboard-balance';
+                balance.textContent = `${user.balance}₽`;
+                
+                leaderboardItem.appendChild(position);
+                leaderboardItem.appendChild(name);
+                leaderboardItem.appendChild(balance);
+                
+                leaderboardList.appendChild(leaderboardItem);
+            });
         }
 
         // Функция для загрузки данных
@@ -345,6 +693,10 @@
             // Если мы в Telegram Mini App, загружаем данные из облака Telegram
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const userId = tg.initDataUnsafe.user.id;
+                const username = tg.initDataUnsafe.user.username || `user_${userId}`;
+                
+                gameData.userId = userId;
+                gameData.username = username;
                 
                 // В реальном приложении здесь должен быть запрос к вашему серверу
                 // для загрузки данных пользователя
@@ -355,7 +707,8 @@
                 if (savedData) {
                     try {
                         const parsedData = JSON.parse(savedData);
-                        gameData = parsedData;
+                        gameData.balance = parsedData.balance || 1000;
+                        gameData.history = parsedData.history || [];
                         balance = gameData.balance;
                         
                         // Восстанавливаем историю
@@ -380,7 +733,7 @@
                 if (savedData) {
                     try {
                         const parsedData = JSON.parse(savedData);
-                        gameData = parsedData;
+                        gameData = {...gameData, ...parsedData};
                         balance = gameData.balance;
                         
                         // Восстанавливаем историю
@@ -405,14 +758,29 @@
             balanceElement.textContent = `${balance}₽`;
             
             // Обновляем состояние кнопки
-            if (balance < 100) {
-                openBtn.disabled = true;
-                openBtn.textContent = 'Недостаточно средств';
-            }
+            updateButtonsState();
+            
+            // Загружаем таблицу лидеров
+            displayLeaderboard();
             
             setTimeout(() => {
                 showLoading(false);
             }, 500);
+        }
+
+        // Функция для обновления состояния кнопок
+        function updateButtonsState() {
+            if (balance < 100) {
+                openBtn.disabled = true;
+                quickOpenBtn.disabled = true;
+                openBtn.textContent = 'Недостаточно средств';
+                quickOpenBtn.textContent = 'Недостаточно средств';
+            } else {
+                openBtn.disabled = false;
+                quickOpenBtn.disabled = false;
+                openBtn.textContent = 'Открыть за 100₽';
+                quickOpenBtn.textContent = 'Быстрое открытие';
+            }
         }
 
         // Функция для получения случайного приза на основе вероятностей
@@ -431,8 +799,8 @@
         }
 
         // Функция открытия кейса
-        function openCase() {
-            if (isCaseOpened) {
+        function openCase(isQuick = false) {
+            if (isCaseOpened && !isQuick) {
                 resetCase();
                 return;
             }
@@ -452,21 +820,39 @@
             // Получаем случайный приз
             currentPrize = getRandomPrize();
             
+            // Показываем анимацию загрузки
+            if (!isQuick) {
+                showLoading(true);
+                caseElement.classList.add('spinning');
+            }
+            
             setTimeout(() => {
                 caseElement.classList.remove('shake');
+                if (!isQuick) {
+                    caseElement.classList.remove('spinning');
+                    showLoading(false);
+                }
+                
                 caseElement.textContent = currentPrize.emoji;
-                caseElement.classList.add('opened');
+                if (!isQuick) {
+                    caseElement.classList.add('opened');
+                }
                 
                 // Добавляем выигрыш к балансу
                 balance += currentPrize.value;
                 balanceElement.textContent = `${balance}₽`;
                 
                 // Показываем результат
-                resultElement.innerHTML = `
-                    <div class="prize">${currentPrize.emoji}</div>
-                    <div class="prize-value">+${currentPrize.value}₽</div>
-                    <div>Поздравляем!</div>
-                `;
+                if (!isQuick) {
+                    resultElement.innerHTML = `
+                        <div class="prize">${currentPrize.emoji}</div>
+                        <div class="prize-value">+${currentPrize.value}₽</div>
+                        <div>Поздравляем! Вы выиграли ${currentPrize.name}!</div>
+                    `;
+                } else {
+                    // Для быстрого открытия показываем уведомление
+                    showNotification(`Быстрое открытие: ${currentPrize.emoji} +${currentPrize.value}₽`, true);
+                }
                 
                 // Добавляем в историю
                 const historyItem = document.createElement('div');
@@ -481,6 +867,7 @@
                 gameData.history.push({
                     emoji: currentPrize.emoji,
                     value: currentPrize.value,
+                    name: currentPrize.name,
                     timestamp: new Date().toISOString()
                 });
                 
@@ -488,15 +875,24 @@
                 saveGameData();
                 
                 // Обновляем состояние
-                isCaseOpened = true;
-                openBtn.textContent = 'Открыть снова';
+                if (!isQuick) {
+                    isCaseOpened = true;
+                    openBtn.textContent = 'Открыть снова';
+                }
                 
                 // Обновляем состояние кнопки
-                if (balance < 100) {
-                    openBtn.disabled = true;
-                    openBtn.textContent = 'Недостаточно средств';
-                }
-            }, 500);
+                updateButtonsState();
+            }, isQuick ? 500 : 1500);
+        }
+
+        // Функция быстрого открытия
+        function quickOpen() {
+            if (balance < 100) {
+                showNotification('Недостаточно средств для открытия кейса!');
+                return;
+            }
+            
+            openCase(true);
         }
 
         // Функция сброса кейса
@@ -508,9 +904,62 @@
             openBtn.textContent = 'Открыть за 100₽';
             
             // Обновляем состояние кнопки
-            if (balance < 100) {
-                openBtn.disabled = true;
-                openBtn.textContent = 'Недостаточно средств';
+            updateButtonsState();
+        }
+
+        // Функция вывода средств
+        function withdrawFunds() {
+            const amount = parseInt(withdrawAmountInput.value);
+            
+            if (isNaN(amount) || amount < 100) {
+                showNotification('Минимальная сумма вывода - 100₽');
+                return;
+            }
+            
+            if (amount > balance) {
+                showNotification('Недостаточно средств для вывода');
+                return;
+            }
+            
+            // Показываем модальное окно подтверждения
+            withdrawConfirmAmount.textContent = amount;
+            withdrawModal.classList.add('show');
+        }
+
+        // Функция подтверждения вывода
+        function confirmWithdraw() {
+            const amount = parseInt(withdrawAmountInput.value);
+            
+            // Списываем средства с баланса
+            balance -= amount;
+            balanceElement.textContent = `${balance}₽`;
+            
+            // Сохраняем данные
+            saveGameData();
+            
+            // Обновляем состояние кнопок
+            updateButtonsState();
+            
+            // Закрываем модальное окно
+            withdrawModal.classList.remove('show');
+            
+            // Очищаем поле ввода
+            withdrawAmountInput.value = '';
+            
+            // Показываем уведомление об успехе
+            showNotification(`Запрос на вывод ${amount}₽ отправлен!`, true);
+            
+            // В реальном приложении здесь должен быть запрос к серверу
+            // Для демо-версии просто выводим в консоль
+            console.log(`Пользователь ${gameData.username} (ID: ${gameData.userId}) запросил вывод ${amount}₽`);
+            
+            // Если мы в Telegram Mini App, отправляем сообщение боту
+            if (tg) {
+                // В реальном приложении здесь должен быть вызов метода для отправки данных боту
+                // Например: tg.sendData(JSON.stringify({type: 'withdraw', amount: amount}));
+                
+                // Для демо-версии просто выводим в консоль
+                console.log('Сообщение для бота: Пользователь ' + gameData.username + ' запросил вывод ' + amount + '₽. ID пользователя: ' + gameData.userId + '. Свяжитесь с ним для завершения операции.');
             }
         }
 
@@ -525,8 +974,27 @@
             // Загружаем данные
             loadGameData();
             
-            // Обработчик клика по кнопке
-            openBtn.addEventListener('click', openCase);
+            // Обработчики клика по вкладкам
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Убираем активный класс у всех вкладок и контента
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    // Добавляем активный класс к выбранной вкладке и контенту
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Обработчики кнопок
+            openBtn.addEventListener('click', () => openCase(false));
+            quickOpenBtn.addEventListener('click', quickOpen);
+            withdrawBtn.addEventListener('click', withdrawFunds);
+            cancelWithdrawBtn.addEventListener('click', () => withdrawModal.classList.remove('show'));
+            confirmWithdrawBtn.addEventListener('click', confirmWithdraw);
             
             // Обработчик для закрытия приложения (только в Telegram)
             if (tg) {
