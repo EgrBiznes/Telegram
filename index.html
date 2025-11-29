@@ -34,7 +34,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             position: relative;
-            padding-bottom: 100px; /* Место для нижних кнопок */
+            padding-bottom: 100px;
         }
 
         h1 {
@@ -113,10 +113,11 @@
             position: relative;
             border: 3px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.3);
         }
 
         .roulette-items {
-            transition: transform 3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            transition: transform 4s cubic-bezier(0.1, 0.4, 0.2, 1);
         }
 
         .roulette-item {
@@ -146,6 +147,8 @@
             width: 100%;
             height: 100%;
             border-radius: 10px;
+            background-size: cover;
+            background-position: center;
         }
 
         .selected-indicator {
@@ -184,6 +187,8 @@
             position: absolute;
             top: 0;
             left: 0;
+            background-size: cover;
+            background-position: center;
         }
 
         .nft-model {
@@ -568,18 +573,154 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Стили для бонуса */
+        .bonus-section {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bonus-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .bonus-section.disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .bonus-section.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .bonus-timer {
+            font-size: 0.9rem;
+            color: #b8b8d9;
+            margin-top: 10px;
+        }
+
+        /* Стили для авторизации */
+        .auth-modal {
+            display: flex;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .auth-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .register-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #b8b8d9;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Модальное окно авторизации -->
+    <div class="modal auth-modal" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-title">Добро пожаловать в NFT Creator!</div>
+            <p>Для начала работы необходимо войти или зарегистрироваться</p>
+            
+            <div class="modal-buttons auth-buttons">
+                <button class="auth-btn login-btn" id="login-btn">Войти</button>
+                <button class="auth-btn register-btn" id="register-btn">Регистрация</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно входа -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-title">Вход в аккаунт</div>
+            <input type="text" class="modal-input" id="login-username" placeholder="Имя пользователя">
+            <input type="password" class="modal-input" id="login-password" placeholder="Пароль">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="cancel-login-btn">Назад</button>
+                <button class="modal-btn confirm" id="confirm-login-btn">Войти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <div class="modal-title">Регистрация аккаунта</div>
+            <input type="text" class="modal-input" id="register-username" placeholder="Имя пользователя">
+            <input type="password" class="modal-input" id="register-password" placeholder="Пароль">
+            <input type="password" class="modal-input" id="register-confirm-password" placeholder="Подтвердите пароль">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="cancel-register-btn">Назад</button>
+                <button class="modal-btn confirm" id="confirm-register-btn">Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-app" style="display: none;">
+        <div class="user-info">
+            Пользователь: <span id="current-username">-</span>
+            <button class="logout-btn" id="logout-btn">Выйти</button>
+        </div>
+        
         <h1>NFT Creator</h1>
         <p class="subtitle">Создай уникальные NFT и коллекционируй их</p>
         
         <div class="balance-container">
             <div>Ваш баланс:</div>
-            <div class="balance" id="balance">100,000₽</div>
+            <div class="balance" id="balance">0₽</div>
         </div>
 
+        <!-- 8-часовой бонус -->
+        <div class="bonus-section" id="bonus-section">
+            <h3>🎁 8-часовой бонус</h3>
+            <p>Получите 10,000₽ каждые 8 часов!</p>
+            <div class="bonus-timer" id="bonus-timer">Доступно сейчас</div>
+        </div>
+        
         <!-- Вкладка создания NFT -->
         <div class="tab-content active" id="create-tab">
             <div class="create-nft-section">
@@ -635,7 +776,7 @@
     </div>
     
     <!-- Нижние кнопки-вкладки -->
-    <div class="bottom-tabs">
+    <div class="bottom-tabs" id="bottom-tabs" style="display: none;">
         <div class="bottom-tab active" data-tab="create-tab">Create NFT</div>
         <div class="bottom-tab" data-tab="inventory-tab">Инвентарь</div>
     </div>
@@ -644,7 +785,7 @@
     
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <div>Создаём NFT...</div>
+        <div id="loading-text">Создаём NFT...</div>
     </div>
 
     <!-- Модальное окно просмотра NFT -->
@@ -663,20 +804,12 @@
                     <span class="info-value" id="modal-model-name">-</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Редкость модели:</span>
-                    <span class="info-value" id="modal-model-rarity">-</span>
-                </div>
-                <div class="info-row">
                     <span class="info-label">Шанс модели:</span>
                     <span class="info-value" id="modal-model-chance">-</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Фон:</span>
                     <span class="info-value" id="modal-bg-name">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Редкость фона:</span>
-                    <span class="info-value" id="modal-bg-rarity">-</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Шанс фона:</span>
@@ -717,7 +850,7 @@
         <div class="modal-content">
             <div class="modal-title">Передача NFT</div>
             <p>Введите username получателя:</p>
-            <input type="text" class="modal-input" id="transfer-username" placeholder="@username">
+            <input type="text" class="modal-input" id="transfer-username" placeholder="username">
             <p style="margin: 10px 0; color: #ff6b6b;">Стоимость передачи: 10,000₽</p>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="cancel-transfer-btn">Отмена</button>
@@ -727,6 +860,8 @@
     </div>
 
     <script>
+        // ========== ДОБАВЛЯЙТЕ СВОИ МОДЕЛИ И ФОНЫ ЗДЕСЬ ==========
+        
         // МОДЕЛИ NFT (с шансами выпадения)
         const models = [
             { 
@@ -778,102 +913,50 @@
                 chance: 40, 
                 image: "https://i.postimg.cc/Fs0tKZLR/IMG-20251129-105002.png"
             },
-            { 
-                id: 8, 
-                name: "Небесный ангел", 
-                rarity: "rare", 
-                chance: 15, 
-                image: "https://i.postimg.cc/wvTVb8J1/Excalibrite.webp"
-            },
-            { 
-                id: 9, 
-                name: "Темный рыцарь", 
-                rarity: "epic", 
-                chance: 7, 
-                image: "https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp"
-            },
-            { 
-                id: 10, 
-                name: "Светлый эльф", 
-                rarity: "legendary", 
-                chance: 3, 
-                image: "https://i.postimg.cc/fyYfVzhN/Golden.webp"
-            }
+            // ДОБАВЛЯЙТЕ СВОИ МОДЕЛИ ЗДЕСЬ
         ];
 
-        // ФОНЫ NFT (с шансами выпадения)
+        // ФОНЫ NFT (с шансами выпадения) - теперь используем ссылки на изображения
         const backgrounds = [
             { 
                 id: 1, 
                 name: "Галактика", 
                 rarity: "legendary", 
                 chance: 5, 
-                color: "linear-gradient(45deg, #0f0c29, #302b63, #24243e)"
+                image: "https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp"
             },
             { 
                 id: 2, 
                 name: "Закат", 
                 rarity: "epic", 
                 chance: 10, 
-                color: "linear-gradient(45deg, #ff6b6b, #ffa36c, #ffde7d)"
+                image: "https://i.postimg.cc/GhQvVSLG/Red-Star.webp"
             },
             { 
                 id: 3, 
                 name: "Океан", 
                 rarity: "rare", 
                 chance: 15, 
-                color: "linear-gradient(45deg, #4ecdc4, #44a08d)"
+                image: "https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp"
             },
             { 
                 id: 4, 
                 name: "Лес", 
                 rarity: "uncommon", 
                 chance: 25, 
-                color: "linear-gradient(45deg, #2ecc71, #27ae60)"
+                image: "https://i.postimg.cc/fyYfVzhN/Golden.webp"
             },
             { 
                 id: 5, 
                 name: "Пустыня", 
                 rarity: "common", 
                 chance: 45, 
-                color: "linear-gradient(45deg, #e67e22, #d35400)"
+                image: "https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp"
             },
-            { 
-                id: 6, 
-                name: "Вулкан", 
-                rarity: "rare", 
-                chance: 15, 
-                color: "linear-gradient(45deg, #e74c3c, #c0392b)"
-            },
-            { 
-                id: 7, 
-                name: "Арктика", 
-                rarity: "uncommon", 
-                chance: 25, 
-                color: "linear-gradient(45deg, #3498db, #2980b9)"
-            },
-            { 
-                id: 8, 
-                name: "Радуга", 
-                rarity: "epic", 
-                chance: 10, 
-                color: "linear-gradient(45deg, #9b59b6, #e74c3c, #f39c12, #2ecc71, #3498db)"
-            },
-            { 
-                id: 9, 
-                name: "Ночь", 
-                rarity: "common", 
-                chance: 45, 
-                color: "linear-gradient(45deg, #2c3e50, #34495e)"
-            },
-            { 
-                id: 10, 
-                name: "Рассвет", 
-                rarity: "legendary", 
-                chance: 5, 
-                color: "linear-gradient(45deg, #e84393, #fd79a8, #fab1a0)"
-            }
+            // ДОБАВЛЯЙТЕ СВОИ ФОНЫ ЗДЕСЬ (ссылки на изображения)
         ];
+
+        // ========== КОНЕЦ ОБЛАСТИ ДЛЯ ДОБАВЛЕНИЯ МОДЕЛЕЙ И ФОНОВ ==========
 
         // Редкости и их цвета
         const rarityColors = {
@@ -902,21 +985,26 @@
         };
 
         // Переменные состояния
-        let balance = 100000;
-        let isCreating = false;
+        let balance = 0;
         let isSpinning = false;
         let currentSelectedModel = null;
         let currentSelectedBackground = null;
+        let currentUser = null;
         
-        let gameData = {
-            balance: 100000,
-            inventory: [],
-            userId: null,
-            username: 'Пользователь',
-            firstName: 'Пользователь'
-        };
-
         // Элементы DOM
+        const authModal = document.getElementById('auth-modal');
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const mainApp = document.getElementById('main-app');
+        const bottomTabs = document.getElementById('bottom-tabs');
+        const currentUsername = document.getElementById('current-username');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const cancelLoginBtn = document.getElementById('cancel-login-btn');
+        const confirmLoginBtn = document.getElementById('confirm-login-btn');
+        const cancelRegisterBtn = document.getElementById('cancel-register-btn');
+        const confirmRegisterBtn = document.getElementById('confirm-register-btn');
         const balanceElement = document.getElementById('balance');
         const createNftBtn = document.getElementById('create-nft-btn');
         const nftPreview = document.getElementById('nft-preview');
@@ -924,7 +1012,7 @@
         const bgRouletteItems = document.getElementById('bg-roulette-items');
         const notification = document.getElementById('notification');
         const loadingElement = document.getElementById('loading');
-        const bottomTabs = document.querySelectorAll('.bottom-tab');
+        const loadingText = document.getElementById('loading-text');
         const tabContents = document.querySelectorAll('.tab-content');
         const inventoryGrid = document.getElementById('inventory-grid');
         const totalItemsElement = document.getElementById('total-items');
@@ -934,10 +1022,8 @@
         const nftModalImageContainer = document.getElementById('nft-modal-image-container');
         const nftModalName = document.getElementById('nft-modal-name');
         const modalModelName = document.getElementById('modal-model-name');
-        const modalModelRarity = document.getElementById('modal-model-rarity');
         const modalModelChance = document.getElementById('modal-model-chance');
         const modalBgName = document.getElementById('modal-bg-name');
-        const modalBgRarity = document.getElementById('modal-bg-rarity');
         const modalBgChance = document.getElementById('modal-bg-chance');
         const modalTotalChance = document.getElementById('modal-total-chance');
         const modalSellPrice = document.getElementById('modal-sell-price');
@@ -951,6 +1037,8 @@
         const transferUsername = document.getElementById('transfer-username');
         const cancelTransferBtn = document.getElementById('cancel-transfer-btn');
         const confirmTransferBtn = document.getElementById('confirm-transfer-btn');
+        const bonusSection = document.getElementById('bonus-section');
+        const bonusTimer = document.getElementById('bonus-timer');
 
         // Текущий выбранный NFT для операций
         let currentNFT = null;
@@ -970,7 +1058,8 @@
         }
 
         // Функция для показа загрузки
-        function showLoading(show) {
+        function showLoading(show, text = "Создаём NFT...") {
+            loadingText.textContent = text;
             if (show) {
                 loadingElement.classList.add('show');
             } else {
@@ -978,84 +1067,79 @@
             }
         }
 
-        // Функция для сохранения данных
-        async function saveGameData() {
-            gameData.balance = balance;
+        // Функция для сохранения данных пользователя
+        function saveUserData() {
+            if (!currentUser) return;
             
-            localStorage.setItem('nftCreatorData', JSON.stringify(gameData));
+            const userData = {
+                username: currentUser.username,
+                password: currentUser.password,
+                balance: balance,
+                inventory: currentUser.inventory || [],
+                lastBonusTime: currentUser.lastBonusTime
+            };
             
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const userId = tg.initDataUnsafe.user.id;
-                const username = tg.initDataUnsafe.user.username || `user_${userId}`;
-                const firstName = tg.initDataUnsafe.user.first_name || 'Пользователь';
-                
-                gameData.userId = userId;
-                gameData.username = username;
-                gameData.firstName = firstName;
-                
-                const dataToSave = {
-                    balance: balance,
-                    inventory: gameData.inventory,
-                    username: username,
-                    firstName: firstName
-                };
-                
-                localStorage.setItem(`nftCreatorData_${userId}`, JSON.stringify(dataToSave));
-            } else {
-                if (!gameData.userId) {
-                    gameData.userId = 'demo_' + Math.random().toString(36).substring(2, 9);
-                    gameData.username = 'Демо-пользователь';
-                    gameData.firstName = 'Демо-пользователь';
-                }
-            }
+            localStorage.setItem(`nft_user_${currentUser.username}`, JSON.stringify(userData));
+            localStorage.setItem('last_username', currentUser.username);
         }
 
-        // Функция для загрузки данных
-        async function loadGameData() {
-            showLoading(true);
-            
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const userId = tg.initDataUnsafe.user.id;
-                const username = tg.initDataUnsafe.user.username || `user_${userId}`;
-                const firstName = tg.initDataUnsafe.user.first_name || 'Пользователь';
-                
-                gameData.userId = userId;
-                gameData.username = username;
-                gameData.firstName = firstName;
-                
-                const savedData = localStorage.getItem(`nftCreatorData_${userId}`);
-                
-                if (savedData) {
-                    try {
-                        const parsedData = JSON.parse(savedData);
-                        gameData.balance = parsedData.balance || 100000;
-                        gameData.inventory = parsedData.inventory || [];
-                        balance = gameData.balance;
-                    } catch (e) {
-                        console.error('Ошибка загрузки данных:', e);
-                    }
-                }
-            } else {
-                const savedData = localStorage.getItem('nftCreatorData');
-                if (savedData) {
-                    try {
-                        const parsedData = JSON.parse(savedData);
-                        gameData = {...gameData, ...parsedData};
-                        balance = gameData.balance;
-                    } catch (e) {
-                        console.error('Ошибка загрузки данных:', e);
-                    }
+        // Функция для загрузки данных пользователя
+        function loadUserData(username) {
+            const userData = localStorage.getItem(`nft_user_${username}`);
+            if (userData) {
+                return JSON.parse(userData);
+            }
+            return null;
+        }
+
+        // Функция проверки авторизации при загрузке
+        function checkAuthOnLoad() {
+            const lastUsername = localStorage.getItem('last_username');
+            if (lastUsername) {
+                const userData = loadUserData(lastUsername);
+                if (userData) {
+                    login(userData);
+                    return true;
                 }
             }
+            return false;
+        }
+
+        // Функция регистрации пользователя
+        function registerUser(username, password) {
+            // Проверяем, не занят ли username
+            if (localStorage.getItem(`nft_user_${username}`)) {
+                return { success: false, message: 'Пользователь с таким именем уже существует' };
+            }
             
-            // Обновляем интерфейс
-            updateBalance();
-            updateInventory();
-            initRoulettes();
+            // Создаем нового пользователя
+            const newUser = {
+                username: username,
+                password: password,
+                balance: 50000,
+                inventory: [],
+                lastBonusTime: null
+            };
             
-            setTimeout(() => {
-                showLoading(false);
-            }, 500);
+            // Сохраняем пользователя
+            localStorage.setItem(`nft_user_${username}`, JSON.stringify(newUser));
+            localStorage.setItem('last_username', username);
+            
+            return { success: true, user: newUser };
+        }
+
+        // Функция авторизации пользователя
+        function loginUser(username, password) {
+            const userData = loadUserData(username);
+            if (!userData) {
+                return { success: false, message: 'Пользователь не найден' };
+            }
+            
+            if (userData.password !== password) {
+                return { success: false, message: 'Неверный пароль' };
+            }
+            
+            return { success: true, user: userData };
         }
 
         // Функция обновления баланса
@@ -1092,7 +1176,7 @@
             randomBackgrounds.forEach(bg => {
                 const item = document.createElement('div');
                 item.className = 'roulette-item background-item';
-                item.style.background = bg.color;
+                item.innerHTML = `<div class="roulette-bg" style="background-image: url('${bg.image}')"></div>`;
                 bgRouletteItems.appendChild(item);
             });
             
@@ -1135,13 +1219,11 @@
             
             isSpinning = true;
             updateBalance();
+            showLoading(true, "Прокручиваем рулетки...");
             
             // Выбираем случайные модель и фон по шансам
             const selectedModel = getRandomWithChance(models);
             const selectedBackground = getRandomWithChance(backgrounds);
-            
-            // Показываем загрузку
-            showLoading(true);
             
             // Запускаем анимацию рулетки
             const modelRoulette = document.getElementById('model-roulette-items');
@@ -1156,12 +1238,12 @@
             // Даем время для сброса
             setTimeout(() => {
                 // Включаем анимацию
-                modelRoulette.style.transition = 'transform 3s cubic-bezier(0.2, 0.8, 0.3, 1)';
-                bgRoulette.style.transition = 'transform 3s cubic-bezier(0.2, 0.8, 0.3, 1)';
+                modelRoulette.style.transition = 'transform 4s cubic-bezier(0.1, 0.4, 0.2, 1)';
+                bgRoulette.style.transition = 'transform 4s cubic-bezier(0.1, 0.4, 0.2, 1)';
                 
-                // Прокручиваем рулетки
-                modelRoulette.style.transform = 'translateY(-800px)';
-                bgRoulette.style.transform = 'translateY(-800px)';
+                // Прокручиваем рулетки (больше оборотов для лучшей анимации)
+                modelRoulette.style.transform = 'translateY(-1500px)';
+                bgRoulette.style.transform = 'translateY(-1500px)';
                 
                 // После завершения анимации
                 setTimeout(() => {
@@ -1179,21 +1261,21 @@
                     createNFT(selectedModel, selectedBackground);
                     
                     updateBalance();
-                }, 3000);
+                }, 4000);
             }, 100);
         }
 
         // Функция показа превью NFT
         function showNFTPreview(model, background) {
             const previewHTML = `
-                <div class="nft-background" style="background: ${background.color};"></div>
+                <div class="nft-background" style="background-image: url('${background.image}')"></div>
                 <img src="${model.image}" class="nft-model" alt="${model.name}">
             `;
             nftPreview.innerHTML = previewHTML;
         }
 
         // Функция создания NFT
-        async function createNFT(model, background) {
+        function createNFT(model, background) {
             // Вычитаем стоимость создания
             balance -= 10000;
             
@@ -1208,13 +1290,13 @@
             };
             
             // Добавляем в инвентарь
-            gameData.inventory.push(newNFT);
+            currentUser.inventory.push(newNFT);
             
             // Показываем уведомление
             showNotification(`🎉 Создан новый NFT: ${model.name} с фоном ${background.name}!`, true);
             
             // Сохраняем данные
-            await saveGameData();
+            saveUserData();
             updateInventory();
         }
 
@@ -1222,7 +1304,7 @@
         function updateInventory() {
             inventoryGrid.innerHTML = '';
             
-            if (gameData.inventory.length === 0) {
+            if (!currentUser.inventory || currentUser.inventory.length === 0) {
                 inventoryGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #b8b8d9;">Инвентарь пуст</p>';
                 totalItemsElement.textContent = '0';
                 totalValueElement.textContent = '0₽';
@@ -1231,13 +1313,13 @@
             
             let totalValue = 0;
             
-            gameData.inventory.forEach(nft => {
+            currentUser.inventory.forEach(nft => {
                 totalValue += nft.sellPrice;
                 
                 const nftElement = document.createElement('div');
                 nftElement.className = 'inventory-item';
                 nftElement.innerHTML = `
-                    <div class="inventory-item-image-container" style="position: relative; width: 100%; height: 120px; border-radius: 10px; overflow: hidden; background: ${nft.background.color};">
+                    <div class="inventory-item-image-container" style="position: relative; width: 100%; height: 120px; border-radius: 10px; overflow: hidden; background-image: url('${nft.background.image}'); background-size: cover;">
                         <img src="${nft.model.image}" style="width: 80%; height: 80%; position: absolute; top: 10%; left: 10%; object-fit: contain;" alt="${nft.model.name}">
                     </div>
                     <div class="inventory-item-name">${nft.model.name}</div>
@@ -1270,7 +1352,7 @@
                 inventoryGrid.appendChild(nftElement);
             });
             
-            totalItemsElement.textContent = gameData.inventory.length;
+            totalItemsElement.textContent = currentUser.inventory.length;
             totalValueElement.textContent = totalValue.toLocaleString() + '₽';
         }
 
@@ -1280,7 +1362,7 @@
             
             // Создаем изображение NFT для модального окна
             const modalImageHTML = `
-                <div style="position: relative; width: 100%; height: 300px; border-radius: 15px; overflow: hidden; background: ${nft.background.color};">
+                <div style="position: relative; width: 100%; height: 300px; border-radius: 15px; overflow: hidden; background-image: url('${nft.background.image}'); background-size: cover;">
                     <img src="${nft.model.image}" style="width: 80%; height: 80%; position: absolute; top: 10%; left: 10%; object-fit: contain;" alt="${nft.model.name}">
                 </div>
             `;
@@ -1289,12 +1371,8 @@
             // Заполняем информацию
             nftModalName.textContent = nft.model.name;
             modalModelName.textContent = nft.model.name;
-            modalModelRarity.textContent = rarityNames[nft.model.rarity];
-            modalModelRarity.style.color = rarityColors[nft.model.rarity];
             modalModelChance.textContent = nft.model.chance + '%';
             modalBgName.textContent = nft.background.name;
-            modalBgRarity.textContent = rarityNames[nft.background.rarity];
-            modalBgRarity.style.color = rarityColors[nft.background.rarity];
             modalBgChance.textContent = nft.background.chance + '%';
             modalTotalChance.textContent = nft.totalChance + '%';
             modalSellPrice.textContent = nft.sellPrice.toLocaleString() + '₽';
@@ -1318,21 +1396,21 @@
         }
 
         // Функция продажи NFT
-        async function sellNFT() {
+        function sellNFT() {
             if (!currentNFT) return;
             
             // Находим индекс NFT в инвентаре
-            const nftIndex = gameData.inventory.findIndex(item => item.id === currentNFT.id);
+            const nftIndex = currentUser.inventory.findIndex(item => item.id === currentNFT.id);
             if (nftIndex === -1) return;
             
             // Добавляем деньги за продажу
             balance += currentNFT.sellPrice;
             
             // Удаляем NFT из инвентаря
-            gameData.inventory.splice(nftIndex, 1);
+            currentUser.inventory.splice(nftIndex, 1);
             
             // Сохраняем данные
-            await saveGameData();
+            saveUserData();
             
             // Обновляем интерфейс
             updateBalance();
@@ -1349,12 +1427,12 @@
         }
 
         // Функция передачи NFT
-        async function transferNFT() {
+        function transferNFT() {
             if (!currentNFT) return;
             
             const username = transferUsername.value.trim();
             if (!username) {
-                showNotification('Введите username получателя');
+                showNotification('Введите имя пользователя получателя');
                 return;
             }
             
@@ -1363,18 +1441,29 @@
                 return;
             }
             
+            // Проверяем существование получателя
+            const receiverData = loadUserData(username);
+            if (!receiverData) {
+                showNotification('Пользователь с таким именем не найден');
+                return;
+            }
+            
             // Находим индекс NFT в инвентаре
-            const nftIndex = gameData.inventory.findIndex(item => item.id === currentNFT.id);
+            const nftIndex = currentUser.inventory.findIndex(item => item.id === currentNFT.id);
             if (nftIndex === -1) return;
             
             // Списываем комиссию за передачу
             balance -= 10000;
             
-            // Удаляем NFT из инвентаря
-            gameData.inventory.splice(nftIndex, 1);
+            // Удаляем NFT из инвентаря отправителя
+            const transferredNFT = currentUser.inventory.splice(nftIndex, 1)[0];
             
-            // Сохраняем данные
-            await saveGameData();
+            // Добавляем NFT в инвентарь получателя
+            receiverData.inventory.push(transferredNFT);
+            
+            // Сохраняем данные обоих пользователей
+            saveUserData();
+            localStorage.setItem(`nft_user_${username}`, JSON.stringify(receiverData));
             
             // Обновляем интерфейс
             updateBalance();
@@ -1390,13 +1479,97 @@
             currentNFT = null;
         }
 
+        // Функция получения бонуса
+        function claimBonus() {
+            const now = Date.now();
+            const eightHours = 8 * 60 * 60 * 1000; // 8 часов в миллисекундах
+            
+            if (currentUser.lastBonusTime && (now - currentUser.lastBonusTime) < eightHours) {
+                showNotification('Бонус еще не доступен!');
+                return;
+            }
+            
+            // Выдаем бонус
+            balance += 10000;
+            currentUser.lastBonusTime = now;
+            
+            // Сохраняем данные
+            saveUserData();
+            
+            // Обновляем интерфейс
+            updateBalance();
+            updateBonusTimer();
+            
+            showNotification('🎉 Вы получили бонус 10,000₽!', true);
+        }
+
+        // Функция обновления таймера бонуса
+        function updateBonusTimer() {
+            if (!currentUser.lastBonusTime) {
+                bonusTimer.textContent = 'Доступно сейчас';
+                bonusSection.classList.remove('disabled');
+                return;
+            }
+            
+            const now = Date.now();
+            const eightHours = 8 * 60 * 60 * 1000;
+            const timeLeft = currentUser.lastBonusTime + eightHours - now;
+            
+            if (timeLeft <= 0) {
+                bonusTimer.textContent = 'Доступно сейчас';
+                bonusSection.classList.remove('disabled');
+            } else {
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                
+                bonusTimer.textContent = `Следующий бонус через: ${hours}ч ${minutes}м`;
+                bonusSection.classList.add('disabled');
+            }
+        }
+
         // Функция переключения вкладок
         function switchToTab(tabId) {
-            bottomTabs.forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.bottom-tab').forEach(tab => tab.classList.remove('active'));
             tabContents.forEach(tc => tc.classList.remove('active'));
             
             document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
             document.getElementById(tabId).classList.add('active');
+        }
+
+        // Функция входа пользователя
+        function login(user) {
+            currentUser = user;
+            balance = user.balance;
+            
+            // Обновляем интерфейс
+            currentUsername.textContent = user.username;
+            updateBalance();
+            updateInventory();
+            updateBonusTimer();
+            initRoulettes();
+            
+            // Показываем основное приложение
+            authModal.classList.remove('show');
+            loginModal.classList.remove('show');
+            registerModal.classList.remove('show');
+            mainApp.style.display = 'block';
+            bottomTabs.style.display = 'flex';
+        }
+
+        // Функция выхода пользователя
+        function logout() {
+            currentUser = null;
+            balance = 0;
+            
+            // Скрываем основное приложение
+            mainApp.style.display = 'none';
+            bottomTabs.style.display = 'none';
+            
+            // Показываем окно авторизации
+            authModal.classList.add('show');
+            
+            // Очищаем сохраненный username
+            localStorage.removeItem('last_username');
         }
 
         // Инициализация при загрузке страницы
@@ -1406,10 +1579,76 @@
                 tg.enableClosingConfirmation();
             }
             
-            loadGameData();
+            // Проверяем авторизацию при загрузке
+            if (!checkAuthOnLoad()) {
+                authModal.classList.add('show');
+            }
+            
+            // Обработчики авторизации
+            loginBtn.addEventListener('click', () => {
+                authModal.classList.remove('show');
+                loginModal.classList.add('show');
+            });
+            
+            registerBtn.addEventListener('click', () => {
+                authModal.classList.remove('show');
+                registerModal.classList.add('show');
+            });
+            
+            cancelLoginBtn.addEventListener('click', () => {
+                loginModal.classList.remove('show');
+                authModal.classList.add('show');
+            });
+            
+            cancelRegisterBtn.addEventListener('click', () => {
+                registerModal.classList.remove('show');
+                authModal.classList.add('show');
+            });
+            
+            confirmLoginBtn.addEventListener('click', () => {
+                const username = document.getElementById('login-username').value.trim();
+                const password = document.getElementById('login-password').value.trim();
+                
+                if (!username || !password) {
+                    showNotification('Заполните все поля');
+                    return;
+                }
+                
+                const result = loginUser(username, password);
+                if (result.success) {
+                    login(result.user);
+                } else {
+                    showNotification(result.message);
+                }
+            });
+            
+            confirmRegisterBtn.addEventListener('click', () => {
+                const username = document.getElementById('register-username').value.trim();
+                const password = document.getElementById('register-password').value.trim();
+                const confirmPassword = document.getElementById('register-confirm-password').value.trim();
+                
+                if (!username || !password || !confirmPassword) {
+                    showNotification('Заполните все поля');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showNotification('Пароли не совпадают');
+                    return;
+                }
+                
+                const result = registerUser(username, password);
+                if (result.success) {
+                    login(result.user);
+                } else {
+                    showNotification(result.message);
+                }
+            });
+            
+            logoutBtn.addEventListener('click', logout);
             
             // Обработчики нижних вкладок
-            bottomTabs.forEach(tab => {
+            document.querySelectorAll('.bottom-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabId = tab.getAttribute('data-tab');
                     switchToTab(tabId);
@@ -1438,8 +1677,11 @@
             
             confirmTransferBtn.addEventListener('click', transferNFT);
             
+            // Обработчик бонуса
+            bonusSection.addEventListener('click', claimBonus);
+            
             // Закрытие модальных окон по клику вне их
-            [nftModal, sellModal, transferModal].forEach(modal => {
+            [nftModal, sellModal, transferModal, loginModal, registerModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('show');
@@ -1449,11 +1691,11 @@
             
             if (tg) {
                 tg.onEvent('viewportChanged', function() {
-                    saveGameData();
+                    if (currentUser) saveUserData();
                 });
                 
                 window.addEventListener('beforeunload', function() {
-                    saveGameData();
+                    if (currentUser) saveUserData();
                 });
             }
         });
