@@ -183,73 +183,41 @@
             perspective: 1000px;
         }
 
-        .case {
+        .roulette-container {
+            position: relative;
             width: 200px;
             height: 200px;
             margin: 0 auto;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            overflow: hidden;
             border-radius: 20px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .roulette {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 2s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+
+        .roulette-item {
+            min-width: 200px;
+            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
-            user-select: none;
-            position: relative;
-            overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(45deg, #667eea, #764ba2);
         }
 
-        .case-image-large {
-            width: 120px;
-            height: 120px;
+        .roulette-image {
+            width: 100px;
+            height: 100px;
             border-radius: 15px;
             object-fit: cover;
         }
 
-        .case.premium-case {
-            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
-        }
-
-        .case::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s ease;
-        }
-
-        .case:hover::before {
-            animation: shine 1.5s ease;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .case:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .case.opened {
-            background: linear-gradient(45deg, #f093fb, #f5576c);
-            transform: scale(0.95);
-        }
-
-        .case.spinning {
-            animation: spin 0.1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotateY(0); }
-            100% { transform: rotateY(360deg); }
+        .roulette-item:nth-child(even) {
+            background: linear-gradient(45deg, #764ba2, #667eea);
         }
 
         .buttons {
@@ -511,43 +479,6 @@
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
         }
 
-        .roulette-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .roulette {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.1s ease-out;
-        }
-
-        .roulette-item {
-            min-width: 200px;
-            height: 200px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-        }
-
-        .roulette-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 15px;
-            object-fit: cover;
-        }
-
-        .roulette-item:nth-child(even) {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-        }
-
         .current-case-info {
             margin: 15px 0;
             padding: 15px;
@@ -562,24 +493,6 @@
             font-weight: bold;
             margin: 10px 0;
             font-size: 1.1rem;
-        }
-
-        .roulette-spin {
-            animation: rouletteSpin 3s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
-        }
-
-        @keyframes rouletteSpin {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-1800px); }
-        }
-
-        .quick-spin {
-            animation: quickSpin 1.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
-        }
-
-        @keyframes quickSpin {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-900px); }
         }
     </style>
 </head>
@@ -604,13 +517,11 @@
                 <h3>Выберите кейс</h3>
                 <div class="cases-grid">
                     <div class="case-option" data-price="100" data-type="standard">
-                        <!-- ВСТАВЬ ССЫЛКУ НА КАРТИНКУ ОБЫЧНОГО КЕЙСА -->
                         <img src="https://i.postimg.cc/Fs0tKZLR/IMG-20251129-105002.png" class="case-image" alt="Бомж Кейс">
-                        <div class="case-name">Обычный кейс</div>
+                        <div class="case-name">Бомж Кейс</div>
                         <div class="case-price">100₽</div>
                     </div>
                     <div class="case-option premium" data-price="500" data-type="premium">
-                        <!-- ВСТАВЬ ССЫЛКУ НА КАРТИНКУ ПРЕМИУМ КЕЙСА -->
                         <img src="https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp" class="case-image" alt="Премиум кейс">
                         <div class="case-name">Премиум кейс</div>
                         <div class="case-price">500₽</div>
@@ -623,7 +534,7 @@
                 <button class="btn btn-back" id="back-btn">← Назад</button>
                 
                 <div class="current-case-info" id="current-case-info">
-                    Открываете: <span id="current-case-name">Обычный кейс</span> за <span id="current-case-price">100</span>₽
+                    Открываете: <span id="current-case-name">Бомж Кейс</span> за <span id="current-case-price">100</span>₽
                 </div>
                 
                 <div class="case-container">
@@ -694,7 +605,7 @@
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // Настройки призов для обычного кейса (100₽)
+        // Настройки призов для Бомж Кейса (100₽)
         const prizesStandard = [
             { 
                 id: 1,
@@ -802,7 +713,7 @@
 
         // Переменные состояния
         let balance = 1000;
-        let isCaseOpened = false;
+        let isSpinning = false;
         let currentPrize = null;
         let currentCaseType = 'standard';
         let currentCasePrice = 100;
@@ -1028,14 +939,14 @@
         }
 
         // Функция выбора кейса
-        function selectCase(price, type, caseImage) {
+        function selectCase(price, type) {
             currentCasePrice = price;
             currentCaseType = type;
             currentPrizes = type === 'standard' ? prizesStandard : prizesPremium;
             
             casePriceElement.textContent = price;
             currentCasePriceElement.textContent = price;
-            currentCaseName.textContent = type === 'standard' ? 'Обычный кейс' : 'Премиум кейс';
+            currentCaseName.textContent = type === 'standard' ? 'Бомж Кейс' : 'Премиум Кейс';
             
             caseSelection.style.display = 'none';
             caseOpening.style.display = 'block';
@@ -1055,8 +966,8 @@
         function initRoulette() {
             rouletteElement.innerHTML = '';
             
-            // Создаем 10 элементов рулетки для анимации
-            for (let i = 0; i < 10; i++) {
+            // Создаем 15 элементов рулетки для анимации
+            for (let i = 0; i < 15; i++) {
                 const randomPrize = currentPrizes[Math.floor(Math.random() * currentPrizes.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
@@ -1075,32 +986,47 @@
             isSpinning = true;
             showLoading(true);
             
-            // Сбрасываем анимацию
-            rouletteElement.style.transform = 'translateX(0)';
-            rouletteElement.classList.remove('roulette-spin', 'quick-spin');
+            // Определяем выигрышный приз ДО анимации
+            currentPrize = getRandomPrize(currentPrizes);
+            
+            // Создаем новую рулетку с выигрышным призом в определенной позиции
+            createRouletteWithPrize(currentPrize, isQuick);
             
             // Запускаем анимацию
             setTimeout(() => {
-                if (isQuick) {
-                    rouletteElement.classList.add('quick-spin');
-                } else {
-                    rouletteElement.classList.add('roulette-spin');
-                }
+                const targetPosition = isQuick ? -1200 : -2400; // 6 элементов для быстрого, 12 для обычного
+                rouletteElement.style.transform = `translateX(${targetPosition}px)`;
+                
+                // Показываем результат после завершения анимации
+                setTimeout(() => {
+                    showResult();
+                }, isQuick ? 1200 : 2200);
             }, 100);
-            
-            // Определяем выигрыш через 2.5 секунды для обычного и 1.5 для быстрого
-            setTimeout(() => {
-                stopRoulette();
-            }, isQuick ? 1500 : 2500);
         }
 
-        // Остановка рулетки
-        function stopRoulette() {
-            currentPrize = getRandomPrize(currentPrizes);
+        // Создание рулетки с выигрышным призом в определенной позиции
+        function createRouletteWithPrize(prize, isQuick) {
+            rouletteElement.innerHTML = '';
+            const totalItems = isQuick ? 9 : 15; // Меньше элементов для быстрого открытия
+            const prizePosition = isQuick ? 6 : 12; // Позиция выигрышного приза
             
-            setTimeout(() => {
-                showResult();
-            }, 500);
+            for (let i = 0; i < totalItems; i++) {
+                const item = document.createElement('div');
+                item.className = 'roulette-item';
+                if (currentCaseType === 'premium') {
+                    item.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa36c)';
+                }
+                
+                // На позиции prizePosition ставим выигрышный приз, остальные - случайные
+                if (i === prizePosition) {
+                    item.innerHTML = `<img src="${prize.image}" class="roulette-image" alt="${prize.name}">`;
+                } else {
+                    const randomPrize = currentPrizes[Math.floor(Math.random() * currentPrizes.length)];
+                    item.innerHTML = `<img src="${randomPrize.image}" class="roulette-image" alt="${randomPrize.name}">`;
+                }
+                
+                rouletteElement.appendChild(item);
+            }
         }
 
         // Показать результат открытия
@@ -1141,11 +1067,6 @@
 
         // Функция открытия кейса
         async function openCase(isQuick = false) {
-            if (isCaseOpened && !isQuick) {
-                resetCase();
-                return;
-            }
-            
             if (balance < currentCasePrice) {
                 showNotification(`Недостаточно средств для открытия кейса! Нужно ${currentCasePrice}₽`);
                 return;
@@ -1154,13 +1075,7 @@
             balance -= currentCasePrice;
             balanceElement.textContent = `${balance}₽`;
             
-            if (!isQuick) {
-                startRoulette(false);
-                isCaseOpened = true;
-                openBtn.textContent = `Открыть снова за ${currentCasePrice}₽`;
-            } else {
-                startRoulette(true);
-            }
+            startRoulette(isQuick);
         }
 
         // Функция быстрого открытия
@@ -1176,8 +1091,6 @@
         // Функция сброса кейса
         function resetCase() {
             resultElement.innerHTML = '';
-            isCaseOpened = false;
-            openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
             updateButtonsState();
         }
 
@@ -1293,8 +1206,7 @@ ID: <code>${userId}</code>
                 option.addEventListener('click', function() {
                     const price = parseInt(this.getAttribute('data-price'));
                     const type = this.getAttribute('data-type');
-                    const caseImage = this.querySelector('.case-image').src;
-                    selectCase(price, type, caseImage);
+                    selectCase(price, type);
                 });
             });
             
@@ -1315,9 +1227,6 @@ ID: <code>${userId}</code>
                 });
             }
         });
-
-        // Переменная для анимации
-        let isSpinning = false;
     </script>
 </body>
 </html>
