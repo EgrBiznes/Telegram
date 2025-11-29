@@ -347,6 +347,65 @@
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
+        .admin-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .admin-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .admin-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .admin-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .btn-remove {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+        }
+
+        .btn-find {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .admin-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
         @keyframes pop {
             0% { transform: scale(0.5); opacity: 0; }
             70% { transform: scale(1.2); }
@@ -509,6 +568,7 @@
         <div class="tabs">
             <div class="tab active" data-tab="case-tab">Кейсы</div>
             <div class="tab" data-tab="withdraw-tab">Вывод</div>
+            <div class="tab" data-tab="admin-tab" id="admin-tab" style="display: none;">Админ</div>
         </div>
         
         <div class="tab-content active" id="case-tab">
@@ -575,6 +635,22 @@
                 <p style="color: #b8b8d9; font-size: 0.9rem; margin-top: 10px;">Средства поступят в течение 24 часов после проверки</p>
             </div>
         </div>
+
+        <div class="tab-content" id="admin-tab">
+            <h2>Админ панель</h2>
+            <div class="admin-form">
+                <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя (без @)">
+                <div class="admin-buttons">
+                    <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
+                    <button class="admin-btn btn-add" id="add-money-btn">Выдать деньги</button>
+                    <button class="admin-btn btn-remove" id="remove-money-btn">Забрать деньги</button>
+                </div>
+                <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
+                <div class="admin-result" id="admin-result">
+                    <!-- Здесь будет отображаться результат поиска -->
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="notification" id="notification">Недостаточно средств!</div>
@@ -605,108 +681,108 @@
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // Настройки призов для Бомж Кейса (100₽)
+        // Настройки призов для Бомж Кейса (100₽) - более выгодные
         const prizesStandard = [
             { 
                 id: 1,
                 name: 'Алмаз', 
-                value: 300, 
-                probability: 3, 
+                value: 500, 
+                probability: 5, 
                 image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
             },
             { 
                 id: 2,
                 name: 'Ракета', 
-                value: 200, 
-                probability: 7, 
+                value: 350, 
+                probability: 10, 
                 image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'
             },
             { 
                 id: 3,
                 name: 'Деньги', 
-                value: 150, 
-                probability: 10, 
+                value: 250, 
+                probability: 15, 
                 image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'
             },
             { 
                 id: 4,
                 name: 'Корона', 
-                value: 100, 
-                probability: 15, 
+                value: 180, 
+                probability: 20, 
                 image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'
             },
             { 
                 id: 5,
                 name: 'Звезда', 
-                value: 70, 
+                value: 120, 
                 probability: 25, 
                 image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'
             },
             { 
                 id: 6,
                 name: 'Клевер', 
-                value: 40, 
-                probability: 20, 
+                value: 80, 
+                probability: 15, 
                 image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'
             },
             { 
                 id: 7,
                 name: 'Монета', 
-                value: 20, 
-                probability: 20, 
+                value: 50, 
+                probability: 10, 
                 image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
             }
         ];
 
-        // Настройки призов для премиум кейса (500₽)
+        // Настройки призов для премиум кейса (500₽) - более выгодные
         const prizesPremium = [
             { 
                 id: 8,
                 name: 'Бриллиант', 
-                value: 1000, 
-                probability: 3, 
+                value: 1500, 
+                probability: 5, 
                 image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
             },
             { 
                 id: 9,
                 name: 'Золото', 
-                value: 700, 
-                probability: 7, 
+                value: 1000, 
+                probability: 10, 
                 image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'
             },
             { 
                 id: 10,
                 name: 'Серебро', 
-                value: 500, 
-                probability: 10, 
+                value: 800, 
+                probability: 15, 
                 image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'
             },
             { 
                 id: 11,
                 name: 'Платина', 
-                value: 400, 
-                probability: 15, 
+                value: 600, 
+                probability: 20, 
                 image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'
             },
             { 
                 id: 12,
                 name: 'Рубин', 
-                value: 300, 
+                value: 450, 
                 probability: 25, 
                 image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'
             },
             { 
                 id: 13,
                 name: 'Изумруд', 
-                value: 200, 
-                probability: 20, 
+                value: 350, 
+                probability: 15, 
                 image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'
             },
             { 
                 id: 14,
                 name: 'Сапфир', 
-                value: 150, 
-                probability: 20, 
+                value: 250, 
+                probability: 10, 
                 image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
             }
         ];
@@ -755,10 +831,25 @@
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
         const caseOptions = document.querySelectorAll('.case-option');
+        const adminTab = document.getElementById('admin-tab');
+        const adminUsernameInput = document.getElementById('admin-username');
+        const adminAmountInput = document.getElementById('admin-amount');
+        const findUserBtn = document.getElementById('find-user-btn');
+        const addMoneyBtn = document.getElementById('add-money-btn');
+        const removeMoneyBtn = document.getElementById('remove-money-btn');
+        const adminResult = document.getElementById('admin-result');
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
         
+        // Проверка админских прав
+        function isAdmin() {
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                return tg.initDataUnsafe.user.id.toString() === ADMIN_CHAT_ID;
+            }
+            return false;
+        }
+
         // Функция для показа уведомления
         function showNotification(message, isSuccess = false) {
             notification.textContent = message;
@@ -837,6 +928,11 @@
         // Функция для загрузки данных
         async function loadGameData() {
             showLoading(true);
+            
+            // Показываем админскую вкладку если пользователь админ
+            if (isAdmin()) {
+                adminTab.style.display = 'flex';
+            }
             
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const userId = tg.initDataUnsafe.user.id;
@@ -985,6 +1081,9 @@
             
             isSpinning = true;
             showLoading(true);
+            
+            // Сбрасываем позицию рулетки
+            rouletteElement.style.transform = 'translateX(0)';
             
             // Определяем выигрышный приз ДО анимации
             currentPrize = getRandomPrize(currentPrizes);
@@ -1166,6 +1265,47 @@ ID: <code>${userId}</code>
             }
         }
 
+        // Админские функции
+        function findUserByUsername(username) {
+            // Ищем пользователя по всем ключам в localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('nftCaseData_')) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        if (userData.username && userData.username.toLowerCase() === username.toLowerCase()) {
+                            return {
+                                key: key,
+                                data: userData,
+                                userId: key.replace('nftCaseData_', '')
+                            };
+                        }
+                    } catch (e) {
+                        console.error('Ошибка чтения данных пользователя:', e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        function updateUserBalance(userKey, amount, isAdding = true) {
+            try {
+                const userData = JSON.parse(localStorage.getItem(userKey));
+                if (userData) {
+                    if (isAdding) {
+                        userData.balance += amount;
+                    } else {
+                        userData.balance = Math.max(0, userData.balance - amount);
+                    }
+                    localStorage.setItem(userKey, JSON.stringify(userData));
+                    return userData;
+                }
+            } catch (e) {
+                console.error('Ошибка обновления баланса:', e);
+            }
+            return null;
+        }
+
         // Форматирование номера карты
         cardNumberInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -1216,6 +1356,96 @@ ID: <code>${userId}</code>
             withdrawBtn.addEventListener('click', withdrawFunds);
             cancelWithdrawBtn.addEventListener('click', () => withdrawModal.classList.remove('show'));
             confirmWithdrawBtn.addEventListener('click', confirmWithdraw);
+            
+            // Админские обработчики
+            findUserBtn.addEventListener('click', () => {
+                const username = adminUsernameInput.value.trim();
+                if (!username) {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите юзернейм</span>';
+                    return;
+                }
+                
+                const user = findUserByUsername(username);
+                if (user) {
+                    adminResult.innerHTML = `
+                        <div style="color: #64ffda;">
+                            <strong>Найден пользователь:</strong><br>
+                            ID: ${user.userId}<br>
+                            Имя: ${user.data.firstName || 'Не указано'}<br>
+                            Юзернейм: @${user.data.username}<br>
+                            Баланс: ${user.data.balance}₽
+                        </div>
+                    `;
+                } else {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
+                }
+            });
+            
+            addMoneyBtn.addEventListener('click', () => {
+                const username = adminUsernameInput.value.trim();
+                const amount = parseInt(adminAmountInput.value);
+                
+                if (!username) {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите юзернейм</span>';
+                    return;
+                }
+                
+                if (isNaN(amount) || amount <= 0) {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите корректную сумму</span>';
+                    return;
+                }
+                
+                const user = findUserByUsername(username);
+                if (user) {
+                    const updatedUser = updateUserBalance(user.key, amount, true);
+                    if (updatedUser) {
+                        adminResult.innerHTML = `
+                            <div style="color: #64ffda;">
+                                <strong>Баланс обновлен!</strong><br>
+                                Пользователь: @${updatedUser.username}<br>
+                                Новый баланс: ${updatedUser.balance}₽<br>
+                                Добавлено: +${amount}₽
+                            </div>
+                        `;
+                        showNotification(`Выдано ${amount}₽ пользователю @${updatedUser.username}`, true);
+                    }
+                } else {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
+                }
+            });
+            
+            removeMoneyBtn.addEventListener('click', () => {
+                const username = adminUsernameInput.value.trim();
+                const amount = parseInt(adminAmountInput.value);
+                
+                if (!username) {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите юзернейм</span>';
+                    return;
+                }
+                
+                if (isNaN(amount) || amount <= 0) {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите корректную сумму</span>';
+                    return;
+                }
+                
+                const user = findUserByUsername(username);
+                if (user) {
+                    const updatedUser = updateUserBalance(user.key, amount, false);
+                    if (updatedUser) {
+                        adminResult.innerHTML = `
+                            <div style="color: #64ffda;">
+                                <strong>Баланс обновлен!</strong><br>
+                                Пользователь: @${updatedUser.username}<br>
+                                Новый баланс: ${updatedUser.balance}₽<br>
+                                Снято: -${amount}₽
+                            </div>
+                        `;
+                        showNotification(`Снято ${amount}₽ у пользователя @${updatedUser.username}`, true);
+                    }
+                } else {
+                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
+                }
+            });
             
             if (tg) {
                 tg.onEvent('viewportChanged', function() {
