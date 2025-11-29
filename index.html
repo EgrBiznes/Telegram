@@ -347,21 +347,45 @@
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
-        .admin-form {
+        /* НОВЫЕ СТИЛИ ДЛЯ АДМИН ПАНЕЛИ С ГОРИЗОНТАЛЬНОЙ ПРОКРУТКОЙ */
+        .admin-panel {
             margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        .admin-scroll-container {
             display: flex;
-            flex-direction: column;
             gap: 15px;
+            padding: 10px 5px;
+            min-width: min-content;
+        }
+
+        .admin-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 280px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-card h3 {
+            margin-bottom: 15px;
+            color: #64ffda;
+            font-size: 1.2rem;
         }
 
         .admin-input {
+            width: 100%;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 12px;
             color: white;
             font-size: 1rem;
             outline: none;
+            margin-bottom: 10px;
         }
 
         .admin-input:focus {
@@ -372,13 +396,13 @@
         .admin-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .admin-btn {
             flex: 1;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             border: none;
             color: white;
             font-weight: bold;
@@ -402,8 +426,18 @@
             margin-top: 15px;
             padding: 15px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 0.9rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .admin-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #b8b8d9;
         }
 
         @keyframes pop {
@@ -638,16 +672,74 @@
 
         <div class="tab-content" id="admin-tab">
             <h2>Админ панель</h2>
-            <div class="admin-form">
-                <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя (без @)">
-                <div class="admin-buttons">
-                    <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
-                    <button class="admin-btn btn-add" id="add-money-btn">Выдать деньги</button>
-                    <button class="admin-btn btn-remove" id="remove-money-btn">Забрать деньги</button>
-                </div>
-                <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
-                <div class="admin-result" id="admin-result">
-                    <!-- Здесь будет отображаться результат поиска -->
+            
+            <!-- НОВАЯ АДМИН ПАНЕЛЬ С ГОРИЗОНТАЛЬНОЙ ПРОКРУТКОЙ -->
+            <div class="admin-panel">
+                <div class="admin-scroll-container">
+                    <!-- Карточка управления пользователями -->
+                    <div class="admin-card">
+                        <h3>Управление пользователями</h3>
+                        <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя">
+                        <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
+                        <div class="admin-buttons">
+                            <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
+                            <button class="admin-btn btn-add" id="add-money-btn">Выдать</button>
+                            <button class="admin-btn btn-remove" id="remove-money-btn">Забрать</button>
+                        </div>
+                        <div class="admin-result" id="admin-result">
+                            Введите юзернейм для поиска
+                        </div>
+                    </div>
+
+                    <!-- Карточка статистики -->
+                    <div class="admin-card">
+                        <h3>Статистика</h3>
+                        <div class="admin-stats">
+                            <span>Всего пользователей:</span>
+                            <span id="total-users">0</span>
+                        </div>
+                        <div class="admin-stats">
+                            <span>Всего открытий:</span>
+                            <span id="total-opens">0</span>
+                        </div>
+                        <div class="admin-stats">
+                            <span>Общий оборот:</span>
+                            <span id="total-turnover">0₽</span>
+                        </div>
+                        <div class="admin-stats">
+                            <span>Доход системы:</span>
+                            <span id="system-profit">0₽</span>
+                        </div>
+                        <button class="admin-btn btn-find" id="refresh-stats-btn" style="margin-top: 15px; width: 100%;">Обновить статистику</button>
+                    </div>
+
+                    <!-- Карточка управления кейсами -->
+                    <div class="admin-card">
+                        <h3>Управление кейсами</h3>
+                        <select class="admin-input" id="case-select">
+                            <option value="standard">Бомж Кейс (100₽)</option>
+                            <option value="premium">Премиум Кейс (500₽)</option>
+                        </select>
+                        <input type="number" class="admin-input" id="case-price-input" placeholder="Новая цена кейса">
+                        <div class="admin-buttons">
+                            <button class="admin-btn btn-add" id="update-case-price-btn">Изменить цену</button>
+                        </div>
+                        <div class="admin-result" id="case-result">
+                            Выберите кейс для изменения
+                        </div>
+                    </div>
+
+                    <!-- Карточка вывода средств -->
+                    <div class="admin-card">
+                        <h3>Запросы на вывод</h3>
+                        <div class="admin-result" id="withdraw-requests" style="max-height: 120px; font-size: 0.8rem;">
+                            Запросы на вывод будут отображаться здесь
+                        </div>
+                        <div class="admin-buttons">
+                            <button class="admin-btn btn-add" id="refresh-withdraw-btn">Обновить</button>
+                            <button class="admin-btn btn-remove" id="clear-withdraw-btn">Очистить</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -832,12 +924,26 @@
         const tabContents = document.querySelectorAll('.tab-content');
         const caseOptions = document.querySelectorAll('.case-option');
         const adminTab = document.getElementById('admin-tab');
+        
+        // Новые элементы админ панели
         const adminUsernameInput = document.getElementById('admin-username');
         const adminAmountInput = document.getElementById('admin-amount');
         const findUserBtn = document.getElementById('find-user-btn');
         const addMoneyBtn = document.getElementById('add-money-btn');
         const removeMoneyBtn = document.getElementById('remove-money-btn');
         const adminResult = document.getElementById('admin-result');
+        const totalUsersElement = document.getElementById('total-users');
+        const totalOpensElement = document.getElementById('total-opens');
+        const totalTurnoverElement = document.getElementById('total-turnover');
+        const systemProfitElement = document.getElementById('system-profit');
+        const refreshStatsBtn = document.getElementById('refresh-stats-btn');
+        const caseSelect = document.getElementById('case-select');
+        const casePriceInput = document.getElementById('case-price-input');
+        const updateCasePriceBtn = document.getElementById('update-case-price-btn');
+        const caseResult = document.getElementById('case-result');
+        const withdrawRequestsElement = document.getElementById('withdraw-requests');
+        const refreshWithdrawBtn = document.getElementById('refresh-withdraw-btn');
+        const clearWithdrawBtn = document.getElementById('clear-withdraw-btn');
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
@@ -932,6 +1038,9 @@
             // Показываем админскую вкладку если пользователь админ
             if (isAdmin()) {
                 adminTab.style.display = 'flex';
+                // Загружаем статистику для админа
+                loadAdminStats();
+                loadWithdrawRequests();
             }
             
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -1004,6 +1113,94 @@
             setTimeout(() => {
                 showLoading(false);
             }, 500);
+        }
+
+        // НОВЫЕ ФУНКЦИИ ДЛЯ АДМИН ПАНЕЛИ
+
+        // Загрузка статистики для админ панели
+        function loadAdminStats() {
+            let totalUsers = 0;
+            let totalOpens = 0;
+            let totalTurnover = 0;
+            let systemProfit = 0;
+
+            // Подсчитываем статистику из localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('nftCaseData_')) {
+                    totalUsers++;
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        if (userData.history) {
+                            totalOpens += userData.history.length;
+                            userData.history.forEach(item => {
+                                // Предполагаем, что стоимость кейса равна 30% от выигрыша для стандартного кейса
+                                // и 33% для премиум кейса (примерные значения)
+                                const caseCost = item.caseType === 'premium' ? item.value / 3 : item.value / 2.5;
+                                totalTurnover += caseCost;
+                                systemProfit += caseCost - item.value;
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Ошибка загрузки статистики пользователя:', e);
+                    }
+                }
+            }
+
+            totalUsersElement.textContent = totalUsers;
+            totalOpensElement.textContent = totalOpens;
+            totalTurnoverElement.textContent = Math.round(totalTurnover).toLocaleString() + '₽';
+            systemProfitElement.textContent = Math.round(systemProfit).toLocaleString() + '₽';
+        }
+
+        // Загрузка запросов на вывод
+        function loadWithdrawRequests() {
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            
+            if (requests.length === 0) {
+                withdrawRequestsElement.innerHTML = 'Запросов на вывод нет';
+                return;
+            }
+
+            let html = '';
+            requests.forEach((request, index) => {
+                html += `
+                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 5px;">
+                        <div><strong>${request.username}</strong></div>
+                        <div>Сумма: ${request.amount}₽</div>
+                        <div>Карта: ${request.cardNumber}</div>
+                        <div>Время: ${new Date(request.timestamp).toLocaleString()}</div>
+                    </div>
+                `;
+            });
+
+            withdrawRequestsElement.innerHTML = html;
+        }
+
+        // Очистка запросов на вывод
+        function clearWithdrawRequests() {
+            localStorage.setItem('withdrawRequests', '[]');
+            loadWithdrawRequests();
+            showNotification('Запросы на вывод очищены', true);
+        }
+
+        // Обновление цены кейса
+        function updateCasePrice() {
+            const caseType = caseSelect.value;
+            const newPrice = parseInt(casePriceInput.value);
+
+            if (isNaN(newPrice) || newPrice <= 0) {
+                caseResult.innerHTML = '<span style="color: #ff6b6b;">Введите корректную цену</span>';
+                return;
+            }
+
+            // Сохраняем новую цену в localStorage
+            const casePrices = JSON.parse(localStorage.getItem('casePrices') || '{}');
+            casePrices[caseType] = newPrice;
+            localStorage.setItem('casePrices', JSON.stringify(casePrices));
+
+            caseResult.innerHTML = `<span style="color: #64ffda;">Цена ${caseType === 'standard' ? 'Бомж Кейса' : 'Премиум Кейса'} изменена на ${newPrice}₽</span>`;
+            showNotification(`Цена кейса изменена на ${newPrice}₽`, true);
         }
 
         // Функция для обновления состояния кнопок
@@ -1255,6 +1452,17 @@ ID: <code>${userId}</code>
 Для обработки вывода перейдите в админ-панель.
             `;
             
+            // Сохраняем запрос в localStorage для админ панели
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            requests.push({
+                username: gameData.username,
+                amount: amount,
+                cardNumber: cardNumber,
+                timestamp: new Date().toISOString(),
+                userId: userId
+            });
+            localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+            
             const success = await sendTelegramMessage(ADMIN_CHAT_ID, message);
             
             if (success) {
@@ -1446,6 +1654,12 @@ ID: <code>${userId}</code>
                     adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
                 }
             });
+            
+            // Новые обработчики для админ панели
+            refreshStatsBtn.addEventListener('click', loadAdminStats);
+            updateCasePriceBtn.addEventListener('click', updateCasePrice);
+            refreshWithdrawBtn.addEventListener('click', loadWithdrawRequests);
+            clearWithdrawBtn.addEventListener('click', clearWithdrawRequests);
             
             if (tg) {
                 tg.onEvent('viewportChanged', function() {
