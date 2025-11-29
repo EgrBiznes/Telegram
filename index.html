@@ -411,9 +411,37 @@
             position: relative;
         }
 
-        .modal-title {
-            font-size: 1.5rem;
+        .modal-header {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            flex: 1;
+            font-size: 1.5rem;
+            margin-bottom: 0;
             color: #ffde7d;
         }
 
@@ -702,11 +730,13 @@
     <!-- Модальное окно входа -->
     <div class="modal" id="login-modal">
         <div class="modal-content">
-            <div class="modal-title">Вход в аккаунт</div>
+            <div class="modal-header">
+                <button class="back-button" id="back-from-login-btn">←</button>
+                <div class="modal-title">Вход в аккаунт</div>
+            </div>
             <input type="text" class="modal-input" id="login-username" placeholder="Имя пользователя">
             <input type="password" class="modal-input" id="login-password" placeholder="Пароль">
             <div class="modal-buttons">
-                <button class="modal-btn cancel" id="cancel-login-btn">Назад</button>
                 <button class="modal-btn confirm" id="confirm-login-btn">Войти</button>
             </div>
         </div>
@@ -715,12 +745,14 @@
     <!-- Модальное окно регистрации -->
     <div class="modal" id="register-modal">
         <div class="modal-content">
-            <div class="modal-title">Регистрация аккаунта</div>
+            <div class="modal-header">
+                <button class="back-button" id="back-from-register-btn">←</button>
+                <div class="modal-title">Регистрация аккаунта</div>
+            </div>
             <input type="text" class="modal-input" id="register-username" placeholder="Имя пользователя">
             <input type="password" class="modal-input" id="register-password" placeholder="Пароль">
             <input type="password" class="modal-input" id="register-confirm-password" placeholder="Подтвердите пароль">
             <div class="modal-buttons">
-                <button class="modal-btn cancel" id="cancel-register-btn">Назад</button>
                 <button class="modal-btn confirm" id="confirm-register-btn">Зарегистрироваться</button>
             </div>
         </div>
@@ -953,11 +985,10 @@
                 rarity: "common", 
                 chance: 40, 
                 image: "https://i.postimg.cc/Fs0tKZLR/IMG-20251129-105002.png"
-            },
-            // ДОБАВЛЯЙТЕ СВОИ МОДЕЛИ ЗДЕСЬ
+            }
         ];
 
-        // ФОНЫ NFT (с шансами выпадения) - теперь используем ссылки на изображения
+        // ФОНЫ NFT (с шансами выпадения)
         const backgrounds = [
             { 
                 id: 1, 
@@ -993,8 +1024,7 @@
                 rarity: "common", 
                 chance: 45, 
                 image: "https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp"
-            },
-            // ДОБАВЛЯЙТЕ СВОИ ФОНЫ ЗДЕСЬ (ссылки на изображения)
+            }
         ];
 
         // ========== КОНЕЦ ОБЛАСТИ ДЛЯ ДОБАВЛЕНИЯ МОДЕЛЕЙ И ФОНОВ ==========
@@ -1047,9 +1077,9 @@
         const settingsLogoutBtn = document.getElementById('settings-logout-btn');
         const loginBtn = document.getElementById('login-btn');
         const registerBtn = document.getElementById('register-btn');
-        const cancelLoginBtn = document.getElementById('cancel-login-btn');
+        const backFromLoginBtn = document.getElementById('back-from-login-btn');
+        const backFromRegisterBtn = document.getElementById('back-from-register-btn');
         const confirmLoginBtn = document.getElementById('confirm-login-btn');
-        const cancelRegisterBtn = document.getElementById('cancel-register-btn');
         const confirmRegisterBtn = document.getElementById('confirm-register-btn');
         const balanceElement = document.getElementById('balance');
         const createNftBtn = document.getElementById('create-nft-btn');
@@ -1141,12 +1171,16 @@
         // Функция проверки авторизации при загрузке
         function checkAuthOnLoad() {
             const lastUsername = localStorage.getItem('last_username');
+            console.log('Попытка авторизации для пользователя:', lastUsername);
+            
             if (lastUsername) {
                 const userData = loadUserData(lastUsername);
                 if (userData) {
                     // Входим автоматически
                     currentUser = userData;
-                    balance = userData.balance;
+                    balance = userData.balance || 50000;
+                    
+                    console.log('Автоматический вход успешен:', userData.username);
                     
                     // Обновляем интерфейс
                     currentUsername.textContent = userData.username;
@@ -1161,7 +1195,11 @@
                     mainApp.style.display = 'block';
                     bottomTabs.style.display = 'flex';
                     return true;
+                } else {
+                    console.log('Данные пользователя не найдены');
                 }
+            } else {
+                console.log('Нет сохраненного пользователя');
             }
             return false;
         }
@@ -1600,7 +1638,9 @@
         // Функция входа пользователя
         function login(user) {
             currentUser = user;
-            balance = user.balance;
+            balance = user.balance || 50000;
+            
+            console.log('Вход выполнен:', user.username);
             
             // Обновляем интерфейс
             currentUsername.textContent = user.username;
@@ -1654,10 +1694,31 @@
                 tg.enableClosingConfirmation();
             }
             
+            console.log('Загрузка приложения...');
+            
             // Проверяем авторизацию при загрузке
             if (!checkAuthOnLoad()) {
+                console.log('Показываем окно авторизации');
                 authModal.classList.add('show');
             }
+            
+            // Обработчики кнопок "Назад"
+            backFromLoginBtn.addEventListener('click', () => {
+                loginModal.classList.remove('show');
+                authModal.classList.add('show');
+                // Очищаем поля
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+            });
+            
+            backFromRegisterBtn.addEventListener('click', () => {
+                registerModal.classList.remove('show');
+                authModal.classList.add('show');
+                // Очищаем поля
+                document.getElementById('register-username').value = '';
+                document.getElementById('register-password').value = '';
+                document.getElementById('register-confirm-password').value = '';
+            });
             
             // Обработчики авторизации
             loginBtn.addEventListener('click', () => {
@@ -1668,16 +1729,6 @@
             registerBtn.addEventListener('click', () => {
                 authModal.classList.remove('show');
                 registerModal.classList.add('show');
-            });
-            
-            cancelLoginBtn.addEventListener('click', () => {
-                loginModal.classList.remove('show');
-                authModal.classList.add('show');
-            });
-            
-            cancelRegisterBtn.addEventListener('click', () => {
-                registerModal.classList.remove('show');
-                authModal.classList.add('show');
             });
             
             confirmLoginBtn.addEventListener('click', () => {
@@ -1709,6 +1760,16 @@
                 
                 if (password !== confirmPassword) {
                     showNotification('Пароли не совпадают');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    showNotification('Имя пользователя должно быть не менее 3 символов');
+                    return;
+                }
+                
+                if (password.length < 4) {
+                    showNotification('Пароль должен быть не менее 4 символов');
                     return;
                 }
                 
@@ -1766,7 +1827,7 @@
             bonusSection.addEventListener('click', claimBonus);
             
             // Закрытие модальных окон по клику вне их
-            [nftModal, sellModal, transferModal, loginModal, registerModal, settingsModal].forEach(modal => {
+            [nftModal, sellModal, transferModal, loginModal, registerModal, settingsModal, authModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('show');
@@ -1786,4 +1847,4 @@
         });
     </script>
 </body>
-                                                                      </html>
+                </html>
