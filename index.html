@@ -112,46 +112,70 @@
         .cases-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 20px;
             margin: 25px 0;
         }
 
         .case-option {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border-radius: 15px;
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+            padding: 25px 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid transparent;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .case-option.premium::before {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
         }
 
         .case-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .case-option.premium {
-            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+        .case-image {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .case-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
         }
 
         .case-price {
             font-size: 1.8rem;
             font-weight: bold;
-            margin-bottom: 10px;
             color: #ffde7d;
-        }
-
-        .case-name {
-            font-size: 1.1rem;
-            color: white;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
 
         .case-rewards {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #b8b8d9;
+            opacity: 0.8;
         }
 
         .case-container {
@@ -169,13 +193,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 90px;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
             user-select: none;
             position: relative;
             overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .case-image-large {
+            width: 140px;
+            height: 140px;
+            border-radius: 15px;
+            object-fit: cover;
         }
 
         .case.premium-case {
@@ -234,7 +265,7 @@
             color: white;
             border: none;
             padding: 15px 25px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
@@ -281,6 +312,8 @@
             animation: pop 0.5s ease;
             border-radius: 15px;
             object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.1);
         }
 
         .prize-value {
@@ -295,7 +328,7 @@
             max-height: 150px;
             overflow-y: auto;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 15px;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
         }
@@ -331,7 +364,7 @@
         .withdraw-input {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             color: white;
             font-size: 1.1rem;
@@ -353,19 +386,6 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .shake {
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(-10px); }
-            40% { transform: translateX(10px); }
-            60% { transform: translateX(-10px); }
-            80% { transform: translateX(10px); }
-            100% { transform: translateX(0); }
-        }
-
         .notification {
             position: fixed;
             top: 20px;
@@ -374,7 +394,7 @@
             background: #f5576c;
             color: white;
             padding: 15px 25px;
-            border-radius: 10px;
+            border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             z-index: 100;
             opacity: 0;
@@ -481,7 +501,7 @@
             padding: 12px 15px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            border-radius: 12px;
             color: white;
             font-size: 1rem;
             outline: none;
@@ -531,10 +551,10 @@
 
         .current-case-info {
             margin: 15px 0;
-            padding: 10px;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            font-size: 0.9rem;
+            border-radius: 15px;
+            font-size: 1rem;
             color: #b8b8d9;
         }
         
@@ -542,6 +562,7 @@
             color: #ff6b6b;
             font-weight: bold;
             margin: 10px 0;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -566,13 +587,17 @@
                 <h3>Выберите кейс</h3>
                 <div class="cases-grid">
                     <div class="case-option" data-price="100" data-type="standard">
-                        <div class="case-price">100₽</div>
+                        <!-- ВСТАВЬ ССЫЛКУ НА КАРТИНКУ ОБЫЧНОГО КЕЙСА -->
+                        <img src="https://i.postimg.cc/wvTVb8J1/Excalibrite.webp" class="case-image" alt="Обычный кейс">
                         <div class="case-name">Обычный кейс</div>
+                        <div class="case-price">100₽</div>
                         <div class="case-rewards">Выигрыши: 10-300₽</div>
                     </div>
                     <div class="case-option premium" data-price="500" data-type="premium">
-                        <div class="case-price">500₽</div>
+                        <!-- ВСТАВЬ ССЫЛКУ НА КАРТИНКУ ПРЕМИУМ КЕЙСА -->
+                        <img src="https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp" class="case-image" alt="Премиум кейс">
                         <div class="case-name">Премиум кейс</div>
+                        <div class="case-price">500₽</div>
                         <div class="case-rewards">Выигрыши: 100-1000₽</div>
                     </div>
                 </div>
@@ -580,17 +605,16 @@
             
             <!-- Открытие кейса -->
             <div id="case-opening" style="display: none;">
-                <button class="btn btn-back" id="back-btn">← Назад к выбору</button>
+                <button class="btn btn-back" id="back-btn">← Назад</button>
                 
                 <div class="current-case-info" id="current-case-info">
                     Открываете: <span id="current-case-name">Обычный кейс</span> за <span id="current-case-price">100</span>₽
                 </div>
                 
                 <div class="case-container">
-                    <div class="roulette-container" id="roulette-container">
-                        <div class="roulette" id="roulette">
-                            <!-- Рулетка будет генерироваться динамически -->
-                        </div>
+                    <div class="case" id="main-case">
+                        <!-- Картинка для анимированного кейса -->
+                        <img src="https://i.postimg.cc/wvTVb8J1/Excalibrite.webp" class="case-image-large" id="case-main-image" alt="Кейс">
                     </div>
                 </div>
                 
@@ -783,8 +807,8 @@
         const currentCaseInfo = document.getElementById('current-case-info');
         const currentCaseName = document.getElementById('current-case-name');
         const currentCasePriceElement = document.getElementById('current-case-price');
-        const rouletteContainer = document.getElementById('roulette-container');
-        const rouletteElement = document.getElementById('roulette');
+        const mainCase = document.getElementById('main-case');
+        const caseMainImage = document.getElementById('case-main-image');
         const openBtn = document.getElementById('open-btn');
         const casePriceElement = document.getElementById('case-price');
         const quickOpenBtn = document.getElementById('quick-open-btn');
@@ -1008,7 +1032,7 @@
         }
 
         // Функция выбора кейса
-        function selectCase(price, type) {
+        function selectCase(price, type, caseImage) {
             currentCasePrice = price;
             currentCaseType = type;
             currentPrizes = type === 'standard' ? prizesStandard : prizesPremium;
@@ -1018,12 +1042,19 @@
             currentCasePriceElement.textContent = price;
             currentCaseName.textContent = type === 'standard' ? 'Обычный кейс' : 'Премиум кейс';
             
+            // Обновляем изображение кейса
+            caseMainImage.src = caseImage;
+            
+            // Обновляем класс для премиум кейса
+            if (type === 'premium') {
+                mainCase.classList.add('premium-case');
+            } else {
+                mainCase.classList.remove('premium-case');
+            }
+            
             // Показываем экран открытия
             caseSelection.style.display = 'none';
             caseOpening.style.display = 'block';
-            
-            // Инициализируем рулетку
-            initRoulette();
             
             // Обновляем состояние кнопок
             updateButtonsState();
@@ -1036,74 +1067,83 @@
             resetCase();
         }
 
-        // Инициализация рулетки
-        function initRoulette() {
-            rouletteElement.innerHTML = '';
-            rouletteItems = [];
+        // Функция сброса кейса
+        function resetCase() {
+            resultElement.innerHTML = '';
+            isCaseOpened = false;
+            openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
             
-            // Создаем элементы рулетки (повторяем призы несколько раз для эффекта бесконечности)
-            for (let i = 0; i < 20; i++) {
-                const randomPrize = currentPrizes[Math.floor(Math.random() * currentPrizes.length)];
-                const item = document.createElement('div');
-                item.className = 'roulette-item';
-                if (currentCaseType === 'premium') {
-                    item.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa36c)';
-                }
-                item.innerHTML = `<img src="${randomPrize.image}" class="roulette-image" alt="${randomPrize.name}">`;
-                rouletteElement.appendChild(item);
-                rouletteItems.push(randomPrize);
+            // Обновляем состояние кнопки
+            updateButtonsState();
+        }
+
+        // Функция открытия кейса
+        async function openCase(isQuick = false) {
+            if (isCaseOpened && !isQuick) {
+                resetCase();
+                return;
             }
             
-            currentPosition = 0;
-            updateRoulettePosition();
-        }
-
-        // Обновление позиции рулетки
-        function updateRoulettePosition() {
-            rouletteElement.style.transform = `translateX(-${currentPosition * 220}px)`;
-        }
-
-        // Запуск анимации рулетки
-        function startRoulette() {
-            if (isSpinning) return;
+            if (balance < currentCasePrice) {
+                showNotification(`Недостаточно средств для открытия кейса! Нужно ${currentCasePrice}₽`);
+                return;
+            }
             
-            isSpinning = true;
-            let speed = 10;
-            let duration = 0;
-            const maxDuration = 2000; // 2 секунды
+            // Снимаем деньги
+            balance -= currentCasePrice;
+            balanceElement.textContent = `${balance}₽`;
             
-            spinInterval = setInterval(() => {
-                currentPosition++;
-                if (currentPosition >= rouletteItems.length) {
-                    currentPosition = 0;
-                }
-                updateRoulettePosition();
+            if (!isQuick) {
+                // Долгое открытие с анимацией рулетки
+                showLoading(true);
                 
-                // Замедляем рулетку со временем
-                duration += speed;
-                if (duration > maxDuration / 2) {
-                    speed += 0.5;
-                }
+                // Обновляем состояние
+                isCaseOpened = true;
+                openBtn.textContent = `Открыть снова за ${currentCasePrice}₽`;
                 
-                if (duration >= maxDuration) {
-                    stopRoulette();
-                }
-            }, 30);
-        }
-
-        // Остановка рулетки
-        function stopRoulette() {
-            clearInterval(spinInterval);
-            isSpinning = false;
-            
-            // Определяем выигрышный элемент
-            const winningIndex = currentPosition;
-            currentPrize = rouletteItems[winningIndex];
-            
-            // Показываем результат
-            setTimeout(() => {
-                showResult();
-            }, 500);
+                // Имитация анимации открытия
+                setTimeout(() => {
+                    currentPrize = getRandomPrize(currentPrizes);
+                    showResult();
+                }, 2000);
+            } else {
+                // Быстрое открытие без анимации
+                currentPrize = getRandomPrize(currentPrizes);
+                
+                // Показываем результат в уведомлении
+                showNotification(`Быстрое открытие: ${currentPrize.name} +${currentPrize.value}₽`, true);
+                
+                // Добавляем выигрыш к балансу
+                balance += currentPrize.value;
+                balanceElement.textContent = `${balance}₽`;
+                
+                // Добавляем в историю
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <img src="${currentPrize.image}" class="history-prize" alt="${currentPrize.name}">
+                        <span style="margin-left: 10px;">${currentPrize.name}</span>
+                    </div>
+                    <span>+${currentPrize.value}₽</span>
+                `;
+                historyList.prepend(historyItem);
+                
+                // Сохраняем в историю данных
+                gameData.history.push({
+                    image: currentPrize.image,
+                    value: currentPrize.value,
+                    name: currentPrize.name,
+                    timestamp: new Date().toISOString(),
+                    caseType: currentCaseType
+                });
+                
+                // Сохраняем данные
+                await saveGameData();
+                
+                // Обновляем состояние кнопки
+                updateButtonsState();
+            }
         }
 
         // Показать результат открытия
@@ -1150,70 +1190,6 @@
             showLoading(false);
         }
 
-        // Функция открытия кейса
-        async function openCase(isQuick = false) {
-            if (isCaseOpened && !isQuick) {
-                resetCase();
-                return;
-            }
-            
-            if (balance < currentCasePrice) {
-                showNotification(`Недостаточно средств для открытия кейса! Нужно ${currentCasePrice}₽`);
-                return;
-            }
-            
-            // Снимаем деньги
-            balance -= currentCasePrice;
-            balanceElement.textContent = `${balance}₽`;
-            
-            if (!isQuick) {
-                // Долгое открытие с анимацией рулетки
-                showLoading(true);
-                startRoulette();
-                
-                // Обновляем состояние
-                isCaseOpened = true;
-                openBtn.textContent = `Открыть снова за ${currentCasePrice}₽`;
-            } else {
-                // Быстрое открытие без анимации
-                currentPrize = getRandomPrize(currentPrizes);
-                
-                // Показываем результат в уведомлении
-                showNotification(`Быстрое открытие: ${currentPrize.name} +${currentPrize.value}₽`, true);
-                
-                // Добавляем выигрыш к балансу
-                balance += currentPrize.value;
-                balanceElement.textContent = `${balance}₽`;
-                
-                // Добавляем в историю
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                historyItem.innerHTML = `
-                    <div style="display: flex; align-items: center;">
-                        <img src="${currentPrize.image}" class="history-prize" alt="${currentPrize.name}">
-                        <span style="margin-left: 10px;">${currentPrize.name}</span>
-                    </div>
-                    <span>+${currentPrize.value}₽</span>
-                `;
-                historyList.prepend(historyItem);
-                
-                // Сохраняем в историю данных
-                gameData.history.push({
-                    image: currentPrize.image,
-                    value: currentPrize.value,
-                    name: currentPrize.name,
-                    timestamp: new Date().toISOString(),
-                    caseType: currentCaseType
-                });
-                
-                // Сохраняем данные
-                await saveGameData();
-                
-                // Обновляем состояние кнопки
-                updateButtonsState();
-            }
-        }
-
         // Функция быстрого открытия
         function quickOpen() {
             if (balance < currentCasePrice) {
@@ -1222,16 +1198,6 @@
             }
             
             openCase(true);
-        }
-
-        // Функция сброса кейса
-        function resetCase() {
-            resultElement.innerHTML = '';
-            isCaseOpened = false;
-            openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
-            
-            // Обновляем состояние кнопки
-            updateButtonsState();
         }
 
         // Функция вывода средств
@@ -1365,7 +1331,8 @@ ID: <code>${userId}</code>
                 option.addEventListener('click', function() {
                     const price = parseInt(this.getAttribute('data-price'));
                     const type = this.getAttribute('data-type');
-                    selectCase(price, type);
+                    const caseImage = this.querySelector('.case-image').src;
+                    selectCase(price, type, caseImage);
                 });
             });
             
