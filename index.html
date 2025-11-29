@@ -657,6 +657,29 @@
             margin-left: 10px;
             font-size: 0.8rem;
         }
+
+        .warning-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #ff6b6b;
+            font-size: 0.9rem;
+        }
+
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -664,6 +687,9 @@
     <div class="modal auth-modal" id="auth-modal">
         <div class="modal-content">
             <div class="modal-title">Добро пожаловать в NFT Creator!</div>
+            <div class="warning-message">
+                ⚠️ Зарегистрируйтесь, чтобы не потерять игровой прогресс!
+            </div>
             <p>Для начала работы необходимо войти или зарегистрироваться</p>
             
             <div class="modal-buttons auth-buttons">
@@ -700,11 +726,26 @@
         </div>
     </div>
 
+    <!-- Модальное окно настроек -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-title">Настройки аккаунта</div>
+            <div class="user-info" style="position: static; margin-bottom: 20px;">
+                Текущий пользователь: <span id="settings-username">-</span>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="close-settings-btn">Закрыть</button>
+                <button class="modal-btn transfer" id="switch-account-btn">Сменить аккаунт</button>
+                <button class="modal-btn confirm" id="settings-logout-btn">Выйти</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container" id="main-app" style="display: none;">
         <div class="user-info">
             Пользователь: <span id="current-username">-</span>
-            <button class="logout-btn" id="logout-btn">Выйти</button>
         </div>
+        <button class="settings-btn" id="settings-btn">Настройки</button>
         
         <h1>NFT Creator</h1>
         <p class="subtitle">Создай уникальные NFT и коллекционируй их</p>
@@ -995,10 +1036,15 @@
         const authModal = document.getElementById('auth-modal');
         const loginModal = document.getElementById('login-modal');
         const registerModal = document.getElementById('register-modal');
+        const settingsModal = document.getElementById('settings-modal');
         const mainApp = document.getElementById('main-app');
         const bottomTabs = document.getElementById('bottom-tabs');
         const currentUsername = document.getElementById('current-username');
-        const logoutBtn = document.getElementById('logout-btn');
+        const settingsUsername = document.getElementById('settings-username');
+        const settingsBtn = document.getElementById('settings-btn');
+        const closeSettingsBtn = document.getElementById('close-settings-btn');
+        const switchAccountBtn = document.getElementById('switch-account-btn');
+        const settingsLogoutBtn = document.getElementById('settings-logout-btn');
         const loginBtn = document.getElementById('login-btn');
         const registerBtn = document.getElementById('register-btn');
         const cancelLoginBtn = document.getElementById('cancel-login-btn');
@@ -1104,6 +1150,7 @@
                     
                     // Обновляем интерфейс
                     currentUsername.textContent = userData.username;
+                    settingsUsername.textContent = userData.username;
                     updateBalance();
                     updateInventory();
                     updateBonusTimer();
@@ -1557,6 +1604,7 @@
             
             // Обновляем интерфейс
             currentUsername.textContent = user.username;
+            settingsUsername.textContent = user.username;
             updateBalance();
             updateInventory();
             updateBonusTimer();
@@ -1571,6 +1619,8 @@
             
             // Сохраняем данные
             saveUserData();
+            
+            showNotification(`Добро пожаловать, ${user.username}!`, true);
         }
 
         // Функция выхода пользователя
@@ -1584,9 +1634,17 @@
             
             // Показываем окно авторизации
             authModal.classList.add('show');
+            settingsModal.classList.remove('show');
             
             // Очищаем сохраненный username
             localStorage.removeItem('last_username');
+            
+            showNotification('Вы вышли из аккаунта');
+        }
+
+        // Функция смены аккаунта
+        function switchAccount() {
+            logout();
         }
 
         // Инициализация при загрузке страницы
@@ -1662,7 +1720,17 @@
                 }
             });
             
-            logoutBtn.addEventListener('click', logout);
+            // Обработчики настроек
+            settingsBtn.addEventListener('click', () => {
+                settingsModal.classList.add('show');
+            });
+            
+            closeSettingsBtn.addEventListener('click', () => {
+                settingsModal.classList.remove('show');
+            });
+            
+            switchAccountBtn.addEventListener('click', switchAccount);
+            settingsLogoutBtn.addEventListener('click', logout);
             
             // Обработчики нижних вкладок
             document.querySelectorAll('.bottom-tab').forEach(tab => {
@@ -1698,7 +1766,7 @@
             bonusSection.addEventListener('click', claimBonus);
             
             // Закрытие модальных окон по клику вне их
-            [nftModal, sellModal, transferModal, loginModal, registerModal].forEach(modal => {
+            [nftModal, sellModal, transferModal, loginModal, registerModal, settingsModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('show');
@@ -1718,4 +1786,4 @@
         });
     </script>
 </body>
-    </html>
+                                                                      </html>
