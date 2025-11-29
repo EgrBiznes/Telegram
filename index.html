@@ -1098,7 +1098,21 @@
             if (lastUsername) {
                 const userData = loadUserData(lastUsername);
                 if (userData) {
-                    login(userData);
+                    // Входим автоматически
+                    currentUser = userData;
+                    balance = userData.balance;
+                    
+                    // Обновляем интерфейс
+                    currentUsername.textContent = userData.username;
+                    updateBalance();
+                    updateInventory();
+                    updateBonusTimer();
+                    initRoulettes();
+                    
+                    // Показываем основное приложение
+                    authModal.classList.remove('show');
+                    mainApp.style.display = 'block';
+                    bottomTabs.style.display = 'flex';
                     return true;
                 }
             }
@@ -1554,6 +1568,9 @@
             registerModal.classList.remove('show');
             mainApp.style.display = 'block';
             bottomTabs.style.display = 'flex';
+            
+            // Сохраняем данные
+            saveUserData();
         }
 
         // Функция выхода пользователя
