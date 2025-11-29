@@ -411,37 +411,9 @@
             position: relative;
         }
 
-        .modal-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .back-button {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 5px;
-            margin-right: 10px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
         .modal-title {
-            flex: 1;
             font-size: 1.5rem;
-            margin-bottom: 0;
+            margin-bottom: 20px;
             color: #ffde7d;
         }
 
@@ -634,38 +606,6 @@
             margin-top: 10px;
         }
 
-        /* Стили для авторизации */
-        .auth-modal {
-            display: flex;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .auth-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .register-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
-        }
-
         .user-info {
             position: absolute;
             top: 20px;
@@ -673,27 +613,6 @@
             color: #b8b8d9;
             font-size: 0.9rem;
             text-align: left;
-        }
-
-        .logout-btn {
-            background: none;
-            border: 1px solid #ff6b6b;
-            color: #ff6b6b;
-            padding: 5px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 0.8rem;
-        }
-
-        .warning-message {
-            background: rgba(255, 107, 107, 0.2);
-            border: 1px solid #ff6b6b;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            color: #ff6b6b;
-            font-size: 0.9rem;
         }
 
         .settings-btn {
@@ -708,54 +627,23 @@
             cursor: pointer;
             font-size: 0.8rem;
         }
+
+        .welcome-message {
+            background: rgba(100, 255, 218, 0.2);
+            border: 1px solid #64ffda;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #64ffda;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <!-- Модальное окно авторизации -->
-    <div class="modal auth-modal" id="auth-modal">
-        <div class="modal-content">
-            <div class="modal-title">Добро пожаловать в NFT Creator!</div>
-            <div class="warning-message">
-                ⚠️ Зарегистрируйтесь, чтобы не потерять игровой прогресс!
-            </div>
-            <p>Для начала работы необходимо войти или зарегистрироваться</p>
-            
-            <div class="modal-buttons auth-buttons">
-                <button class="auth-btn login-btn" id="login-btn">Войти</button>
-                <button class="auth-btn register-btn" id="register-btn">Регистрация</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно входа -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="back-button" id="back-from-login-btn">←</button>
-                <div class="modal-title">Вход в аккаунт</div>
-            </div>
-            <input type="text" class="modal-input" id="login-username" placeholder="Имя пользователя">
-            <input type="password" class="modal-input" id="login-password" placeholder="Пароль">
-            <div class="modal-buttons">
-                <button class="modal-btn confirm" id="confirm-login-btn">Войти</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно регистрации -->
-    <div class="modal" id="register-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="back-button" id="back-from-register-btn">←</button>
-                <div class="modal-title">Регистрация аккаунта</div>
-            </div>
-            <input type="text" class="modal-input" id="register-username" placeholder="Имя пользователя">
-            <input type="password" class="modal-input" id="register-password" placeholder="Пароль">
-            <input type="password" class="modal-input" id="register-confirm-password" placeholder="Подтвердите пароль">
-            <div class="modal-buttons">
-                <button class="modal-btn confirm" id="confirm-register-btn">Зарегистрироваться</button>
-            </div>
-        </div>
+    <!-- Модальное окно загрузки -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div id="loading-text">Определяем пользователя...</div>
     </div>
 
     <!-- Модальное окно настроек -->
@@ -763,24 +651,28 @@
         <div class="modal-content">
             <div class="modal-title">Настройки аккаунта</div>
             <div class="user-info" style="position: static; margin-bottom: 20px;">
-                Текущий пользователь: <span id="settings-username">-</span>
+                ID пользователя: <span id="settings-userid">-</span><br>
+                Имя: <span id="settings-username">-</span>
             </div>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="close-settings-btn">Закрыть</button>
-                <button class="modal-btn transfer" id="switch-account-btn">Сменить аккаунт</button>
-                <button class="modal-btn confirm" id="settings-logout-btn">Выйти</button>
+                <button class="modal-btn confirm" id="reset-data-btn">Сбросить данные</button>
             </div>
         </div>
     </div>
 
     <div class="container" id="main-app" style="display: none;">
         <div class="user-info">
-            Пользователь: <span id="current-username">-</span>
+            ID: <span id="current-userid">-</span>
         </div>
         <button class="settings-btn" id="settings-btn">Настройки</button>
         
         <h1>NFT Creator</h1>
         <p class="subtitle">Создай уникальные NFT и коллекционируй их</p>
+        
+        <div class="welcome-message" id="welcome-message">
+            Добро пожаловать! Ваш аккаунт автоматически создан.
+        </div>
         
         <div class="balance-container">
             <div>Ваш баланс:</div>
@@ -855,11 +747,6 @@
     </div>
     
     <div class="notification" id="notification">Недостаточно средств!</div>
-    
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <div id="loading-text">Создаём NFT...</div>
-    </div>
 
     <!-- Модальное окно просмотра NFT -->
     <div class="modal" id="nft-modal">
@@ -922,8 +809,8 @@
     <div class="modal" id="transfer-modal">
         <div class="modal-content">
             <div class="modal-title">Передача NFT</div>
-            <p>Введите username получателя:</p>
-            <input type="text" class="modal-input" id="transfer-username" placeholder="username">
+            <p>Введите ID получателя:</p>
+            <input type="text" class="modal-input" id="transfer-userid" placeholder="ID пользователя">
             <p style="margin: 10px 0; color: #ff6b6b;">Стоимость передачи: 10,000₽</p>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="cancel-transfer-btn">Отмена</button>
@@ -933,7 +820,7 @@
     </div>
 
     <script>
-        // ========== ДОБАВЛЯЙТЕ СВОИ МОДЕЛИ И ФОНЫ ЗДЕСЬ ==========
+        // ========== МОДЕЛИ И ФОНЫ NFT ==========
         
         // МОДЕЛИ NFT (с шансами выпадения)
         const models = [
@@ -1063,24 +950,14 @@
         let currentUser = null;
         
         // Элементы DOM
-        const authModal = document.getElementById('auth-modal');
-        const loginModal = document.getElementById('login-modal');
-        const registerModal = document.getElementById('register-modal');
-        const settingsModal = document.getElementById('settings-modal');
         const mainApp = document.getElementById('main-app');
         const bottomTabs = document.getElementById('bottom-tabs');
-        const currentUsername = document.getElementById('current-username');
+        const currentUserid = document.getElementById('current-userid');
+        const settingsUserid = document.getElementById('settings-userid');
         const settingsUsername = document.getElementById('settings-username');
         const settingsBtn = document.getElementById('settings-btn');
         const closeSettingsBtn = document.getElementById('close-settings-btn');
-        const switchAccountBtn = document.getElementById('switch-account-btn');
-        const settingsLogoutBtn = document.getElementById('settings-logout-btn');
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const backFromLoginBtn = document.getElementById('back-from-login-btn');
-        const backFromRegisterBtn = document.getElementById('back-from-register-btn');
-        const confirmLoginBtn = document.getElementById('confirm-login-btn');
-        const confirmRegisterBtn = document.getElementById('confirm-register-btn');
+        const resetDataBtn = document.getElementById('reset-data-btn');
         const balanceElement = document.getElementById('balance');
         const createNftBtn = document.getElementById('create-nft-btn');
         const nftPreview = document.getElementById('nft-preview');
@@ -1110,11 +987,12 @@
         const cancelSellBtn = document.getElementById('cancel-sell-btn');
         const confirmSellBtn = document.getElementById('confirm-sell-btn');
         const transferModal = document.getElementById('transfer-modal');
-        const transferUsername = document.getElementById('transfer-username');
+        const transferUserid = document.getElementById('transfer-userid');
         const cancelTransferBtn = document.getElementById('cancel-transfer-btn');
         const confirmTransferBtn = document.getElementById('confirm-transfer-btn');
         const bonusSection = document.getElementById('bonus-section');
         const bonusTimer = document.getElementById('bonus-timer');
+        const welcomeMessage = document.getElementById('welcome-message');
 
         // Текущий выбранный NFT для операций
         let currentNFT = null;
@@ -1134,7 +1012,7 @@
         }
 
         // Функция для показа загрузки
-        function showLoading(show, text = "Создаём NFT...") {
+        function showLoading(show, text = "Определяем пользователя...") {
             loadingText.textContent = text;
             if (show) {
                 loadingElement.classList.add('show');
@@ -1143,102 +1021,109 @@
             }
         }
 
+        // Функция для генерации уникального ID пользователя
+        function generateUserId() {
+            // Если есть Telegram Web App, используем данные из Telegram
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const tgUser = tg.initDataUnsafe.user;
+                return `tg_${tgUser.id}`;
+            }
+            
+            // Иначе генерируем случайный ID
+            return 'user_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Функция для получения имени пользователя
+        function getUsername() {
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const tgUser = tg.initDataUnsafe.user;
+                return tgUser.username || tgUser.first_name || 'Пользователь';
+            }
+            
+            return 'Гость';
+        }
+
         // Функция для сохранения данных пользователя
         function saveUserData() {
             if (!currentUser) return;
             
             const userData = {
+                userid: currentUser.userid,
                 username: currentUser.username,
-                password: currentUser.password,
                 balance: balance,
                 inventory: currentUser.inventory || [],
-                lastBonusTime: currentUser.lastBonusTime
+                lastBonusTime: currentUser.lastBonusTime,
+                createdAt: currentUser.createdAt || new Date().toISOString()
             };
             
-            localStorage.setItem(`nft_user_${currentUser.username}`, JSON.stringify(userData));
-            localStorage.setItem('last_username', currentUser.username);
+            localStorage.setItem(`nft_user_${currentUser.userid}`, JSON.stringify(userData));
         }
 
         // Функция для загрузки данных пользователя
-        function loadUserData(username) {
-            const userData = localStorage.getItem(`nft_user_${username}`);
+        function loadUserData(userid) {
+            const userData = localStorage.getItem(`nft_user_${userid}`);
             if (userData) {
                 return JSON.parse(userData);
             }
             return null;
         }
 
-        // Функция проверки авторизации при загрузке
-        function checkAuthOnLoad() {
-            const lastUsername = localStorage.getItem('last_username');
-            console.log('Попытка авторизации для пользователя:', lastUsername);
+        // Функция создания нового пользователя
+        function createNewUser() {
+            const userid = generateUserId();
+            const username = getUsername();
             
-            if (lastUsername) {
-                const userData = loadUserData(lastUsername);
-                if (userData) {
-                    // Входим автоматически
-                    currentUser = userData;
-                    balance = userData.balance || 50000;
-                    
-                    console.log('Автоматический вход успешен:', userData.username);
-                    
-                    // Обновляем интерфейс
-                    currentUsername.textContent = userData.username;
-                    settingsUsername.textContent = userData.username;
-                    updateBalance();
-                    updateInventory();
-                    updateBonusTimer();
-                    initRoulettes();
-                    
-                    // Показываем основное приложение
-                    authModal.classList.remove('show');
-                    mainApp.style.display = 'block';
-                    bottomTabs.style.display = 'flex';
-                    return true;
-                } else {
-                    console.log('Данные пользователя не найдены');
-                }
-            } else {
-                console.log('Нет сохраненного пользователя');
-            }
-            return false;
-        }
-
-        // Функция регистрации пользователя
-        function registerUser(username, password) {
-            // Проверяем, не занят ли username
-            if (localStorage.getItem(`nft_user_${username}`)) {
-                return { success: false, message: 'Пользователь с таким именем уже существует' };
-            }
-            
-            // Создаем нового пользователя
             const newUser = {
+                userid: userid,
                 username: username,
-                password: password,
                 balance: 50000,
                 inventory: [],
-                lastBonusTime: null
+                lastBonusTime: null,
+                createdAt: new Date().toISOString()
             };
             
             // Сохраняем пользователя
-            localStorage.setItem(`nft_user_${username}`, JSON.stringify(newUser));
-            localStorage.setItem('last_username', username);
+            localStorage.setItem(`nft_user_${userid}`, JSON.stringify(newUser));
             
-            return { success: true, user: newUser };
+            return newUser;
         }
 
-        // Функция авторизации пользователя
-        function loginUser(username, password) {
-            const userData = loadUserData(username);
-            if (!userData) {
-                return { success: false, message: 'Пользователь не найден' };
-            }
+        // Функция инициализации пользователя
+        function initializeUser() {
+            showLoading(true, "Определяем пользователя...");
             
-            if (userData.password !== password) {
-                return { success: false, message: 'Неверный пароль' };
-            }
-            
-            return { success: true, user: userData };
+            setTimeout(() => {
+                const userid = generateUserId();
+                let userData = loadUserData(userid);
+                
+                if (userData) {
+                    // Пользователь уже существует
+                    currentUser = userData;
+                    balance = userData.balance;
+                    welcomeMessage.textContent = `С возвращением, ${userData.username}!`;
+                } else {
+                    // Создаем нового пользователя
+                    currentUser = createNewUser();
+                    balance = currentUser.balance;
+                    welcomeMessage.textContent = `Добро пожаловать, ${currentUser.username}! Ваш аккаунт автоматически создан.`;
+                }
+                
+                // Обновляем интерфейс
+                currentUserid.textContent = currentUser.userid;
+                settingsUserid.textContent = currentUser.userid;
+                settingsUsername.textContent = currentUser.username;
+                updateBalance();
+                updateInventory();
+                updateBonusTimer();
+                initRoulettes();
+                
+                // Показываем основное приложение
+                showLoading(false);
+                mainApp.style.display = 'block';
+                bottomTabs.style.display = 'flex';
+                
+                showNotification(`Добро пожаловать, ${currentUser.username}!`, true);
+            }, 1000);
         }
 
         // Функция обновления баланса
@@ -1490,7 +1375,7 @@
         // Функция открытия модального окна передачи
         function openTransferModal(nft) {
             currentNFT = nft;
-            transferUsername.value = '';
+            transferUserid.value = '';
             transferModal.classList.add('show');
         }
 
@@ -1529,9 +1414,9 @@
         function transferNFT() {
             if (!currentNFT) return;
             
-            const username = transferUsername.value.trim();
-            if (!username) {
-                showNotification('Введите имя пользователя получателя');
+            const userid = transferUserid.value.trim();
+            if (!userid) {
+                showNotification('Введите ID пользователя получателя');
                 return;
             }
             
@@ -1541,9 +1426,9 @@
             }
             
             // Проверяем существование получателя
-            const receiverData = loadUserData(username);
+            const receiverData = loadUserData(userid);
             if (!receiverData) {
-                showNotification('Пользователь с таким именем не найден');
+                showNotification('Пользователь с таким ID не найден');
                 return;
             }
             
@@ -1562,7 +1447,7 @@
             
             // Сохраняем данные обоих пользователей
             saveUserData();
-            localStorage.setItem(`nft_user_${username}`, JSON.stringify(receiverData));
+            localStorage.setItem(`nft_user_${userid}`, JSON.stringify(receiverData));
             
             // Обновляем интерфейс
             updateBalance();
@@ -1573,7 +1458,7 @@
             transferModal.classList.remove('show');
             
             // Показываем уведомление
-            showNotification(`✅ NFT передан пользователю ${username}!`, true);
+            showNotification(`✅ NFT передан пользователю ${receiverData.username}!`, true);
             
             currentNFT = null;
         }
@@ -1635,56 +1520,33 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        // Функция входа пользователя
-        function login(user) {
-            currentUser = user;
-            balance = user.balance || 50000;
-            
-            console.log('Вход выполнен:', user.username);
-            
-            // Обновляем интерфейс
-            currentUsername.textContent = user.username;
-            settingsUsername.textContent = user.username;
-            updateBalance();
-            updateInventory();
-            updateBonusTimer();
-            initRoulettes();
-            
-            // Показываем основное приложение
-            authModal.classList.remove('show');
-            loginModal.classList.remove('show');
-            registerModal.classList.remove('show');
-            mainApp.style.display = 'block';
-            bottomTabs.style.display = 'flex';
-            
-            // Сохраняем данные
-            saveUserData();
-            
-            showNotification(`Добро пожаловать, ${user.username}!`, true);
-        }
-
-        // Функция выхода пользователя
-        function logout() {
-            currentUser = null;
-            balance = 0;
-            
-            // Скрываем основное приложение
-            mainApp.style.display = 'none';
-            bottomTabs.style.display = 'none';
-            
-            // Показываем окно авторизации
-            authModal.classList.add('show');
-            settingsModal.classList.remove('show');
-            
-            // Очищаем сохраненный username
-            localStorage.removeItem('last_username');
-            
-            showNotification('Вы вышли из аккаунта');
-        }
-
-        // Функция смены аккаунта
-        function switchAccount() {
-            logout();
+        // Функция сброса данных пользователя
+        function resetUserData() {
+            if (confirm('Вы уверены, что хотите сбросить все данные? Это действие нельзя отменить.')) {
+                // Создаем нового пользователя с тем же ID
+                const newUser = {
+                    userid: currentUser.userid,
+                    username: currentUser.username,
+                    balance: 50000,
+                    inventory: [],
+                    lastBonusTime: null,
+                    createdAt: new Date().toISOString()
+                };
+                
+                currentUser = newUser;
+                balance = 50000;
+                
+                // Сохраняем данные
+                saveUserData();
+                
+                // Обновляем интерфейс
+                updateBalance();
+                updateInventory();
+                updateBonusTimer();
+                
+                showNotification('✅ Данные сброшены!', true);
+                settingsModal.classList.remove('show');
+            }
         }
 
         // Инициализация при загрузке страницы
@@ -1694,92 +1556,8 @@
                 tg.enableClosingConfirmation();
             }
             
-            console.log('Загрузка приложения...');
-            
-            // Проверяем авторизацию при загрузке
-            if (!checkAuthOnLoad()) {
-                console.log('Показываем окно авторизации');
-                authModal.classList.add('show');
-            }
-            
-            // Обработчики кнопок "Назад"
-            backFromLoginBtn.addEventListener('click', () => {
-                loginModal.classList.remove('show');
-                authModal.classList.add('show');
-                // Очищаем поля
-                document.getElementById('login-username').value = '';
-                document.getElementById('login-password').value = '';
-            });
-            
-            backFromRegisterBtn.addEventListener('click', () => {
-                registerModal.classList.remove('show');
-                authModal.classList.add('show');
-                // Очищаем поля
-                document.getElementById('register-username').value = '';
-                document.getElementById('register-password').value = '';
-                document.getElementById('register-confirm-password').value = '';
-            });
-            
-            // Обработчики авторизации
-            loginBtn.addEventListener('click', () => {
-                authModal.classList.remove('show');
-                loginModal.classList.add('show');
-            });
-            
-            registerBtn.addEventListener('click', () => {
-                authModal.classList.remove('show');
-                registerModal.classList.add('show');
-            });
-            
-            confirmLoginBtn.addEventListener('click', () => {
-                const username = document.getElementById('login-username').value.trim();
-                const password = document.getElementById('login-password').value.trim();
-                
-                if (!username || !password) {
-                    showNotification('Заполните все поля');
-                    return;
-                }
-                
-                const result = loginUser(username, password);
-                if (result.success) {
-                    login(result.user);
-                } else {
-                    showNotification(result.message);
-                }
-            });
-            
-            confirmRegisterBtn.addEventListener('click', () => {
-                const username = document.getElementById('register-username').value.trim();
-                const password = document.getElementById('register-password').value.trim();
-                const confirmPassword = document.getElementById('register-confirm-password').value.trim();
-                
-                if (!username || !password || !confirmPassword) {
-                    showNotification('Заполните все поля');
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    showNotification('Пароли не совпадают');
-                    return;
-                }
-                
-                if (username.length < 3) {
-                    showNotification('Имя пользователя должно быть не менее 3 символов');
-                    return;
-                }
-                
-                if (password.length < 4) {
-                    showNotification('Пароль должен быть не менее 4 символов');
-                    return;
-                }
-                
-                const result = registerUser(username, password);
-                if (result.success) {
-                    login(result.user);
-                } else {
-                    showNotification(result.message);
-                }
-            });
+            // Инициализируем пользователя
+            initializeUser();
             
             // Обработчики настроек
             settingsBtn.addEventListener('click', () => {
@@ -1790,8 +1568,7 @@
                 settingsModal.classList.remove('show');
             });
             
-            switchAccountBtn.addEventListener('click', switchAccount);
-            settingsLogoutBtn.addEventListener('click', logout);
+            resetDataBtn.addEventListener('click', resetUserData);
             
             // Обработчики нижних вкладок
             document.querySelectorAll('.bottom-tab').forEach(tab => {
@@ -1827,7 +1604,7 @@
             bonusSection.addEventListener('click', claimBonus);
             
             // Закрытие модальных окон по клику вне их
-            [nftModal, sellModal, transferModal, loginModal, registerModal, settingsModal, authModal].forEach(modal => {
+            [nftModal, sellModal, transferModal, settingsModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('show');
@@ -1847,4 +1624,4 @@
         });
     </script>
 </body>
-                </html>
+    </html>
