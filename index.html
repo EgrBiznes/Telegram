@@ -177,6 +177,100 @@
             margin-bottom: 5px;
         }
 
+        /* СТИЛИ ДЛЯ ГОРИЗОНТАЛЬНОЙ ПРОКРУТКИ АДМИН ПАНЕЛИ */
+        .admin-panel {
+            margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        .admin-scroll-container {
+            display: flex;
+            gap: 15px;
+            padding: 10px 5px;
+            min-width: min-content;
+        }
+
+        .admin-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 280px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-card h3 {
+            margin-bottom: 15px;
+            color: #64ffda;
+            font-size: 1.2rem;
+        }
+
+        .admin-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .admin-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .admin-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .btn-remove {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+        }
+
+        .btn-find {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .admin-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .admin-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #b8b8d9;
+        }
+
+        /* Остальные стили остаются без изменений */
         .case-container {
             position: relative;
             margin: 30px 0;
@@ -347,90 +441,6 @@
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
-        /* СТИЛИ ДЛЯ АДМИН ПАНЕЛИ */
-        .admin-panel {
-            margin-top: 20px;
-        }
-
-        .admin-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .admin-card h3 {
-            margin-bottom: 15px;
-            color: #64ffda;
-            font-size: 1.2rem;
-        }
-
-        .admin-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 12px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            margin-bottom: 10px;
-        }
-
-        .admin-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-        }
-
-        .admin-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .admin-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-add {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-        }
-
-        .btn-remove {
-            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
-        }
-
-        .btn-find {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-        }
-
-        .admin-result {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .admin-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            color: #b8b8d9;
-        }
-
         @keyframes pop {
             0% { transform: scale(0.5); opacity: 0; }
             70% { transform: scale(1.2); }
@@ -597,7 +607,6 @@
         </div>
         
         <div class="tab-content active" id="case-tab">
-            <!-- Выбор кейса -->
             <div id="case-selection">
                 <h3>Выберите кейс</h3>
                 <div class="cases-grid">
@@ -614,7 +623,6 @@
                 </div>
             </div>
             
-            <!-- Открытие кейса -->
             <div id="case-opening" style="display: none;">
                 <button class="btn btn-back" id="back-btn">← Назад</button>
                 
@@ -624,9 +632,7 @@
                 
                 <div class="case-container">
                     <div class="roulette-container" id="roulette-container">
-                        <div class="roulette" id="roulette">
-                            <!-- Рулетка будет генерироваться динамически -->
-                        </div>
+                        <div class="roulette" id="roulette"></div>
                     </div>
                 </div>
                 
@@ -635,15 +641,11 @@
                     <button class="btn btn-quick" id="quick-open-btn">Быстрое открытие</button>
                 </div>
                 
-                <div class="result" id="result">
-                    <!-- Здесь будет отображаться результат открытия -->
-                </div>
+                <div class="result" id="result"></div>
                 
                 <div class="history">
                     <div class="history-title">История открытий</div>
-                    <div id="history-list">
-                        <!-- История открытий будет добавляться сюда -->
-                    </div>
+                    <div id="history-list"></div>
                 </div>
             </div>
         </div>
@@ -664,70 +666,67 @@
         <div class="tab-content" id="admin-tab">
             <h2>Админ панель</h2>
             
-            <!-- АДМИН ПАНЕЛЬ -->
             <div class="admin-panel">
-                <!-- Карточка управления пользователями -->
-                <div class="admin-card">
-                    <h3>Управление пользователями</h3>
-                    <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя">
-                    <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
-                    <div class="admin-buttons">
-                        <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
-                        <button class="admin-btn btn-add" id="add-money-btn">Выдать</button>
-                        <button class="admin-btn btn-remove" id="remove-money-btn">Забрать</button>
+                <div class="admin-scroll-container">
+                    <div class="admin-card">
+                        <h3>Управление пользователями</h3>
+                        <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя">
+                        <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
+                        <div class="admin-buttons">
+                            <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
+                            <button class="admin-btn btn-add" id="add-money-btn">Выдать</button>
+                            <button class="admin-btn btn-remove" id="remove-money-btn">Забрать</button>
+                        </div>
+                        <div class="admin-result" id="admin-result">
+                            Введите юзернейм для поиска
+                        </div>
                     </div>
-                    <div class="admin-result" id="admin-result">
-                        Введите юзернейм для поиска
-                    </div>
-                </div>
 
-                <!-- Карточка статистики -->
-                <div class="admin-card">
-                    <h3>Статистика</h3>
-                    <div class="admin-stats">
-                        <span>Всего пользователей:</span>
-                        <span id="total-users">0</span>
+                    <div class="admin-card">
+                        <h3>Статистика</h3>
+                        <div class="admin-stats">
+                            <span>Всего пользователей:</span>
+                            <span id="total-users">0</span>
+                        </div>
+                        <div class="admin-stats">
+                            <span>Всего открытий:</span>
+                            <span id="total-opens">0</span>
+                        </div>
+                        <div class="admin-stats">
+                            <span>Общий оборот:</span>
+                            <span id="total-turnover">0₽</span>
+                        </div>
+                        <div class="admin-stats">
+                            <span>Доход системы:</span>
+                            <span id="system-profit">0₽</span>
+                        </div>
+                        <button class="admin-btn btn-find" id="refresh-stats-btn" style="margin-top: 15px; width: 100%;">Обновить статистику</button>
                     </div>
-                    <div class="admin-stats">
-                        <span>Всего открытий:</span>
-                        <span id="total-opens">0</span>
-                    </div>
-                    <div class="admin-stats">
-                        <span>Общий оборот:</span>
-                        <span id="total-turnover">0₽</span>
-                    </div>
-                    <div class="admin-stats">
-                        <span>Доход системы:</span>
-                        <span id="system-profit">0₽</span>
-                    </div>
-                    <button class="admin-btn btn-find" id="refresh-stats-btn" style="margin-top: 15px; width: 100%;">Обновить статистику</button>
-                </div>
 
-                <!-- Карточка управления кейсами -->
-                <div class="admin-card">
-                    <h3>Управление кейсами</h3>
-                    <select class="admin-input" id="case-select">
-                        <option value="standard">Бомж Кейс (100₽)</option>
-                        <option value="premium">Премиум Кейс (500₽)</option>
-                    </select>
-                    <input type="number" class="admin-input" id="case-price-input" placeholder="Новая цена кейса">
-                    <div class="admin-buttons">
-                        <button class="admin-btn btn-add" id="update-case-price-btn">Изменить цену</button>
+                    <div class="admin-card">
+                        <h3>Управление кейсами</h3>
+                        <select class="admin-input" id="case-select">
+                            <option value="standard">Бомж Кейс (100₽)</option>
+                            <option value="premium">Премиум Кейс (500₽)</option>
+                        </select>
+                        <input type="number" class="admin-input" id="case-price-input" placeholder="Новая цена кейса">
+                        <div class="admin-buttons">
+                            <button class="admin-btn btn-add" id="update-case-price-btn">Изменить цену</button>
+                        </div>
+                        <div class="admin-result" id="case-result">
+                            Выберите кейс для изменения
+                        </div>
                     </div>
-                    <div class="admin-result" id="case-result">
-                        Выберите кейс для изменения
-                    </div>
-                </div>
 
-                <!-- Карточка вывода средств -->
-                <div class="admin-card">
-                    <h3>Запросы на вывод</h3>
-                    <div class="admin-result" id="withdraw-requests" style="max-height: 120px; font-size: 0.8rem;">
-                        Запросы на вывод будут отображаться здесь
-                    </div>
-                    <div class="admin-buttons">
-                        <button class="admin-btn btn-add" id="refresh-withdraw-btn">Обновить</button>
-                        <button class="admin-btn btn-remove" id="clear-withdraw-btn">Очистить</button>
+                    <div class="admin-card">
+                        <h3>Запросы на вывод</h3>
+                        <div class="admin-result" id="withdraw-requests" style="max-height: 120px; font-size: 0.8rem;">
+                            Запросы на вывод будут отображаться здесь
+                        </div>
+                        <div class="admin-buttons">
+                            <button class="admin-btn btn-add" id="refresh-withdraw-btn">Обновить</button>
+                            <button class="admin-btn btn-remove" id="clear-withdraw-btn">Очистить</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -755,117 +754,30 @@
     </div>
 
     <script>
-        // КОНФИГУРАЦИЯ ПРИЛОЖЕНИЯ
-        
-        // Конфигурация бота
+        // КОНФИГУРАЦИЯ
         const BOT_TOKEN = '7841086722:AAH2Jsb8zWbw7VPM7BCm1IJjtvY3nG3D8Hw';
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // Настройки призов для Бомж Кейса (100₽) - более выгодные
+        // Призы для кейсов
         const prizesStandard = [
-            { 
-                id: 1,
-                name: 'Алмаз', 
-                value: 500, 
-                probability: 5, 
-                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
-            },
-            { 
-                id: 2,
-                name: 'Ракета', 
-                value: 350, 
-                probability: 10, 
-                image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'
-            },
-            { 
-                id: 3,
-                name: 'Деньги', 
-                value: 250, 
-                probability: 15, 
-                image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'
-            },
-            { 
-                id: 4,
-                name: 'Корона', 
-                value: 180, 
-                probability: 20, 
-                image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'
-            },
-            { 
-                id: 5,
-                name: 'Звезда', 
-                value: 120, 
-                probability: 25, 
-                image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'
-            },
-            { 
-                id: 6,
-                name: 'Клевер', 
-                value: 80, 
-                probability: 15, 
-                image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'
-            },
-            { 
-                id: 7,
-                name: 'Монета', 
-                value: 50, 
-                probability: 10, 
-                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
-            }
+            { id: 1, name: 'Алмаз', value: 500, probability: 5, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' },
+            { id: 2, name: 'Ракета', value: 350, probability: 10, image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp' },
+            { id: 3, name: 'Деньги', value: 250, probability: 15, image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp' },
+            { id: 4, name: 'Корона', value: 180, probability: 20, image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp' },
+            { id: 5, name: 'Звезда', value: 120, probability: 25, image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp' },
+            { id: 6, name: 'Клевер', value: 80, probability: 15, image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp' },
+            { id: 7, name: 'Монета', value: 50, probability: 10, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' }
         ];
 
-        // Настройки призов для премиум кейса (500₽) - более выгодные
         const prizesPremium = [
-            { 
-                id: 8,
-                name: 'Бриллиант', 
-                value: 1500, 
-                probability: 5, 
-                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
-            },
-            { 
-                id: 9,
-                name: 'Золото', 
-                value: 1000, 
-                probability: 10, 
-                image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'
-            },
-            { 
-                id: 10,
-                name: 'Серебро', 
-                value: 800, 
-                probability: 15, 
-                image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'
-            },
-            { 
-                id: 11,
-                name: 'Платина', 
-                value: 600, 
-                probability: 20, 
-                image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'
-            },
-            { 
-                id: 12,
-                name: 'Рубин', 
-                value: 450, 
-                probability: 25, 
-                image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'
-            },
-            { 
-                id: 13,
-                name: 'Изумруд', 
-                value: 350, 
-                probability: 15, 
-                image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'
-            },
-            { 
-                id: 14,
-                name: 'Сапфир', 
-                value: 250, 
-                probability: 10, 
-                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
-            }
+            { id: 8, name: 'Бриллиант', value: 1500, probability: 5, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' },
+            { id: 9, name: 'Золото', value: 1000, probability: 10, image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp' },
+            { id: 10, name: 'Серебро', value: 800, probability: 15, image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp' },
+            { id: 11, name: 'Платина', value: 600, probability: 20, image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp' },
+            { id: 12, name: 'Рубин', value: 450, probability: 25, image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp' },
+            { id: 13, name: 'Изумруд', value: 350, probability: 15, image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp' },
+            { id: 14, name: 'Сапфир', value: 250, probability: 10, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' }
         ];
 
         // Переменные состояния
@@ -891,7 +803,6 @@
         const currentCaseInfo = document.getElementById('current-case-info');
         const currentCaseName = document.getElementById('current-case-name');
         const currentCasePriceElement = document.getElementById('current-case-price');
-        const rouletteContainer = document.getElementById('roulette-container');
         const rouletteElement = document.getElementById('roulette');
         const openBtn = document.getElementById('open-btn');
         const casePriceElement = document.getElementById('case-price');
@@ -940,7 +851,9 @@
         // Проверка админских прав
         function isAdmin() {
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                return tg.initDataUnsafe.user.id.toString() === ADMIN_CHAT_ID;
+                const userId = tg.initDataUnsafe.user.id.toString();
+                console.log('User ID:', userId, 'Admin ID:', ADMIN_CHAT_ID);
+                return userId === ADMIN_CHAT_ID;
             }
             return false;
         }
@@ -1026,10 +939,14 @@
             
             // Показываем админскую вкладку если пользователь админ
             if (isAdmin()) {
+                console.log('Пользователь является администратором');
                 adminTab.style.display = 'flex';
                 // Загружаем статистику для админа
                 loadAdminStats();
                 loadWithdrawRequests();
+            } else {
+                console.log('Пользователь не является администратором');
+                adminTab.style.display = 'none';
             }
             
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -1123,9 +1040,7 @@
                         if (userData.history) {
                             totalOpens += userData.history.length;
                             userData.history.forEach(item => {
-                                // Предполагаем, что стоимость кейса равна 30% от выигрыша для стандартного кейса
-                                // и 33% для премиум кейса (примерные значения)
-                                const caseCost = item.caseType === 'premium' ? item.value / 3 : item.value / 2.5;
+                                const caseCost = item.caseType === 'premium' ? 500 : 100;
                                 totalTurnover += caseCost;
                                 systemProfit += caseCost - item.value;
                             });
@@ -1156,7 +1071,7 @@
                 html += `
                     <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 5px;">
                         <div><strong>${request.username}</strong></div>
-                        <div>Сумма: ${request.amount}₽</div>
+                        <div>Сумма: ${request.amount.toLocaleString()}₽</div>
                         <div>Карта: ${request.cardNumber}</div>
                         <div>Время: ${new Date(request.timestamp).toLocaleString()}</div>
                     </div>
@@ -1279,7 +1194,7 @@
             
             // Запускаем анимацию
             setTimeout(() => {
-                const targetPosition = isQuick ? -1200 : -2400; // 6 элементов для быстрого, 12 для обычного
+                const targetPosition = isQuick ? -1200 : -2400;
                 rouletteElement.style.transform = `translateX(${targetPosition}px)`;
                 
                 // Показываем результат после завершения анимации
@@ -1292,8 +1207,8 @@
         // Создание рулетки с выигрышным призом в определенной позиции
         function createRouletteWithPrize(prize, isQuick) {
             rouletteElement.innerHTML = '';
-            const totalItems = isQuick ? 9 : 15; // Меньше элементов для быстрого открытия
-            const prizePosition = isQuick ? 6 : 12; // Позиция выигрышного приза
+            const totalItems = isQuick ? 9 : 15;
+            const prizePosition = isQuick ? 6 : 12;
             
             for (let i = 0; i < totalItems; i++) {
                 const item = document.createElement('div');
@@ -1302,7 +1217,6 @@
                     item.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa36c)';
                 }
                 
-                // На позиции prizePosition ставим выигрышный приз, остальные - случайные
                 if (i === prizePosition) {
                     item.innerHTML = `<img src="${prize.image}" class="roulette-image" alt="${prize.name}">`;
                 } else {
@@ -1464,7 +1378,6 @@ ID: <code>${userId}</code>
 
         // Админские функции
         function findUserByUsername(username) {
-            // Ищем пользователя по всем ключам в localStorage
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.startsWith('nftCaseData_')) {
@@ -1662,4 +1575,4 @@ ID: <code>${userId}</code>
         });
     </script>
 </body>
-</html>
+                                </html>
