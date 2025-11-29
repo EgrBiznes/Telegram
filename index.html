@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFT Кейс | Telegram Mini App</title>
+    <title>NFT Кейсы | Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -105,6 +105,55 @@
             text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
         }
 
+        .case-selection {
+            margin: 20px 0;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .case-option {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .case-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .case-option.premium {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+        }
+
+        .case-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffde7d;
+        }
+
+        .case-name {
+            font-size: 1.1rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .case-rewards {
+            font-size: 0.9rem;
+            color: #b8b8d9;
+        }
+
         .case-container {
             position: relative;
             margin: 30px 0;
@@ -127,6 +176,10 @@
             user-select: none;
             position: relative;
             overflow: hidden;
+        }
+
+        .case.premium-case {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
         }
 
         .case::before {
@@ -205,6 +258,11 @@
 
         .btn-quick {
             background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+        }
+
+        .btn-back {
+            background: #555;
+            max-width: 120px;
         }
 
         .result {
@@ -470,11 +528,26 @@
         .roulette-item:nth-child(even) {
             background: linear-gradient(45deg, #764ba2, #667eea);
         }
+
+        .current-case-info {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #b8b8d9;
+        }
+        
+        .withdraw-minimum {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>NFT Кейс</h1>
+        <h1>NFT Кейсы</h1>
         <p class="subtitle">Открой кейс и получи уникальный NFT</p>
         
         <div class="balance-container">
@@ -483,45 +556,72 @@
         </div>
         
         <div class="tabs">
-            <div class="tab active" data-tab="case-tab">Кейс</div>
+            <div class="tab active" data-tab="case-tab">Кейсы</div>
             <div class="tab" data-tab="withdraw-tab">Вывод</div>
         </div>
         
         <div class="tab-content active" id="case-tab">
-            <div class="case-container">
-                <div class="roulette-container" id="roulette-container">
-                    <div class="roulette" id="roulette">
-                        <!-- Рулетка будет генерироваться динамически -->
+            <!-- Выбор кейса -->
+            <div id="case-selection">
+                <h3>Выберите кейс</h3>
+                <div class="cases-grid">
+                    <div class="case-option" data-price="100" data-type="standard">
+                        <div class="case-price">100₽</div>
+                        <div class="case-name">Обычный кейс</div>
+                        <div class="case-rewards">Выигрыши: 10-300₽</div>
+                    </div>
+                    <div class="case-option premium" data-price="500" data-type="premium">
+                        <div class="case-price">500₽</div>
+                        <div class="case-name">Премиум кейс</div>
+                        <div class="case-rewards">Выигрыши: 100-1000₽</div>
                     </div>
                 </div>
             </div>
             
-            <div class="buttons">
-                <button class="btn" id="open-btn">Открыть за 100₽</button>
-                <button class="btn btn-quick" id="quick-open-btn">Быстрое открытие</button>
-            </div>
-            
-            <div class="result" id="result">
-                <!-- Здесь будет отображаться результат открытия -->
-            </div>
-            
-            <div class="history">
-                <div class="history-title">История открытий</div>
-                <div id="history-list">
-                    <!-- История открытий будет добавляться сюда -->
+            <!-- Открытие кейса -->
+            <div id="case-opening" style="display: none;">
+                <button class="btn btn-back" id="back-btn">← Назад к выбору</button>
+                
+                <div class="current-case-info" id="current-case-info">
+                    Открываете: <span id="current-case-name">Обычный кейс</span> за <span id="current-case-price">100</span>₽
+                </div>
+                
+                <div class="case-container">
+                    <div class="roulette-container" id="roulette-container">
+                        <div class="roulette" id="roulette">
+                            <!-- Рулетка будет генерироваться динамически -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn" id="open-btn">Открыть за <span id="case-price">100</span>₽</button>
+                    <button class="btn btn-quick" id="quick-open-btn">Быстрое открытие</button>
+                </div>
+                
+                <div class="result" id="result">
+                    <!-- Здесь будет отображаться результат открытия -->
+                </div>
+                
+                <div class="history">
+                    <div class="history-title">История открытий</div>
+                    <div id="history-list">
+                        <!-- История открытий будет добавляться сюда -->
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="tab-content" id="withdraw-tab">
             <h2>Вывод средств</h2>
+            <div class="withdraw-minimum">Минимальная сумма вывода: 1 000 000₽</div>
             <div class="withdraw-form">
-                <input type="number" class="withdraw-input" id="withdraw-amount" placeholder="Сумма для вывода" min="100" max="1000">
+                <input type="number" class="withdraw-input" id="withdraw-amount" placeholder="Сумма для вывода" min="1000000">
                 <div class="card-input-container">
                     <input type="text" class="card-input" id="card-number" placeholder="Номер карты (0000 0000 0000 0000)" maxlength="19">
                 </div>
                 <button class="btn btn-withdraw" id="withdraw-btn">Вывести средства</button>
-                <p style="color: #b8b8d9; font-size: 0.9rem; margin-top: 10px;">Минимальная сумма вывода: 100₽</p>
+                <p style="color: #b8b8d9; font-size: 0.9rem; margin-top: 10px;">Средства поступят в течение 24 часов после проверки</p>
             </div>
         </div>
     </div>
@@ -554,49 +654,109 @@
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // Настройки призов
-        const prizes = [
+        // Настройки призов для обычного кейса (100₽) - менее выгодные
+        const prizesStandard = [
             { 
                 id: 1,
                 name: 'Алмаз', 
-                value: 500, 
-                probability: 5, 
+                value: 300, 
+                probability: 3, 
                 image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
             },
             { 
                 id: 2,
                 name: 'Ракета', 
-                value: 300, 
-                probability: 10, 
+                value: 200, 
+                probability: 7, 
                 image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'
             },
             { 
                 id: 3,
                 name: 'Деньги', 
-                value: 200, 
-                probability: 15, 
+                value: 150, 
+                probability: 10, 
                 image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'
             },
             { 
                 id: 4,
                 name: 'Корона', 
-                value: 150, 
-                probability: 20, 
+                value: 100, 
+                probability: 15, 
                 image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'
             },
             { 
                 id: 5,
                 name: 'Звезда', 
-                value: 100, 
+                value: 70, 
                 probability: 25, 
                 image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'
             },
             { 
                 id: 6,
                 name: 'Клевер', 
-                value: 50, 
-                probability: 25, 
+                value: 40, 
+                probability: 20, 
                 image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'
+            },
+            { 
+                id: 7,
+                name: 'Монета', 
+                value: 20, 
+                probability: 20, 
+                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
+            }
+        ];
+
+        // Настройки призов для премиум кейса (500₽) - менее выгодные
+        const prizesPremium = [
+            { 
+                id: 8,
+                name: 'Бриллиант', 
+                value: 1000, 
+                probability: 3, 
+                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
+            },
+            { 
+                id: 9,
+                name: 'Золото', 
+                value: 700, 
+                probability: 7, 
+                image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp'
+            },
+            { 
+                id: 10,
+                name: 'Серебро', 
+                value: 500, 
+                probability: 10, 
+                image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp'
+            },
+            { 
+                id: 11,
+                name: 'Платина', 
+                value: 400, 
+                probability: 15, 
+                image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp'
+            },
+            { 
+                id: 12,
+                name: 'Рубин', 
+                value: 300, 
+                probability: 25, 
+                image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp'
+            },
+            { 
+                id: 13,
+                name: 'Изумруд', 
+                value: 200, 
+                probability: 20, 
+                image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp'
+            },
+            { 
+                id: 14,
+                name: 'Сапфир', 
+                value: 150, 
+                probability: 20, 
+                image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp'
             }
         ];
 
@@ -604,6 +764,10 @@
         let balance = 1000;
         let isCaseOpened = false;
         let currentPrize = null;
+        let currentCaseType = 'standard'; // 'standard' или 'premium'
+        let currentCasePrice = 100;
+        let currentPrizes = prizesStandard;
+        
         let gameData = {
             balance: 1000,
             history: [],
@@ -614,10 +778,17 @@
 
         // Элементы DOM
         const balanceElement = document.getElementById('balance');
+        const caseSelection = document.getElementById('case-selection');
+        const caseOpening = document.getElementById('case-opening');
+        const currentCaseInfo = document.getElementById('current-case-info');
+        const currentCaseName = document.getElementById('current-case-name');
+        const currentCasePriceElement = document.getElementById('current-case-price');
         const rouletteContainer = document.getElementById('roulette-container');
         const rouletteElement = document.getElementById('roulette');
         const openBtn = document.getElementById('open-btn');
+        const casePriceElement = document.getElementById('case-price');
         const quickOpenBtn = document.getElementById('quick-open-btn');
+        const backBtn = document.getElementById('back-btn');
         const resultElement = document.getElementById('result');
         const historyList = document.getElementById('history-list');
         const notification = document.getElementById('notification');
@@ -632,6 +803,7 @@
         const confirmWithdrawBtn = document.getElementById('confirm-withdraw-btn');
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
+        const caseOptions = document.querySelectorAll('.case-option');
 
         // Переменные для анимации рулетки
         let isSpinning = false;
@@ -800,9 +972,6 @@
             // Обновляем состояние кнопки
             updateButtonsState();
             
-            // Инициализируем рулетку
-            initRoulette();
-            
             setTimeout(() => {
                 showLoading(false);
             }, 500);
@@ -810,24 +979,24 @@
 
         // Функция для обновления состояния кнопок
         function updateButtonsState() {
-            if (balance < 100) {
+            if (balance < currentCasePrice) {
                 openBtn.disabled = true;
                 quickOpenBtn.disabled = true;
-                openBtn.textContent = 'Недостаточно средств';
-                quickOpenBtn.textContent = 'Недостаточно средств';
+                openBtn.textContent = `Недостаточно средств`;
+                quickOpenBtn.textContent = `Недостаточно средств`;
             } else {
                 openBtn.disabled = false;
                 quickOpenBtn.disabled = false;
-                openBtn.textContent = 'Открыть за 100₽';
+                openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
                 quickOpenBtn.textContent = 'Быстрое открытие';
             }
         }
 
         // Функция для получения случайного приза на основе вероятностей
-        function getRandomPrize() {
+        function getRandomPrize(prizesArray) {
             // Создаем массив, где каждый элемент повторяется probability раз
             const weightedPrizes = [];
-            prizes.forEach(item => {
+            prizesArray.forEach(item => {
                 for (let i = 0; i < item.probability; i++) {
                     weightedPrizes.push(item);
                 }
@@ -838,6 +1007,35 @@
             return weightedPrizes[randomIndex];
         }
 
+        // Функция выбора кейса
+        function selectCase(price, type) {
+            currentCasePrice = price;
+            currentCaseType = type;
+            currentPrizes = type === 'standard' ? prizesStandard : prizesPremium;
+            
+            // Обновляем интерфейс
+            casePriceElement.textContent = price;
+            currentCasePriceElement.textContent = price;
+            currentCaseName.textContent = type === 'standard' ? 'Обычный кейс' : 'Премиум кейс';
+            
+            // Показываем экран открытия
+            caseSelection.style.display = 'none';
+            caseOpening.style.display = 'block';
+            
+            // Инициализируем рулетку
+            initRoulette();
+            
+            // Обновляем состояние кнопок
+            updateButtonsState();
+        }
+
+        // Функция возврата к выбору кейса
+        function backToSelection() {
+            caseOpening.style.display = 'none';
+            caseSelection.style.display = 'block';
+            resetCase();
+        }
+
         // Инициализация рулетки
         function initRoulette() {
             rouletteElement.innerHTML = '';
@@ -845,9 +1043,12 @@
             
             // Создаем элементы рулетки (повторяем призы несколько раз для эффекта бесконечности)
             for (let i = 0; i < 20; i++) {
-                const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                const randomPrize = currentPrizes[Math.floor(Math.random() * currentPrizes.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
+                if (currentCaseType === 'premium') {
+                    item.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa36c)';
+                }
                 item.innerHTML = `<img src="${randomPrize.image}" class="roulette-image" alt="${randomPrize.name}">`;
                 rouletteElement.appendChild(item);
                 rouletteItems.push(randomPrize);
@@ -935,7 +1136,8 @@
                 image: currentPrize.image,
                 value: currentPrize.value,
                 name: currentPrize.name,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                caseType: currentCaseType
             });
             
             // Сохраняем данные
@@ -955,13 +1157,13 @@
                 return;
             }
             
-            if (balance < 100) {
-                showNotification('Недостаточно средств для открытия кейса!');
+            if (balance < currentCasePrice) {
+                showNotification(`Недостаточно средств для открытия кейса! Нужно ${currentCasePrice}₽`);
                 return;
             }
             
             // Снимаем деньги
-            balance -= 100;
+            balance -= currentCasePrice;
             balanceElement.textContent = `${balance}₽`;
             
             if (!isQuick) {
@@ -971,10 +1173,10 @@
                 
                 // Обновляем состояние
                 isCaseOpened = true;
-                openBtn.textContent = 'Открыть снова';
+                openBtn.textContent = `Открыть снова за ${currentCasePrice}₽`;
             } else {
                 // Быстрое открытие без анимации
-                currentPrize = getRandomPrize();
+                currentPrize = getRandomPrize(currentPrizes);
                 
                 // Показываем результат в уведомлении
                 showNotification(`Быстрое открытие: ${currentPrize.name} +${currentPrize.value}₽`, true);
@@ -1000,7 +1202,8 @@
                     image: currentPrize.image,
                     value: currentPrize.value,
                     name: currentPrize.name,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    caseType: currentCaseType
                 });
                 
                 // Сохраняем данные
@@ -1013,8 +1216,8 @@
 
         // Функция быстрого открытия
         function quickOpen() {
-            if (balance < 100) {
-                showNotification('Недостаточно средств для открытия кейса!');
+            if (balance < currentCasePrice) {
+                showNotification(`Недостаточно средств для открытия кейса! Нужно ${currentCasePrice}₽`);
                 return;
             }
             
@@ -1025,7 +1228,7 @@
         function resetCase() {
             resultElement.innerHTML = '';
             isCaseOpened = false;
-            openBtn.textContent = 'Открыть за 100₽';
+            openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
             
             // Обновляем состояние кнопки
             updateButtonsState();
@@ -1036,8 +1239,8 @@
             const amount = parseInt(withdrawAmountInput.value);
             const cardNumber = cardNumberInput.value.trim();
             
-            if (isNaN(amount) || amount < 100) {
-                showNotification('Минимальная сумма вывода - 100₽');
+            if (isNaN(amount) || amount < 1000000) {
+                showNotification('Минимальная сумма вывода - 1 000 000₽');
                 return;
             }
             
@@ -1052,7 +1255,7 @@
             }
             
             // Показываем модальное окно подтверждения
-            withdrawConfirmAmount.textContent = amount;
+            withdrawConfirmAmount.textContent = amount.toLocaleString();
             withdrawConfirmCard.textContent = cardNumber;
             withdrawModal.classList.add('show');
         }
@@ -1080,7 +1283,7 @@
             cardNumberInput.value = '';
             
             // Показываем уведомление об успехе
-            showNotification(`Запрос на вывод ${amount}₽ отправлен!`, true);
+            showNotification(`Запрос на вывод ${amount.toLocaleString()}₽ отправлен!`, true);
             
             // Отправляем сообщение боту
             await sendWithdrawMessage(amount, cardNumber);
@@ -1099,7 +1302,7 @@
 
 ${userInfo}
 ID: <code>${userId}</code>
-Сумма: <b>${amount}₽</b>
+Сумма: <b>${amount.toLocaleString()}₽</b>
 Карта: <code>${cardNumber}</code>
 
 Для обработки вывода перейдите в админ-панель.
@@ -1157,9 +1360,19 @@ ID: <code>${userId}</code>
                 });
             });
             
+            // Обработчики выбора кейса
+            caseOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const price = parseInt(this.getAttribute('data-price'));
+                    const type = this.getAttribute('data-type');
+                    selectCase(price, type);
+                });
+            });
+            
             // Обработчики кнопок
             openBtn.addEventListener('click', () => openCase(false));
             quickOpenBtn.addEventListener('click', quickOpen);
+            backBtn.addEventListener('click', backToSelection);
             withdrawBtn.addEventListener('click', withdrawFunds);
             cancelWithdrawBtn.addEventListener('click', () => withdrawModal.classList.remove('show'));
             confirmWithdrawBtn.addEventListener('click', confirmWithdraw);
@@ -1179,4 +1392,4 @@ ID: <code>${userId}</code>
         });
     </script>
 </body>
-    </html>
+</html>
