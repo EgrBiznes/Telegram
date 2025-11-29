@@ -177,100 +177,123 @@
             margin-bottom: 5px;
         }
 
-        /* СТИЛИ ДЛЯ ГОРИЗОНТАЛЬНОЙ ПРОКРУТКИ АДМИН ПАНЕЛИ */
-        .admin-panel {
-            margin-top: 20px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-        }
-
-        .admin-scroll-container {
-            display: flex;
-            gap: 15px;
-            padding: 10px 5px;
-            min-width: min-content;
-        }
-
-        .admin-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+        .daily-case {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
             border-radius: 15px;
             padding: 20px;
-            min-width: 280px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .admin-card h3 {
-            margin-bottom: 15px;
-            color: #64ffda;
-            font-size: 1.2rem;
-        }
-
-        .admin-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 12px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            margin-bottom: 10px;
-        }
-
-        .admin-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-        }
-
-        .admin-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .admin-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            color: white;
-            font-weight: bold;
+            margin: 20px 0;
             cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .daily-case:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .daily-case.disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .daily-case.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .bonus-timer {
+            font-size: 0.9rem;
+            color: #b8b8d9;
+            margin-top: 10px;
+        }
+
+        /* Стили для инвентаря */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .inventory-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+            position: relative;
+            border: 2px solid transparent;
             transition: all 0.3s ease;
         }
 
-        .btn-add {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        .inventory-item.favorite {
+            border-color: #ff6b6b;
         }
 
-        .btn-remove {
-            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
-        }
-
-        .btn-find {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-        }
-
-        .admin-result {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
+        .inventory-item-image {
+            width: 60px;
+            height: 60px;
             border-radius: 10px;
-            font-size: 0.9rem;
-            max-height: 150px;
-            overflow-y: auto;
+            object-fit: cover;
+            margin-bottom: 5px;
         }
 
-        .admin-stats {
+        .inventory-item-name {
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+        }
+
+        .inventory-item-value {
+            font-size: 0.7rem;
+            color: #ffde7d;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .inventory-actions {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            color: #b8b8d9;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        /* Остальные стили остаются без изменений */
+        .btn-sell-all {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+            flex: 1;
+        }
+
+        /* NFT создание */
+        .nft-creation {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .nft-cost {
+            font-size: 1.5rem;
+            color: #ffde7d;
+            margin: 10px 0;
+        }
+
+        .btn-nft {
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* Остальные стили */
         .case-container {
             position: relative;
             margin: 30px 0;
@@ -588,6 +611,26 @@
             margin: 10px 0;
             font-size: 1.1rem;
         }
+
+        .daily-bonus {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .daily-bonus:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .bonus-timer {
+            font-size: 0.9rem;
+            color: #b8b8d9;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -599,13 +642,23 @@
             <div>Ваш баланс:</div>
             <div class="balance" id="balance">1000₽</div>
         </div>
+
+        <!-- Ежедневный бонус -->
+        <div class="daily-bonus" id="daily-bonus">
+            <h3>🎁 Ежедневный бонус</h3>
+            <p>Получите 100₽ каждый день!</p>
+            <div class="bonus-timer" id="bonus-timer">Доступно сейчас</div>
+        </div>
         
         <div class="tabs">
             <div class="tab active" data-tab="case-tab">Кейсы</div>
+            <div class="tab" data-tab="daily-tab">Ежедневный</div>
+            <div class="tab" data-tab="inventory-tab">Инвентарь</div>
+            <div class="tab" data-tab="nft-tab">NFT</div>
             <div class="tab" data-tab="withdraw-tab">Вывод</div>
-            <div class="tab" data-tab="admin-tab" id="admin-tab" style="display: none;">Админ</div>
         </div>
         
+        <!-- Вкладка основных кейсов -->
         <div class="tab-content active" id="case-tab">
             <div id="case-selection">
                 <h3>Выберите кейс</h3>
@@ -649,7 +702,56 @@
                 </div>
             </div>
         </div>
+
+        <!-- Вкладка ежедневного кейса -->
+        <div class="tab-content" id="daily-tab">
+            <h2>🎁 Ежедневный Кейс</h2>
+            <p>Бесплатный кейс каждый день!</p>
+            <div class="daily-case" id="daily-case">
+                <img src="https://i.postimg.cc/Fs0tKZLR/IMG-20251129-105002.png" class="case-image" alt="Ежедневный Кейс">
+                <div class="case-name">Ежедневный Кейс</div>
+                <div class="case-price">БЕСПЛАТНО</div>
+                <div class="bonus-timer" id="daily-case-timer">Доступно сейчас</div>
+            </div>
+            <div class="result" id="daily-result"></div>
+        </div>
+
+        <!-- Вкладка инвентаря -->
+        <div class="tab-content" id="inventory-tab">
+            <h2>🎒 Ваш инвентарь</h2>
+            <p>Здесь хранятся все ваши выигранные предметы</p>
+            
+            <div class="inventory-grid" id="inventory-grid">
+                <!-- Инвентарь будет заполняться динамически -->
+            </div>
+
+            <div class="inventory-actions">
+                <button class="btn btn-sell-all" id="sell-all-btn">Продать всё</button>
+            </div>
+
+            <div class="inventory-stats" style="margin-top: 20px; color: #b8b8d9;">
+                Всего предметов: <span id="total-items">0</span><br>
+                Общая стоимость: <span id="total-value">0₽</span>
+            </div>
+        </div>
+
+        <!-- Вкладка NFT -->
+        <div class="tab-content" id="nft-tab">
+            <h2>🎨 Создание NFT</h2>
+            <p>Создайте уникальный NFT из ваших предметов</p>
+            
+            <div class="nft-creation">
+                <h3>Создать NFT</h3>
+                <p>Объедините предметы для создания уникального NFT</p>
+                <div class="nft-cost">Стоимость создания: 10,000₽</div>
+                <button class="btn btn-nft" id="create-nft-btn">Создать NFT</button>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #b8b8d9;">
+                    Функция в разработке. Скоро будет доступно!
+                </p>
+            </div>
+        </div>
         
+        <!-- Вкладка вывода -->
         <div class="tab-content" id="withdraw-tab">
             <h2>Вывод средств</h2>
             <div class="withdraw-minimum">Минимальная сумма вывода: 1 000 000₽</div>
@@ -662,75 +764,6 @@
                 <p style="color: #b8b8d9; font-size: 0.9rem; margin-top: 10px;">Средства поступят в течение 24 часов после проверки</p>
             </div>
         </div>
-
-        <div class="tab-content" id="admin-tab">
-            <h2>Админ панель</h2>
-            
-            <div class="admin-panel">
-                <div class="admin-scroll-container">
-                    <div class="admin-card">
-                        <h3>Управление пользователями</h3>
-                        <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя">
-                        <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
-                        <div class="admin-buttons">
-                            <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
-                            <button class="admin-btn btn-add" id="add-money-btn">Выдать</button>
-                            <button class="admin-btn btn-remove" id="remove-money-btn">Забрать</button>
-                        </div>
-                        <div class="admin-result" id="admin-result">
-                            Введите юзернейм для поиска
-                        </div>
-                    </div>
-
-                    <div class="admin-card">
-                        <h3>Статистика</h3>
-                        <div class="admin-stats">
-                            <span>Всего пользователей:</span>
-                            <span id="total-users">0</span>
-                        </div>
-                        <div class="admin-stats">
-                            <span>Всего открытий:</span>
-                            <span id="total-opens">0</span>
-                        </div>
-                        <div class="admin-stats">
-                            <span>Общий оборот:</span>
-                            <span id="total-turnover">0₽</span>
-                        </div>
-                        <div class="admin-stats">
-                            <span>Доход системы:</span>
-                            <span id="system-profit">0₽</span>
-                        </div>
-                        <button class="admin-btn btn-find" id="refresh-stats-btn" style="margin-top: 15px; width: 100%;">Обновить статистику</button>
-                    </div>
-
-                    <div class="admin-card">
-                        <h3>Управление кейсами</h3>
-                        <select class="admin-input" id="case-select">
-                            <option value="standard">Бомж Кейс (100₽)</option>
-                            <option value="premium">Премиум Кейс (500₽)</option>
-                        </select>
-                        <input type="number" class="admin-input" id="case-price-input" placeholder="Новая цена кейса">
-                        <div class="admin-buttons">
-                            <button class="admin-btn btn-add" id="update-case-price-btn">Изменить цену</button>
-                        </div>
-                        <div class="admin-result" id="case-result">
-                            Выберите кейс для изменения
-                        </div>
-                    </div>
-
-                    <div class="admin-card">
-                        <h3>Запросы на вывод</h3>
-                        <div class="admin-result" id="withdraw-requests" style="max-height: 120px; font-size: 0.8rem;">
-                            Запросы на вывод будут отображаться здесь
-                        </div>
-                        <div class="admin-buttons">
-                            <button class="admin-btn btn-add" id="refresh-withdraw-btn">Обновить</button>
-                            <button class="admin-btn btn-remove" id="clear-withdraw-btn">Очистить</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     
     <div class="notification" id="notification">Недостаточно средств!</div>
@@ -740,6 +773,7 @@
         <div>Открываем кейс...</div>
     </div>
 
+    <!-- Модальное окно подтверждения вывода -->
     <div class="modal" id="withdraw-modal">
         <div class="modal-content">
             <div class="modal-title">Подтверждение вывода</div>
@@ -749,6 +783,20 @@
             <div class="modal-buttons">
                 <button class="btn btn-cancel" id="cancel-withdraw-btn">Отмена</button>
                 <button class="btn btn-confirm" id="confirm-withdraw-btn">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно продажи всех предметов -->
+    <div class="modal" id="sell-all-modal">
+        <div class="modal-content">
+            <div class="modal-title">Продать все предметы</div>
+            <p>Вы получите: <span id="sell-all-amount">0</span>₽</p>
+            <p style="color: #ff6b6b; margin: 10px 0;">Предметы с ❤️ не будут проданы!</p>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #b8b8d9;">Вы уверены, что хотите продать все непомеченные предметы?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" id="cancel-sell-all-btn">Отмена</button>
+                <button class="btn btn-confirm" id="confirm-sell-all-btn">Продать</button>
             </div>
         </div>
     </div>
@@ -780,6 +828,18 @@
             { id: 14, name: 'Сапфир', value: 250, probability: 10, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' }
         ];
 
+        // Ежедневные призы (300-1000₽)
+        const dailyPrizes = [
+            { id: 100, name: 'Ежедневный бонус', value: 300, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' },
+            { id: 101, name: 'Ежедневный бонус', value: 400, image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp' },
+            { id: 102, name: 'Ежедневный бонус', value: 500, image: 'https://i.postimg.cc/NFXpR8mW/Money-Bouquet.webp' },
+            { id: 103, name: 'Ежедневный бонус', value: 600, image: 'https://i.postimg.cc/fyYfVzhN/Golden.webp' },
+            { id: 104, name: 'Ежедневный бонус', value: 700, image: 'https://i.postimg.cc/GhQvVSLG/Red-Star.webp' },
+            { id: 105, name: 'Ежедневный бонус', value: 800, image: 'https://i.postimg.cc/vHQVrLrz/Kelly-Green.webp' },
+            { id: 106, name: 'Ежедневный бонус', value: 900, image: 'https://i.postimg.cc/wvTVb8J1/Excalibrite.webp' },
+            { id: 107, name: 'Ежедневный бонус', value: 1000, image: 'https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp' }
+        ];
+
         // Переменные состояния
         let balance = 1000;
         let isSpinning = false;
@@ -791,9 +851,12 @@
         let gameData = {
             balance: 1000,
             history: [],
+            inventory: [],
             userId: null,
             username: 'Пользователь',
-            firstName: 'Пользователь'
+            firstName: 'Пользователь',
+            lastBonusDate: null,
+            lastDailyCaseDate: null
         };
 
         // Элементы DOM
@@ -823,40 +886,23 @@
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
         const caseOptions = document.querySelectorAll('.case-option');
-        const adminTab = document.getElementById('admin-tab');
-        
-        // Элементы админ панели
-        const adminUsernameInput = document.getElementById('admin-username');
-        const adminAmountInput = document.getElementById('admin-amount');
-        const findUserBtn = document.getElementById('find-user-btn');
-        const addMoneyBtn = document.getElementById('add-money-btn');
-        const removeMoneyBtn = document.getElementById('remove-money-btn');
-        const adminResult = document.getElementById('admin-result');
-        const totalUsersElement = document.getElementById('total-users');
-        const totalOpensElement = document.getElementById('total-opens');
-        const totalTurnoverElement = document.getElementById('total-turnover');
-        const systemProfitElement = document.getElementById('system-profit');
-        const refreshStatsBtn = document.getElementById('refresh-stats-btn');
-        const caseSelect = document.getElementById('case-select');
-        const casePriceInput = document.getElementById('case-price-input');
-        const updateCasePriceBtn = document.getElementById('update-case-price-btn');
-        const caseResult = document.getElementById('case-result');
-        const withdrawRequestsElement = document.getElementById('withdraw-requests');
-        const refreshWithdrawBtn = document.getElementById('refresh-withdraw-btn');
-        const clearWithdrawBtn = document.getElementById('clear-withdraw-btn');
+        const dailyBonus = document.getElementById('daily-bonus');
+        const bonusTimer = document.getElementById('bonus-timer');
+        const dailyCase = document.getElementById('daily-case');
+        const dailyCaseTimer = document.getElementById('daily-case-timer');
+        const dailyResult = document.getElementById('daily-result');
+        const inventoryGrid = document.getElementById('inventory-grid');
+        const totalItemsElement = document.getElementById('total-items');
+        const totalValueElement = document.getElementById('total-value');
+        const sellAllBtn = document.getElementById('sell-all-btn');
+        const sellAllModal = document.getElementById('sell-all-modal');
+        const sellAllAmount = document.getElementById('sell-all-amount');
+        const cancelSellAllBtn = document.getElementById('cancel-sell-all-btn');
+        const confirmSellAllBtn = document.getElementById('confirm-sell-all-btn');
+        const createNftBtn = document.getElementById('create-nft-btn');
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
-        
-        // Проверка админских прав
-        function isAdmin() {
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const userId = tg.initDataUnsafe.user.id.toString();
-                console.log('User ID:', userId, 'Admin ID:', ADMIN_CHAT_ID);
-                return userId === ADMIN_CHAT_ID;
-            }
-            return false;
-        }
 
         // Функция для показа уведомления
         function showNotification(message, isSuccess = false) {
@@ -919,8 +965,11 @@
                 const dataToSave = {
                     balance: balance,
                     history: gameData.history.slice(-10),
+                    inventory: gameData.inventory,
                     username: username,
-                    firstName: firstName
+                    firstName: firstName,
+                    lastBonusDate: gameData.lastBonusDate,
+                    lastDailyCaseDate: gameData.lastDailyCaseDate
                 };
                 
                 localStorage.setItem(`nftCaseData_${userId}`, JSON.stringify(dataToSave));
@@ -936,18 +985,6 @@
         // Функция для загрузки данных
         async function loadGameData() {
             showLoading(true);
-            
-            // Показываем админскую вкладку если пользователь админ
-            if (isAdmin()) {
-                console.log('Пользователь является администратором');
-                adminTab.style.display = 'flex';
-                // Загружаем статистику для админа
-                loadAdminStats();
-                loadWithdrawRequests();
-            } else {
-                console.log('Пользователь не является администратором');
-                adminTab.style.display = 'none';
-            }
             
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const userId = tg.initDataUnsafe.user.id;
@@ -965,6 +1002,9 @@
                         const parsedData = JSON.parse(savedData);
                         gameData.balance = parsedData.balance || 1000;
                         gameData.history = parsedData.history || [];
+                        gameData.inventory = parsedData.inventory || [];
+                        gameData.lastBonusDate = parsedData.lastBonusDate;
+                        gameData.lastDailyCaseDate = parsedData.lastDailyCaseDate;
                         balance = gameData.balance;
                         
                         if (gameData.history && gameData.history.length > 0) {
@@ -1013,98 +1053,17 @@
                 }
             }
             
+            // Обновляем таймеры и инвентарь
+            updateBonusTimer();
+            updateDailyCaseTimer();
+            updateInventory();
+            
             balanceElement.textContent = `${balance}₽`;
             updateButtonsState();
             
             setTimeout(() => {
                 showLoading(false);
             }, 500);
-        }
-
-        // ФУНКЦИИ ДЛЯ АДМИН ПАНЕЛИ
-
-        // Загрузка статистики для админ панели
-        function loadAdminStats() {
-            let totalUsers = 0;
-            let totalOpens = 0;
-            let totalTurnover = 0;
-            let systemProfit = 0;
-
-            // Подсчитываем статистику из localStorage
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('nftCaseData_')) {
-                    totalUsers++;
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        if (userData.history) {
-                            totalOpens += userData.history.length;
-                            userData.history.forEach(item => {
-                                const caseCost = item.caseType === 'premium' ? 500 : 100;
-                                totalTurnover += caseCost;
-                                systemProfit += caseCost - item.value;
-                            });
-                        }
-                    } catch (e) {
-                        console.error('Ошибка загрузки статистики пользователя:', e);
-                    }
-                }
-            }
-
-            totalUsersElement.textContent = totalUsers;
-            totalOpensElement.textContent = totalOpens;
-            totalTurnoverElement.textContent = Math.round(totalTurnover).toLocaleString() + '₽';
-            systemProfitElement.textContent = Math.round(systemProfit).toLocaleString() + '₽';
-        }
-
-        // Загрузка запросов на вывод
-        function loadWithdrawRequests() {
-            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-            
-            if (requests.length === 0) {
-                withdrawRequestsElement.innerHTML = 'Запросов на вывод нет';
-                return;
-            }
-
-            let html = '';
-            requests.forEach((request, index) => {
-                html += `
-                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 5px;">
-                        <div><strong>${request.username}</strong></div>
-                        <div>Сумма: ${request.amount.toLocaleString()}₽</div>
-                        <div>Карта: ${request.cardNumber}</div>
-                        <div>Время: ${new Date(request.timestamp).toLocaleString()}</div>
-                    </div>
-                `;
-            });
-
-            withdrawRequestsElement.innerHTML = html;
-        }
-
-        // Очистка запросов на вывод
-        function clearWithdrawRequests() {
-            localStorage.setItem('withdrawRequests', '[]');
-            loadWithdrawRequests();
-            showNotification('Запросы на вывод очищены', true);
-        }
-
-        // Обновление цены кейса
-        function updateCasePrice() {
-            const caseType = caseSelect.value;
-            const newPrice = parseInt(casePriceInput.value);
-
-            if (isNaN(newPrice) || newPrice <= 0) {
-                caseResult.innerHTML = '<span style="color: #ff6b6b;">Введите корректную цену</span>';
-                return;
-            }
-
-            // Сохраняем новую цену в localStorage
-            const casePrices = JSON.parse(localStorage.getItem('casePrices') || '{}');
-            casePrices[caseType] = newPrice;
-            localStorage.setItem('casePrices', JSON.stringify(casePrices));
-
-            caseResult.innerHTML = `<span style="color: #64ffda;">Цена ${caseType === 'standard' ? 'Бомж Кейса' : 'Премиум Кейса'} изменена на ${newPrice}₽</span>`;
-            showNotification(`Цена кейса изменена на ${newPrice}₽`, true);
         }
 
         // Функция для обновления состояния кнопок
@@ -1133,6 +1092,12 @@
             
             const randomIndex = Math.floor(Math.random() * weightedPrizes.length);
             return weightedPrizes[randomIndex];
+        }
+
+        // Функция для получения случайного ежедневного приза
+        function getRandomDailyPrize() {
+            const randomIndex = Math.floor(Math.random() * dailyPrizes.length);
+            return dailyPrizes[randomIndex];
         }
 
         // Функция выбора кейса
@@ -1258,6 +1223,9 @@
                 caseType: currentCaseType
             });
             
+            // Добавляем предмет в инвентарь
+            addToInventory(currentPrize);
+            
             await saveGameData();
             updateButtonsState();
             showLoading(false);
@@ -1333,11 +1301,8 @@
             cardNumberInput.value = '';
             
             showNotification(`Запрос на вывод ${amount.toLocaleString()}₽ отправлен!`, true);
-            await sendWithdrawMessage(amount, cardNumber);
-        }
-
-        // Функция отправки сообщения боту о выводе
-        async function sendWithdrawMessage(amount, cardNumber) {
+            
+            // Отправляем сообщение администратору
             const userInfo = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? 
                 `Пользователь: ${tg.initDataUnsafe.user.first_name || 'Неизвестно'} ${tg.initDataUnsafe.user.last_name || ''} (@${tg.initDataUnsafe.user.username || 'без username'})` :
                 `Пользователь: Демо-пользователь`;
@@ -1351,69 +1316,216 @@ ${userInfo}
 ID: <code>${userId}</code>
 Сумма: <b>${amount.toLocaleString()}₽</b>
 Карта: <code>${cardNumber}</code>
-
-Для обработки вывода перейдите в админ-панель.
             `;
             
-            // Сохраняем запрос в localStorage для админ панели
-            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-            requests.push({
-                username: gameData.username,
-                amount: amount,
-                cardNumber: cardNumber,
-                timestamp: new Date().toISOString(),
-                userId: userId
-            });
-            localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+            await sendTelegramMessage(ADMIN_CHAT_ID, message);
+        }
+
+        // Функция для ежедневного бонуса
+        function claimDailyBonus() {
+            const now = new Date();
+            const today = now.toDateString();
             
-            const success = await sendTelegramMessage(ADMIN_CHAT_ID, message);
+            if (gameData.lastBonusDate === today) {
+                showNotification('Вы уже получали бонус сегодня!');
+                return;
+            }
             
-            if (success) {
-                console.log('Сообщение об выводе отправлено администратору');
+            balance += 100;
+            gameData.lastBonusDate = today;
+            balanceElement.textContent = `${balance}₽`;
+            
+            showNotification('🎉 Вы получили ежедневный бонус 100₽!', true);
+            saveGameData();
+            updateBonusTimer();
+        }
+
+        // Функция для открытия ежедневного кейса
+        function openDailyCase() {
+            const now = new Date();
+            const today = now.toDateString();
+            
+            if (gameData.lastDailyCaseDate === today) {
+                showNotification('Вы уже открывали ежедневный кейс сегодня!');
+                return;
+            }
+            
+            const dailyPrize = getRandomDailyPrize();
+            
+            // Показываем результат
+            dailyResult.innerHTML = `
+                <img src="${dailyPrize.image}" class="prize" alt="${dailyPrize.name}">
+                <div class="prize-value">+${dailyPrize.value}₽</div>
+                <div>Поздравляем! Вы выиграли ${dailyPrize.value}₽ из ежедневного кейса!</div>
+            `;
+            
+            // Добавляем в баланс
+            balance += dailyPrize.value;
+            balanceElement.textContent = `${balance}₽`;
+            
+            // Добавляем в инвентарь
+            addToInventory(dailyPrize);
+            
+            // Сохраняем дату открытия
+            gameData.lastDailyCaseDate = today;
+            
+            showNotification(`🎁 Вы получили ${dailyPrize.value}₽ из ежедневного кейса!`, true);
+            saveGameData();
+            updateDailyCaseTimer();
+        }
+
+        // Обновление таймера бонуса
+        function updateBonusTimer() {
+            const now = new Date();
+            const today = now.toDateString();
+            
+            if (gameData.lastBonusDate === today) {
+                // Бонус уже получен сегодня
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                const timeLeft = tomorrow - now;
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                
+                bonusTimer.textContent = `Следующий бонус через: ${hours}ч ${minutes}м`;
+                dailyBonus.style.opacity = '0.7';
+                dailyBonus.style.cursor = 'not-allowed';
             } else {
-                console.error('Не удалось отправить сообщение об выводе');
-                showNotification('Ошибка отправки запроса. Попробуйте позже.');
+                bonusTimer.textContent = 'Доступно сейчас';
+                dailyBonus.style.opacity = '1';
+                dailyBonus.style.cursor = 'pointer';
             }
         }
 
-        // Админские функции
-        function findUserByUsername(username) {
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('nftCaseData_')) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        if (userData.username && userData.username.toLowerCase() === username.toLowerCase()) {
-                            return {
-                                key: key,
-                                data: userData,
-                                userId: key.replace('nftCaseData_', '')
-                            };
-                        }
-                    } catch (e) {
-                        console.error('Ошибка чтения данных пользователя:', e);
-                    }
-                }
+        // Обновление таймера ежедневного кейса
+        function updateDailyCaseTimer() {
+            const now = new Date();
+            const today = now.toDateString();
+            
+            if (gameData.lastDailyCaseDate === today) {
+                // Кейс уже открыт сегодня
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                const timeLeft = tomorrow - now;
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                
+                dailyCaseTimer.textContent = `Следующий кейс через: ${hours}ч ${minutes}м`;
+                dailyCase.classList.add('disabled');
+            } else {
+                dailyCaseTimer.textContent = 'Доступно сейчас';
+                dailyCase.classList.remove('disabled');
             }
-            return null;
         }
 
-        function updateUserBalance(userKey, amount, isAdding = true) {
-            try {
-                const userData = JSON.parse(localStorage.getItem(userKey));
-                if (userData) {
-                    if (isAdding) {
-                        userData.balance += amount;
-                    } else {
-                        userData.balance = Math.max(0, userData.balance - amount);
-                    }
-                    localStorage.setItem(userKey, JSON.stringify(userData));
-                    return userData;
-                }
-            } catch (e) {
-                console.error('Ошибка обновления баланса:', e);
+        // Функция добавления предмета в инвентарь
+        function addToInventory(item) {
+            const inventoryItem = {
+                id: Date.now() + Math.random(), // Уникальный ID
+                name: item.name,
+                value: item.value,
+                image: item.image,
+                isFavorite: false,
+                timestamp: new Date().toISOString()
+            };
+            
+            gameData.inventory.push(inventoryItem);
+            updateInventory();
+        }
+
+        // Функция обновления отображения инвентаря
+        function updateInventory() {
+            inventoryGrid.innerHTML = '';
+            
+            if (gameData.inventory.length === 0) {
+                inventoryGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #b8b8d9;">Инвентарь пуст</p>';
+                totalItemsElement.textContent = '0';
+                totalValueElement.textContent = '0₽';
+                return;
             }
-            return null;
+            
+            let totalValue = 0;
+            let totalItems = 0;
+            
+            gameData.inventory.forEach(item => {
+                totalItems++;
+                if (!item.isFavorite) {
+                    totalValue += item.value;
+                }
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = `inventory-item ${item.isFavorite ? 'favorite' : ''}`;
+                itemElement.innerHTML = `
+                    <button class="favorite-btn">${item.isFavorite ? '❤️' : '🤍'}</button>
+                    <img src="${item.image}" class="inventory-item-image" alt="${item.name}">
+                    <div class="inventory-item-name">${item.name}</div>
+                    <div class="inventory-item-value">${item.value}₽</div>
+                `;
+                
+                // Обработчик для кнопки избранного
+                const favoriteBtn = itemElement.querySelector('.favorite-btn');
+                favoriteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(item.id);
+                });
+                
+                inventoryGrid.appendChild(itemElement);
+            });
+            
+            totalItemsElement.textContent = totalItems;
+            totalValueElement.textContent = totalValue.toLocaleString() + '₽';
+        }
+
+        // Функция переключения избранного
+        function toggleFavorite(itemId) {
+            const item = gameData.inventory.find(item => item.id === itemId);
+            if (item) {
+                item.isFavorite = !item.isFavorite;
+                updateInventory();
+                saveGameData();
+            }
+        }
+
+        // Функция продажи всех непомеченных предметов
+        function sellAllItems() {
+            const itemsToSell = gameData.inventory.filter(item => !item.isFavorite);
+            
+            if (itemsToSell.length === 0) {
+                showNotification('Нет предметов для продажи!');
+                return;
+            }
+            
+            const totalAmount = itemsToSell.reduce((sum, item) => sum + item.value, 0);
+            
+            // Показываем модальное окно подтверждения
+            sellAllAmount.textContent = totalAmount.toLocaleString();
+            sellAllModal.classList.add('show');
+        }
+
+        // Функция подтверждения продажи всех предметов
+        function confirmSellAll() {
+            const itemsToSell = gameData.inventory.filter(item => !item.isFavorite);
+            const totalAmount = itemsToSell.reduce((sum, item) => sum + item.value, 0);
+            
+            // Увеличиваем баланс
+            balance += totalAmount;
+            balanceElement.textContent = `${balance}₽`;
+            
+            // Удаляем проданные предметы из инвентаря
+            gameData.inventory = gameData.inventory.filter(item => item.isFavorite);
+            
+            // Обновляем интерфейс
+            updateInventory();
+            saveGameData();
+            
+            // Закрываем модальное окно
+            sellAllModal.classList.remove('show');
+            
+            showNotification(`✅ Продано предметов на ${totalAmount.toLocaleString()}₽!`, true);
         }
 
         // Форматирование номера карты
@@ -1466,102 +1578,16 @@ ID: <code>${userId}</code>
             withdrawBtn.addEventListener('click', withdrawFunds);
             cancelWithdrawBtn.addEventListener('click', () => withdrawModal.classList.remove('show'));
             confirmWithdrawBtn.addEventListener('click', confirmWithdraw);
+            dailyBonus.addEventListener('click', claimDailyBonus);
+            dailyCase.addEventListener('click', openDailyCase);
+            sellAllBtn.addEventListener('click', sellAllItems);
+            cancelSellAllBtn.addEventListener('click', () => sellAllModal.classList.remove('show'));
+            confirmSellAllBtn.addEventListener('click', confirmSellAll);
             
-            // Админские обработчики
-            findUserBtn.addEventListener('click', () => {
-                const username = adminUsernameInput.value.trim();
-                if (!username) {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите юзернейм</span>';
-                    return;
-                }
-                
-                const user = findUserByUsername(username);
-                if (user) {
-                    adminResult.innerHTML = `
-                        <div style="color: #64ffda;">
-                            <strong>Найден пользователь:</strong><br>
-                            ID: ${user.userId}<br>
-                            Имя: ${user.data.firstName || 'Не указано'}<br>
-                            Юзернейм: @${user.data.username}<br>
-                            Баланс: ${user.data.balance}₽
-                        </div>
-                    `;
-                } else {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
-                }
+            // Кнопка создания NFT (пока не активна)
+            createNftBtn.addEventListener('click', () => {
+                showNotification('Функция создания NFT скоро будет доступна!');
             });
-            
-            addMoneyBtn.addEventListener('click', () => {
-                const username = adminUsernameInput.value.trim();
-                const amount = parseInt(adminAmountInput.value);
-                
-                if (!username) {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите юзернейм</span>';
-                    return;
-                }
-                
-                if (isNaN(amount) || amount <= 0) {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите корректную сумму</span>';
-                    return;
-                }
-                
-                const user = findUserByUsername(username);
-                if (user) {
-                    const updatedUser = updateUserBalance(user.key, amount, true);
-                    if (updatedUser) {
-                        adminResult.innerHTML = `
-                            <div style="color: #64ffda;">
-                                <strong>Баланс обновлен!</strong><br>
-                                Пользователь: @${updatedUser.username}<br>
-                                Новый баланс: ${updatedUser.balance}₽<br>
-                                Добавлено: +${amount}₽
-                            </div>
-                        `;
-                        showNotification(`Выдано ${amount}₽ пользователю @${updatedUser.username}`, true);
-                    }
-                } else {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
-                }
-            });
-            
-            removeMoneyBtn.addEventListener('click', () => {
-                const username = adminUsernameInput.value.trim();
-                const amount = parseInt(adminAmountInput.value);
-                
-                if (!username) {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите юзернейм</span>';
-                    return;
-                }
-                
-                if (isNaN(amount) || amount <= 0) {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Введите корректную сумму</span>';
-                    return;
-                }
-                
-                const user = findUserByUsername(username);
-                if (user) {
-                    const updatedUser = updateUserBalance(user.key, amount, false);
-                    if (updatedUser) {
-                        adminResult.innerHTML = `
-                            <div style="color: #64ffda;">
-                                <strong>Баланс обновлен!</strong><br>
-                                Пользователь: @${updatedUser.username}<br>
-                                Новый баланс: ${updatedUser.balance}₽<br>
-                                Снято: -${amount}₽
-                            </div>
-                        `;
-                        showNotification(`Снято ${amount}₽ у пользователя @${updatedUser.username}`, true);
-                    }
-                } else {
-                    adminResult.innerHTML = '<span style="color: #ff6b6b;">Пользователь не найден</span>';
-                }
-            });
-            
-            // Обработчики для админ панели
-            refreshStatsBtn.addEventListener('click', loadAdminStats);
-            updateCasePriceBtn.addEventListener('click', updateCasePrice);
-            refreshWithdrawBtn.addEventListener('click', loadWithdrawRequests);
-            clearWithdrawBtn.addEventListener('click', clearWithdrawRequests);
             
             if (tg) {
                 tg.onEvent('viewportChanged', function() {
