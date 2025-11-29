@@ -347,25 +347,16 @@
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
-        /* НОВЫЕ СТИЛИ ДЛЯ АДМИН ПАНЕЛИ С ГОРИЗОНТАЛЬНОЙ ПРОКРУТКОЙ */
+        /* СТИЛИ ДЛЯ АДМИН ПАНЕЛИ */
         .admin-panel {
             margin-top: 20px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-        }
-
-        .admin-scroll-container {
-            display: flex;
-            gap: 15px;
-            padding: 10px 5px;
-            min-width: min-content;
         }
 
         .admin-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
             border-radius: 15px;
             padding: 20px;
-            min-width: 280px;
+            margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
@@ -673,72 +664,70 @@
         <div class="tab-content" id="admin-tab">
             <h2>Админ панель</h2>
             
-            <!-- НОВАЯ АДМИН ПАНЕЛЬ С ГОРИЗОНТАЛЬНОЙ ПРОКРУТКОЙ -->
+            <!-- АДМИН ПАНЕЛЬ -->
             <div class="admin-panel">
-                <div class="admin-scroll-container">
-                    <!-- Карточка управления пользователями -->
-                    <div class="admin-card">
-                        <h3>Управление пользователями</h3>
-                        <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя">
-                        <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
-                        <div class="admin-buttons">
-                            <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
-                            <button class="admin-btn btn-add" id="add-money-btn">Выдать</button>
-                            <button class="admin-btn btn-remove" id="remove-money-btn">Забрать</button>
-                        </div>
-                        <div class="admin-result" id="admin-result">
-                            Введите юзернейм для поиска
-                        </div>
+                <!-- Карточка управления пользователями -->
+                <div class="admin-card">
+                    <h3>Управление пользователями</h3>
+                    <input type="text" class="admin-input" id="admin-username" placeholder="Юзернейм пользователя">
+                    <input type="number" class="admin-input" id="admin-amount" placeholder="Сумма">
+                    <div class="admin-buttons">
+                        <button class="admin-btn btn-find" id="find-user-btn">Найти</button>
+                        <button class="admin-btn btn-add" id="add-money-btn">Выдать</button>
+                        <button class="admin-btn btn-remove" id="remove-money-btn">Забрать</button>
                     </div>
-
-                    <!-- Карточка статистики -->
-                    <div class="admin-card">
-                        <h3>Статистика</h3>
-                        <div class="admin-stats">
-                            <span>Всего пользователей:</span>
-                            <span id="total-users">0</span>
-                        </div>
-                        <div class="admin-stats">
-                            <span>Всего открытий:</span>
-                            <span id="total-opens">0</span>
-                        </div>
-                        <div class="admin-stats">
-                            <span>Общий оборот:</span>
-                            <span id="total-turnover">0₽</span>
-                        </div>
-                        <div class="admin-stats">
-                            <span>Доход системы:</span>
-                            <span id="system-profit">0₽</span>
-                        </div>
-                        <button class="admin-btn btn-find" id="refresh-stats-btn" style="margin-top: 15px; width: 100%;">Обновить статистику</button>
+                    <div class="admin-result" id="admin-result">
+                        Введите юзернейм для поиска
                     </div>
+                </div>
 
-                    <!-- Карточка управления кейсами -->
-                    <div class="admin-card">
-                        <h3>Управление кейсами</h3>
-                        <select class="admin-input" id="case-select">
-                            <option value="standard">Бомж Кейс (100₽)</option>
-                            <option value="premium">Премиум Кейс (500₽)</option>
-                        </select>
-                        <input type="number" class="admin-input" id="case-price-input" placeholder="Новая цена кейса">
-                        <div class="admin-buttons">
-                            <button class="admin-btn btn-add" id="update-case-price-btn">Изменить цену</button>
-                        </div>
-                        <div class="admin-result" id="case-result">
-                            Выберите кейс для изменения
-                        </div>
+                <!-- Карточка статистики -->
+                <div class="admin-card">
+                    <h3>Статистика</h3>
+                    <div class="admin-stats">
+                        <span>Всего пользователей:</span>
+                        <span id="total-users">0</span>
                     </div>
+                    <div class="admin-stats">
+                        <span>Всего открытий:</span>
+                        <span id="total-opens">0</span>
+                    </div>
+                    <div class="admin-stats">
+                        <span>Общий оборот:</span>
+                        <span id="total-turnover">0₽</span>
+                    </div>
+                    <div class="admin-stats">
+                        <span>Доход системы:</span>
+                        <span id="system-profit">0₽</span>
+                    </div>
+                    <button class="admin-btn btn-find" id="refresh-stats-btn" style="margin-top: 15px; width: 100%;">Обновить статистику</button>
+                </div>
 
-                    <!-- Карточка вывода средств -->
-                    <div class="admin-card">
-                        <h3>Запросы на вывод</h3>
-                        <div class="admin-result" id="withdraw-requests" style="max-height: 120px; font-size: 0.8rem;">
-                            Запросы на вывод будут отображаться здесь
-                        </div>
-                        <div class="admin-buttons">
-                            <button class="admin-btn btn-add" id="refresh-withdraw-btn">Обновить</button>
-                            <button class="admin-btn btn-remove" id="clear-withdraw-btn">Очистить</button>
-                        </div>
+                <!-- Карточка управления кейсами -->
+                <div class="admin-card">
+                    <h3>Управление кейсами</h3>
+                    <select class="admin-input" id="case-select">
+                        <option value="standard">Бомж Кейс (100₽)</option>
+                        <option value="premium">Премиум Кейс (500₽)</option>
+                    </select>
+                    <input type="number" class="admin-input" id="case-price-input" placeholder="Новая цена кейса">
+                    <div class="admin-buttons">
+                        <button class="admin-btn btn-add" id="update-case-price-btn">Изменить цену</button>
+                    </div>
+                    <div class="admin-result" id="case-result">
+                        Выберите кейс для изменения
+                    </div>
+                </div>
+
+                <!-- Карточка вывода средств -->
+                <div class="admin-card">
+                    <h3>Запросы на вывод</h3>
+                    <div class="admin-result" id="withdraw-requests" style="max-height: 120px; font-size: 0.8rem;">
+                        Запросы на вывод будут отображаться здесь
+                    </div>
+                    <div class="admin-buttons">
+                        <button class="admin-btn btn-add" id="refresh-withdraw-btn">Обновить</button>
+                        <button class="admin-btn btn-remove" id="clear-withdraw-btn">Очистить</button>
                     </div>
                 </div>
             </div>
@@ -925,7 +914,7 @@
         const caseOptions = document.querySelectorAll('.case-option');
         const adminTab = document.getElementById('admin-tab');
         
-        // Новые элементы админ панели
+        // Элементы админ панели
         const adminUsernameInput = document.getElementById('admin-username');
         const adminAmountInput = document.getElementById('admin-amount');
         const findUserBtn = document.getElementById('find-user-btn');
@@ -1115,7 +1104,7 @@
             }, 500);
         }
 
-        // НОВЫЕ ФУНКЦИИ ДЛЯ АДМИН ПАНЕЛИ
+        // ФУНКЦИИ ДЛЯ АДМИН ПАНЕЛИ
 
         // Загрузка статистики для админ панели
         function loadAdminStats() {
@@ -1655,7 +1644,7 @@ ID: <code>${userId}</code>
                 }
             });
             
-            // Новые обработчики для админ панели
+            // Обработчики для админ панели
             refreshStatsBtn.addEventListener('click', loadAdminStats);
             updateCasePriceBtn.addEventListener('click', updateCasePrice);
             refreshWithdrawBtn.addEventListener('click', loadWithdrawRequests);
