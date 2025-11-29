@@ -637,6 +637,15 @@
             color: #64ffda;
             font-size: 0.9rem;
         }
+
+        /* Стили для подтверждения сброса */
+        .confirm-modal {
+            display: none;
+        }
+
+        .confirm-modal.show {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -649,14 +658,30 @@
     <!-- Модальное окно настроек -->
     <div class="modal" id="settings-modal">
         <div class="modal-content">
+            <button class="close-modal" id="close-settings-btn">×</button>
             <div class="modal-title">Настройки аккаунта</div>
             <div class="user-info" style="position: static; margin-bottom: 20px;">
                 ID пользователя: <span id="settings-userid">-</span><br>
-                Имя: <span id="settings-username">-</span>
+                Имя: <span id="settings-username">-</span><br>
+                Баланс: <span id="settings-balance">-</span>₽<br>
+                NFT в инвентаре: <span id="settings-inventory">-</span>
             </div>
             <div class="modal-buttons">
-                <button class="modal-btn cancel" id="close-settings-btn">Закрыть</button>
-                <button class="modal-btn confirm" id="reset-data-btn">Сбросить данные</button>
+                <button class="modal-btn cancel" id="close-settings-btn2">Закрыть</button>
+                <button class="modal-btn transfer" id="reset-data-btn">Сбросить данные</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения сброса -->
+    <div class="modal confirm-modal" id="confirm-reset-modal">
+        <div class="modal-content">
+            <div class="modal-title">Подтверждение сброса</div>
+            <p>Вы уверены, что хотите сбросить все данные?</p>
+            <p style="color: #ff6b6b; margin: 15px 0;">Это действие нельзя отменить!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="cancel-reset-btn">Отмена</button>
+                <button class="modal-btn confirm" id="confirm-reset-btn">Сбросить данные</button>
             </div>
         </div>
     </div>
@@ -955,9 +980,16 @@
         const currentUserid = document.getElementById('current-userid');
         const settingsUserid = document.getElementById('settings-userid');
         const settingsUsername = document.getElementById('settings-username');
+        const settingsBalance = document.getElementById('settings-balance');
+        const settingsInventory = document.getElementById('settings-inventory');
         const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
         const closeSettingsBtn = document.getElementById('close-settings-btn');
+        const closeSettingsBtn2 = document.getElementById('close-settings-btn2');
         const resetDataBtn = document.getElementById('reset-data-btn');
+        const confirmResetModal = document.getElementById('confirm-reset-modal');
+        const cancelResetBtn = document.getElementById('cancel-reset-btn');
+        const confirmResetBtn = document.getElementById('confirm-reset-btn');
         const balanceElement = document.getElementById('balance');
         const createNftBtn = document.getElementById('create-nft-btn');
         const nftPreview = document.getElementById('nft-preview');
@@ -1110,8 +1142,6 @@
                 
                 // Обновляем интерфейс
                 currentUserid.textContent = currentUser.userid;
-                settingsUserid.textContent = currentUser.userid;
-                settingsUsername.textContent = currentUser.username;
                 updateBalance();
                 updateInventory();
                 updateBonusTimer();
@@ -1137,6 +1167,16 @@
                 createNftBtn.textContent = 'Прокрутка...';
             } else {
                 createNftBtn.textContent = 'Создать NFT за 10,000₽';
+            }
+        }
+
+        // Функция обновления информации в настройках
+        function updateSettingsInfo() {
+            if (currentUser) {
+                settingsUserid.textContent = currentUser.userid;
+                settingsUsername.textContent = currentUser.username;
+                settingsBalance.textContent = balance.toLocaleString();
+                settingsInventory.textContent = currentUser.inventory ? currentUser.inventory.length : 0;
             }
         }
 
@@ -1522,31 +1562,42 @@
 
         // Функция сброса данных пользователя
         function resetUserData() {
-            if (confirm('Вы уверены, что хотите сбросить все данные? Это действие нельзя отменить.')) {
-                // Создаем нового пользователя с тем же ID
-                const newUser = {
-                    userid: currentUser.userid,
-                    username: currentUser.username,
-                    balance: 50000,
-                    inventory: [],
-                    lastBonusTime: null,
-                    createdAt: new Date().toISOString()
-                };
-                
-                currentUser = newUser;
-                balance = 50000;
-                
-                // Сохраняем данные
-                saveUserData();
-                
-                // Обновляем интерфейс
-                updateBalance();
-                updateInventory();
-                updateBonusTimer();
-                
-                showNotification('✅ Данные сброшены!', true);
-                settingsModal.classList.remove('show');
-            }
+            // Создаем нового пользователя с тем же ID
+            const newUser = {
+                userid: currentUser.userid,
+                username: currentUser.username,
+                balance: 50000,
+                inventory: [],
+                lastBonusTime: null,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser = newUser;
+            balance = 50000;
+            
+            // Сохраняем данные
+            saveUserData();
+            
+            // Обновляем интерфейс
+            updateBalance();
+            updateInventory();
+            updateBonusTimer();
+            updateSettingsInfo();
+            
+            showNotification('✅ Данные сброшены!', true);
+            settingsModal.classList.remove('show');
+            confirmResetModal.classList.remove('show');
+        }
+
+        // Функция открытия настроек
+        function openSettings() {
+            updateSettingsInfo();
+            settingsModal.classList.add('show');
+        }
+
+        // Функция закрытия настроек
+        function closeSettings() {
+            settingsModal.classList.remove('show');
         }
 
         // Инициализация при загрузке страницы
@@ -1560,15 +1611,20 @@
             initializeUser();
             
             // Обработчики настроек
-            settingsBtn.addEventListener('click', () => {
-                settingsModal.classList.add('show');
+            settingsBtn.addEventListener('click', openSettings);
+            
+            closeSettingsBtn.addEventListener('click', closeSettings);
+            closeSettingsBtn2.addEventListener('click', closeSettings);
+            
+            resetDataBtn.addEventListener('click', function() {
+                confirmResetModal.classList.add('show');
             });
             
-            closeSettingsBtn.addEventListener('click', () => {
-                settingsModal.classList.remove('show');
+            cancelResetBtn.addEventListener('click', function() {
+                confirmResetModal.classList.remove('show');
             });
             
-            resetDataBtn.addEventListener('click', resetUserData);
+            confirmResetBtn.addEventListener('click', resetUserData);
             
             // Обработчики нижних вкладок
             document.querySelectorAll('.bottom-tab').forEach(tab => {
@@ -1604,7 +1660,7 @@
             bonusSection.addEventListener('click', claimBonus);
             
             // Закрытие модальных окон по клику вне их
-            [nftModal, sellModal, transferModal, settingsModal].forEach(modal => {
+            [nftModal, sellModal, transferModal, settingsModal, confirmResetModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('show');
@@ -1624,4 +1680,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
