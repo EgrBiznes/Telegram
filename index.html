@@ -6,6 +6,7 @@
     <title>NFT Кейсы | Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        /* Стили остаются без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -260,6 +261,18 @@
             color: #ff6b6b;
             cursor: pointer;
             font-size: 1rem;
+        }
+
+        .sell-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
         }
 
         .inventory-actions {
@@ -1016,7 +1029,7 @@
                                         <img src="${item.image}" class="history-prize" alt="${item.name}">
                                         <span style="margin-left: 10px;">${item.name}</span>
                                     </div>
-                                    <span>+${item.value}₽</span>
+                                    <span>${item.value}₽</span>
                                 `;
                                 historyList.prepend(historyItem);
                             });
@@ -1042,7 +1055,7 @@
                                         <img src="${item.image}" class="history-prize" alt="${item.name}">
                                         <span style="margin-left: 10px;">${item.name}</span>
                                     </div>
-                                    <span>+${item.value}₽</span>
+                                    <span>${item.value}₽</span>
                                 `;
                                 historyList.prepend(historyItem);
                             });
@@ -1195,13 +1208,12 @@
 
         // Показать результат открытия
         async function showResult() {
-            balance += currentPrize.value;
-            balanceElement.textContent = `${balance}₽`;
-            
+            // НЕ увеличиваем баланс здесь - деньги будут только при продаже
             resultElement.innerHTML = `
                 <img src="${currentPrize.image}" class="prize" alt="${currentPrize.name}">
-                <div class="prize-value">+${currentPrize.value}₽</div>
+                <div class="prize-value">${currentPrize.name}</div>
                 <div>Поздравляем! Вы выиграли ${currentPrize.name}!</div>
+                <div style="margin-top: 10px; color: #ffde7d;">Предмет добавлен в инвентарь. Продайте его, чтобы получить ${currentPrize.value}₽</div>
             `;
             
             const historyItem = document.createElement('div');
@@ -1211,7 +1223,7 @@
                     <img src="${currentPrize.image}" class="history-prize" alt="${currentPrize.name}">
                     <span style="margin-left: 10px;">${currentPrize.name}</span>
                 </div>
-                <span>+${currentPrize.value}₽</span>
+                <span>${currentPrize.value}₽</span>
             `;
             historyList.prepend(historyItem);
             
@@ -1355,13 +1367,12 @@ ID: <code>${userId}</code>
             // Показываем результат
             dailyResult.innerHTML = `
                 <img src="${dailyPrize.image}" class="prize" alt="${dailyPrize.name}">
-                <div class="prize-value">+${dailyPrize.value}₽</div>
-                <div>Поздравляем! Вы выиграли ${dailyPrize.value}₽ из ежедневного кейса!</div>
+                <div class="prize-value">${dailyPrize.name}</div>
+                <div>Поздравляем! Вы выиграли ${dailyPrize.name} из ежедневного кейса!</div>
+                <div style="margin-top: 10px; color: #ffde7d;">Предмет добавлен в инвентарь. Продайте его, чтобы получить ${dailyPrize.value}₽</div>
             `;
             
-            // Добавляем в баланс
-            balance += dailyPrize.value;
-            balanceElement.textContent = `${balance}₽`;
+            // НЕ добавляем в баланс - деньги будут только при продаже
             
             // Добавляем в инвентарь
             addToInventory(dailyPrize);
@@ -1369,7 +1380,7 @@ ID: <code>${userId}</code>
             // Сохраняем дату открытия
             gameData.lastDailyCaseDate = today;
             
-            showNotification(`🎁 Вы получили ${dailyPrize.value}₽ из ежедневного кейса!`, true);
+            showNotification(`🎁 Вы получили ${dailyPrize.name} из ежедневного кейса!`, true);
             saveGameData();
             updateDailyCaseTimer();
         }
@@ -1437,6 +1448,27 @@ ID: <code>${userId}</code>
             updateInventory();
         }
 
+        // Функция продажи одного предмета
+        function sellItem(itemId) {
+            const itemIndex = gameData.inventory.findIndex(item => item.id === itemId);
+            if (itemIndex !== -1) {
+                const item = gameData.inventory[itemIndex];
+                
+                // Увеличиваем баланс на стоимость предмета
+                balance += item.value;
+                balanceElement.textContent = `${balance}₽`;
+                
+                // Удаляем предмет из инвентаря
+                gameData.inventory.splice(itemIndex, 1);
+                
+                // Обновляем интерфейс
+                updateInventory();
+                saveGameData();
+                
+                showNotification(`✅ Предмет "${item.name}" продан за ${item.value}₽!`, true);
+            }
+        }
+
         // Функция обновления отображения инвентаря
         function updateInventory() {
             inventoryGrid.innerHTML = '';
@@ -1464,6 +1496,7 @@ ID: <code>${userId}</code>
                     <img src="${item.image}" class="inventory-item-image" alt="${item.name}">
                     <div class="inventory-item-name">${item.name}</div>
                     <div class="inventory-item-value">${item.value}₽</div>
+                    ${!item.isFavorite ? `<button class="sell-btn" data-id="${item.id}">Продать</button>` : ''}
                 `;
                 
                 // Обработчик для кнопки избранного
@@ -1472,6 +1505,15 @@ ID: <code>${userId}</code>
                     e.stopPropagation();
                     toggleFavorite(item.id);
                 });
+                
+                // Обработчик для кнопки продажи
+                if (!item.isFavorite) {
+                    const sellBtn = itemElement.querySelector('.sell-btn');
+                    sellBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        sellItem(item.id);
+                    });
+                }
                 
                 inventoryGrid.appendChild(itemElement);
             });
@@ -1601,4 +1643,4 @@ ID: <code>${userId}</code>
         });
     </script>
 </body>
-    </html>
+                        </html>
