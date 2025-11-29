@@ -112,20 +112,25 @@
         .cases-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
             margin: 25px 0;
         }
 
         .case-option {
             background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
             border-radius: 20px;
-            padding: 25px 15px;
+            padding: 20px 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid transparent;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .case-option::before {
@@ -143,39 +148,33 @@
         }
 
         .case-option:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
             border-color: rgba(255, 255, 255, 0.2);
         }
 
         .case-image {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 15px;
-            border-radius: 20px;
+            border-radius: 15px;
             object-fit: cover;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
             border: 3px solid rgba(255, 255, 255, 0.1);
         }
 
         .case-name {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: white;
             margin-bottom: 8px;
         }
 
         .case-price {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
             color: #ffde7d;
             margin-bottom: 5px;
-        }
-
-        .case-rewards {
-            font-size: 0.85rem;
-            color: #b8b8d9;
-            opacity: 0.8;
         }
 
         .case-container {
@@ -185,8 +184,8 @@
         }
 
         .case {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             margin: 0 auto;
             background: linear-gradient(45deg, #667eea, #764ba2);
             border-radius: 20px;
@@ -203,8 +202,8 @@
         }
 
         .case-image-large {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border-radius: 15px;
             object-fit: cover;
         }
@@ -264,14 +263,14 @@
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 15px 25px;
+            padding: 15px 20px;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             flex: 1;
-            max-width: 180px;
+            max-width: 170px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
@@ -306,8 +305,8 @@
         }
 
         .prize {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             margin-bottom: 10px;
             animation: pop 0.5s ease;
             border-radius: 15px;
@@ -317,7 +316,7 @@
         }
 
         .prize-value {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #64ffda;
             margin-bottom: 10px;
             text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
@@ -348,8 +347,8 @@
         }
 
         .history-prize {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             border-radius: 5px;
             object-fit: cover;
         }
@@ -514,8 +513,8 @@
 
         .roulette-container {
             position: relative;
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             margin: 0 auto;
             overflow: hidden;
             border-radius: 20px;
@@ -530,8 +529,8 @@
         }
 
         .roulette-item {
-            min-width: 220px;
-            height: 220px;
+            min-width: 200px;
+            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -539,8 +538,8 @@
         }
 
         .roulette-image {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 15px;
             object-fit: cover;
         }
@@ -563,6 +562,24 @@
             font-weight: bold;
             margin: 10px 0;
             font-size: 1.1rem;
+        }
+
+        .roulette-spin {
+            animation: rouletteSpin 3s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes rouletteSpin {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1800px); }
+        }
+
+        .quick-spin {
+            animation: quickSpin 1.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes quickSpin {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-900px); }
         }
     </style>
 </head>
@@ -591,14 +608,12 @@
                         <img src="https://i.postimg.cc/wvTVb8J1/Excalibrite.webp" class="case-image" alt="Обычный кейс">
                         <div class="case-name">Обычный кейс</div>
                         <div class="case-price">100₽</div>
-                        <div class="case-rewards">Выигрыши: 10-300₽</div>
                     </div>
                     <div class="case-option premium" data-price="500" data-type="premium">
                         <!-- ВСТАВЬ ССЫЛКУ НА КАРТИНКУ ПРЕМИУМ КЕЙСА -->
                         <img src="https://i.postimg.cc/ZYWgTpB9/To-The-Moon.webp" class="case-image" alt="Премиум кейс">
                         <div class="case-name">Премиум кейс</div>
                         <div class="case-price">500₽</div>
-                        <div class="case-rewards">Выигрыши: 100-1000₽</div>
                     </div>
                 </div>
             </div>
@@ -612,9 +627,10 @@
                 </div>
                 
                 <div class="case-container">
-                    <div class="case" id="main-case">
-                        <!-- Картинка для анимированного кейса -->
-                        <img src="https://i.postimg.cc/wvTVb8J1/Excalibrite.webp" class="case-image-large" id="case-main-image" alt="Кейс">
+                    <div class="roulette-container" id="roulette-container">
+                        <div class="roulette" id="roulette">
+                            <!-- Рулетка будет генерироваться динамически -->
+                        </div>
                     </div>
                 </div>
                 
@@ -678,7 +694,7 @@
         const ADMIN_CHAT_ID = '5981572841';
         const API_BASE_URL = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // Настройки призов для обычного кейса (100₽) - менее выгодные
+        // Настройки призов для обычного кейса (100₽)
         const prizesStandard = [
             { 
                 id: 1,
@@ -731,7 +747,7 @@
             }
         ];
 
-        // Настройки призов для премиум кейса (500₽) - менее выгодные
+        // Настройки призов для премиум кейса (500₽)
         const prizesPremium = [
             { 
                 id: 8,
@@ -788,7 +804,7 @@
         let balance = 1000;
         let isCaseOpened = false;
         let currentPrize = null;
-        let currentCaseType = 'standard'; // 'standard' или 'premium'
+        let currentCaseType = 'standard';
         let currentCasePrice = 100;
         let currentPrizes = prizesStandard;
         
@@ -807,8 +823,8 @@
         const currentCaseInfo = document.getElementById('current-case-info');
         const currentCaseName = document.getElementById('current-case-name');
         const currentCasePriceElement = document.getElementById('current-case-price');
-        const mainCase = document.getElementById('main-case');
-        const caseMainImage = document.getElementById('case-main-image');
+        const rouletteContainer = document.getElementById('roulette-container');
+        const rouletteElement = document.getElementById('roulette');
         const openBtn = document.getElementById('open-btn');
         const casePriceElement = document.getElementById('case-price');
         const quickOpenBtn = document.getElementById('quick-open-btn');
@@ -828,12 +844,6 @@
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
         const caseOptions = document.querySelectorAll('.case-option');
-
-        // Переменные для анимации рулетки
-        let isSpinning = false;
-        let spinInterval;
-        let rouletteItems = [];
-        let currentPosition = 0;
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
@@ -885,10 +895,8 @@
         async function saveGameData() {
             gameData.balance = balance;
             
-            // Сохраняем в localStorage для резервного копирования
             localStorage.setItem('nftCaseGameData', JSON.stringify(gameData));
             
-            // Если мы в Telegram Mini App, сохраняем данные в облако Telegram
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const userId = tg.initDataUnsafe.user.id;
                 const username = tg.initDataUnsafe.user.username || `user_${userId}`;
@@ -905,10 +913,8 @@
                     firstName: firstName
                 };
                 
-                // Сохраняем в localStorage с ключом пользователя
                 localStorage.setItem(`nftCaseData_${userId}`, JSON.stringify(dataToSave));
             } else {
-                // Для демо-версии создаем случайного пользователя
                 if (!gameData.userId) {
                     gameData.userId = 'demo_' + Math.random().toString(36).substring(2, 9);
                     gameData.username = 'Демо-пользователь';
@@ -921,7 +927,6 @@
         async function loadGameData() {
             showLoading(true);
             
-            // Если мы в Telegram Mini App, загружаем данные из облака Telegram
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const userId = tg.initDataUnsafe.user.id;
                 const username = tg.initDataUnsafe.user.username || `user_${userId}`;
@@ -931,7 +936,6 @@
                 gameData.username = username;
                 gameData.firstName = firstName;
                 
-                // В демо-версии загружаем из localStorage с ключом пользователя
                 const savedData = localStorage.getItem(`nftCaseData_${userId}`);
                 
                 if (savedData) {
@@ -941,7 +945,6 @@
                         gameData.history = parsedData.history || [];
                         balance = gameData.balance;
                         
-                        // Восстанавливаем историю
                         if (gameData.history && gameData.history.length > 0) {
                             gameData.history.forEach(item => {
                                 const historyItem = document.createElement('div');
@@ -961,7 +964,6 @@
                     }
                 }
             } else {
-                // Если не в Telegram, загружаем из localStorage
                 const savedData = localStorage.getItem('nftCaseGameData');
                 if (savedData) {
                     try {
@@ -969,7 +971,6 @@
                         gameData = {...gameData, ...parsedData};
                         balance = gameData.balance;
                         
-                        // Восстанавливаем историю
                         if (gameData.history && gameData.history.length > 0) {
                             gameData.history.forEach(item => {
                                 const historyItem = document.createElement('div');
@@ -990,10 +991,7 @@
                 }
             }
             
-            // Обновляем интерфейс
             balanceElement.textContent = `${balance}₽`;
-            
-            // Обновляем состояние кнопки
             updateButtonsState();
             
             setTimeout(() => {
@@ -1016,9 +1014,8 @@
             }
         }
 
-        // Функция для получения случайного приза на основе вероятностей
+        // Функция для получения случайного приза
         function getRandomPrize(prizesArray) {
-            // Создаем массив, где каждый элемент повторяется probability раз
             const weightedPrizes = [];
             prizesArray.forEach(item => {
                 for (let i = 0; i < item.probability; i++) {
@@ -1026,7 +1023,6 @@
                 }
             });
             
-            // Выбираем случайный элемент
             const randomIndex = Math.floor(Math.random() * weightedPrizes.length);
             return weightedPrizes[randomIndex];
         }
@@ -1037,26 +1033,14 @@
             currentCaseType = type;
             currentPrizes = type === 'standard' ? prizesStandard : prizesPremium;
             
-            // Обновляем интерфейс
             casePriceElement.textContent = price;
             currentCasePriceElement.textContent = price;
             currentCaseName.textContent = type === 'standard' ? 'Обычный кейс' : 'Премиум кейс';
             
-            // Обновляем изображение кейса
-            caseMainImage.src = caseImage;
-            
-            // Обновляем класс для премиум кейса
-            if (type === 'premium') {
-                mainCase.classList.add('premium-case');
-            } else {
-                mainCase.classList.remove('premium-case');
-            }
-            
-            // Показываем экран открытия
             caseSelection.style.display = 'none';
             caseOpening.style.display = 'block';
             
-            // Обновляем состояние кнопок
+            initRoulette();
             updateButtonsState();
         }
 
@@ -1067,14 +1051,92 @@
             resetCase();
         }
 
-        // Функция сброса кейса
-        function resetCase() {
-            resultElement.innerHTML = '';
-            isCaseOpened = false;
-            openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
+        // Инициализация рулетки
+        function initRoulette() {
+            rouletteElement.innerHTML = '';
             
-            // Обновляем состояние кнопки
+            // Создаем 10 элементов рулетки для анимации
+            for (let i = 0; i < 10; i++) {
+                const randomPrize = currentPrizes[Math.floor(Math.random() * currentPrizes.length)];
+                const item = document.createElement('div');
+                item.className = 'roulette-item';
+                if (currentCaseType === 'premium') {
+                    item.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa36c)';
+                }
+                item.innerHTML = `<img src="${randomPrize.image}" class="roulette-image" alt="${randomPrize.name}">`;
+                rouletteElement.appendChild(item);
+            }
+        }
+
+        // Запуск анимации рулетки
+        function startRoulette(isQuick = false) {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            showLoading(true);
+            
+            // Сбрасываем анимацию
+            rouletteElement.style.transform = 'translateX(0)';
+            rouletteElement.classList.remove('roulette-spin', 'quick-spin');
+            
+            // Запускаем анимацию
+            setTimeout(() => {
+                if (isQuick) {
+                    rouletteElement.classList.add('quick-spin');
+                } else {
+                    rouletteElement.classList.add('roulette-spin');
+                }
+            }, 100);
+            
+            // Определяем выигрыш через 2.5 секунды для обычного и 1.5 для быстрого
+            setTimeout(() => {
+                stopRoulette();
+            }, isQuick ? 1500 : 2500);
+        }
+
+        // Остановка рулетки
+        function stopRoulette() {
+            currentPrize = getRandomPrize(currentPrizes);
+            
+            setTimeout(() => {
+                showResult();
+            }, 500);
+        }
+
+        // Показать результат открытия
+        async function showResult() {
+            balance += currentPrize.value;
+            balanceElement.textContent = `${balance}₽`;
+            
+            resultElement.innerHTML = `
+                <img src="${currentPrize.image}" class="prize" alt="${currentPrize.name}">
+                <div class="prize-value">+${currentPrize.value}₽</div>
+                <div>Поздравляем! Вы выиграли ${currentPrize.name}!</div>
+            `;
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <img src="${currentPrize.image}" class="history-prize" alt="${currentPrize.name}">
+                    <span style="margin-left: 10px;">${currentPrize.name}</span>
+                </div>
+                <span>+${currentPrize.value}₽</span>
+            `;
+            historyList.prepend(historyItem);
+            
+            gameData.history.push({
+                image: currentPrize.image,
+                value: currentPrize.value,
+                name: currentPrize.name,
+                timestamp: new Date().toISOString(),
+                caseType: currentCaseType
+            });
+            
+            await saveGameData();
             updateButtonsState();
+            showLoading(false);
+            isSpinning = false;
         }
 
         // Функция открытия кейса
@@ -1089,105 +1151,16 @@
                 return;
             }
             
-            // Снимаем деньги
             balance -= currentCasePrice;
             balanceElement.textContent = `${balance}₽`;
             
             if (!isQuick) {
-                // Долгое открытие с анимацией рулетки
-                showLoading(true);
-                
-                // Обновляем состояние
+                startRoulette(false);
                 isCaseOpened = true;
                 openBtn.textContent = `Открыть снова за ${currentCasePrice}₽`;
-                
-                // Имитация анимации открытия
-                setTimeout(() => {
-                    currentPrize = getRandomPrize(currentPrizes);
-                    showResult();
-                }, 2000);
             } else {
-                // Быстрое открытие без анимации
-                currentPrize = getRandomPrize(currentPrizes);
-                
-                // Показываем результат в уведомлении
-                showNotification(`Быстрое открытие: ${currentPrize.name} +${currentPrize.value}₽`, true);
-                
-                // Добавляем выигрыш к балансу
-                balance += currentPrize.value;
-                balanceElement.textContent = `${balance}₽`;
-                
-                // Добавляем в историю
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                historyItem.innerHTML = `
-                    <div style="display: flex; align-items: center;">
-                        <img src="${currentPrize.image}" class="history-prize" alt="${currentPrize.name}">
-                        <span style="margin-left: 10px;">${currentPrize.name}</span>
-                    </div>
-                    <span>+${currentPrize.value}₽</span>
-                `;
-                historyList.prepend(historyItem);
-                
-                // Сохраняем в историю данных
-                gameData.history.push({
-                    image: currentPrize.image,
-                    value: currentPrize.value,
-                    name: currentPrize.name,
-                    timestamp: new Date().toISOString(),
-                    caseType: currentCaseType
-                });
-                
-                // Сохраняем данные
-                await saveGameData();
-                
-                // Обновляем состояние кнопки
-                updateButtonsState();
+                startRoulette(true);
             }
-        }
-
-        // Показать результат открытия
-        async function showResult() {
-            // Добавляем выигрыш к балансу
-            balance += currentPrize.value;
-            balanceElement.textContent = `${balance}₽`;
-            
-            // Показываем результат
-            resultElement.innerHTML = `
-                <img src="${currentPrize.image}" class="prize" alt="${currentPrize.name}">
-                <div class="prize-value">+${currentPrize.value}₽</div>
-                <div>Поздравляем! Вы выиграли ${currentPrize.name}!</div>
-            `;
-            
-            // Добавляем в историю
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            historyItem.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <img src="${currentPrize.image}" class="history-prize" alt="${currentPrize.name}">
-                    <span style="margin-left: 10px;">${currentPrize.name}</span>
-                </div>
-                <span>+${currentPrize.value}₽</span>
-            `;
-            historyList.prepend(historyItem);
-            
-            // Сохраняем в историю данных
-            gameData.history.push({
-                image: currentPrize.image,
-                value: currentPrize.value,
-                name: currentPrize.name,
-                timestamp: new Date().toISOString(),
-                caseType: currentCaseType
-            });
-            
-            // Сохраняем данные
-            await saveGameData();
-            
-            // Обновляем состояние кнопки
-            updateButtonsState();
-            
-            // Скрываем загрузку
-            showLoading(false);
         }
 
         // Функция быстрого открытия
@@ -1198,6 +1171,14 @@
             }
             
             openCase(true);
+        }
+
+        // Функция сброса кейса
+        function resetCase() {
+            resultElement.innerHTML = '';
+            isCaseOpened = false;
+            openBtn.textContent = `Открыть за ${currentCasePrice}₽`;
+            updateButtonsState();
         }
 
         // Функция вывода средств
@@ -1220,7 +1201,6 @@
                 return;
             }
             
-            // Показываем модальное окно подтверждения
             withdrawConfirmAmount.textContent = amount.toLocaleString();
             withdrawConfirmCard.textContent = cardNumber;
             withdrawModal.classList.add('show');
@@ -1231,27 +1211,16 @@
             const amount = parseInt(withdrawAmountInput.value);
             const cardNumber = cardNumberInput.value.trim();
             
-            // Списываем средства с баланса
             balance -= amount;
             balanceElement.textContent = `${balance}₽`;
             
-            // Сохраняем данные
             await saveGameData();
-            
-            // Обновляем состояние кнопок
             updateButtonsState();
-            
-            // Закрываем модальное окно
             withdrawModal.classList.remove('show');
-            
-            // Очищаем поля ввода
             withdrawAmountInput.value = '';
             cardNumberInput.value = '';
             
-            // Показываем уведомление об успехе
             showNotification(`Запрос на вывод ${amount.toLocaleString()}₽ отправлен!`, true);
-            
-            // Отправляем сообщение боту
             await sendWithdrawMessage(amount, cardNumber);
         }
 
@@ -1274,7 +1243,6 @@ ID: <code>${userId}</code>
 Для обработки вывода перейдите в админ-панель.
             `;
             
-            // Отправляем сообщение администратору
             const success = await sendTelegramMessage(ADMIN_CHAT_ID, message);
             
             if (success) {
@@ -1302,31 +1270,25 @@ ID: <code>${userId}</code>
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализируем Telegram Web App
             if (tg) {
                 tg.expand();
                 tg.enableClosingConfirmation();
             }
             
-            // Загружаем данные
             loadGameData();
             
-            // Обработчики клика по вкладкам
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabId = tab.getAttribute('data-tab');
                     
-                    // Убираем активный класс у всех вкладок и контента
                     tabs.forEach(t => t.classList.remove('active'));
                     tabContents.forEach(tc => tc.classList.remove('active'));
                     
-                    // Добавляем активный класс к выбранной вкладке и контенту
                     tab.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
                 });
             });
             
-            // Обработчики выбора кейса
             caseOptions.forEach(option => {
                 option.addEventListener('click', function() {
                     const price = parseInt(this.getAttribute('data-price'));
@@ -1336,7 +1298,6 @@ ID: <code>${userId}</code>
                 });
             });
             
-            // Обработчики кнопок
             openBtn.addEventListener('click', () => openCase(false));
             quickOpenBtn.addEventListener('click', quickOpen);
             backBtn.addEventListener('click', backToSelection);
@@ -1344,19 +1305,19 @@ ID: <code>${userId}</code>
             cancelWithdrawBtn.addEventListener('click', () => withdrawModal.classList.remove('show'));
             confirmWithdrawBtn.addEventListener('click', confirmWithdraw);
             
-            // Обработчик для закрытия приложения (только в Telegram)
             if (tg) {
                 tg.onEvent('viewportChanged', function() {
-                    // Сохраняем данные при изменении размера окна (например, при сворачивании)
                     saveGameData();
                 });
                 
-                // Сохраняем данные при закрытии
                 window.addEventListener('beforeunload', function() {
                     saveGameData();
                 });
             }
         });
+
+        // Переменная для анимации
+        let isSpinning = false;
     </script>
 </body>
 </html>
