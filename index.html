@@ -693,8 +693,8 @@
         </div>
 
         <div class="bonus-section" id="bonus-section">
-            <h3>🎁 8-часовой бонус</h3>
-            <p>Получите 10,000₽ каждые 8 часов!</p>
+            <h3>🎁 1-часовой бонус</h3>
+            <p>Получите 15,000₽ каждый час!</p>
             <div class="bonus-timer" id="bonus-timer">Доступно сейчас</div>
         </div>
         
@@ -1046,7 +1046,7 @@
             const newUser = {
                 userid: userid,
                 username: username,
-                balance: 50000,
+                balance: 100000, // Изменено на 100,000₽
                 inventory: [],
                 lastBonusTime: null,
                 createdAt: new Date().toISOString()
@@ -1160,7 +1160,7 @@
         function calculateNFTPrice(nft) {
             // Чем меньше шанс, тем дороже NFT
             // Базовая формула: (100 / шанс) * множитель
-            const baseMultiplier = 1000; // Базовый множитель стоимости
+            const baseMultiplier = 1600; // Базовый множитель стоимости
             
             const modelValue = (100 / nft.model.chance) * baseMultiplier;
             const bgValue = (100 / nft.background.chance) * (baseMultiplier / 2);
@@ -1426,6 +1426,12 @@
                 return;
             }
             
+            // Проверяем, не пытаемся ли передать самому себе
+            if (userid === currentUser.userid) {
+                showNotification('Нельзя передать NFT самому себе');
+                return;
+            }
+            
             const receiverData = loadUserData(userid);
             if (!receiverData) {
                 showNotification('Пользователь с таким ID не найден');
@@ -1433,12 +1439,24 @@
             }
             
             const nftIndex = currentUser.inventory.findIndex(item => item.id === currentNFT.id);
-            if (nftIndex === -1) return;
+            if (nftIndex === -1) {
+                showNotification('NFT не найден в инвентаре');
+                return;
+            }
             
+            // Списываем стоимость передачи
             balance -= 10000;
+            
+            // Удаляем NFT у текущего пользователя
             const transferredNFT = currentUser.inventory.splice(nftIndex, 1)[0];
+            
+            // Добавляем NFT получателю
+            if (!receiverData.inventory) {
+                receiverData.inventory = [];
+            }
             receiverData.inventory.push(transferredNFT);
             
+            // Сохраняем данные обоих пользователей
             saveUserData();
             localStorage.setItem(`nft_user_${userid}`, JSON.stringify(receiverData));
             
@@ -1448,7 +1466,7 @@
             nftModal.classList.remove('show');
             transferModal.classList.remove('show');
             
-            showNotification(`✅ NFT передан пользователю ${receiverData.username}!`, true);
+            showNotification(`✅ NFT передан пользователю ${receiverData.username || 'с ID ' + userid}!`, true);
             
             currentNFT = null;
         }
@@ -1456,21 +1474,21 @@
         // Функция получения бонуса
         function claimBonus() {
             const now = Date.now();
-            const eightHours = 8 * 60 * 60 * 1000;
+            const oneHour = 1 * 60 * 60 * 1000; // Изменено на 1 час
             
-            if (currentUser.lastBonusTime && (now - currentUser.lastBonusTime) < eightHours) {
+            if (currentUser.lastBonusTime && (now - currentUser.lastBonusTime) < oneHour) {
                 showNotification('Бонус еще не доступен!');
                 return;
             }
             
-            balance += 10000;
+            balance += 15000; // Изменено на 15,000₽
             currentUser.lastBonusTime = now;
             
             saveUserData();
             updateBalance();
             updateBonusTimer();
             
-            showNotification('🎉 Вы получили бонус 10,000₽!', true);
+            showNotification('🎉 Вы получили бонус 15,000₽!', true);
         }
 
         // Функция обновления таймера бонуса
@@ -1482,8 +1500,8 @@
             }
             
             const now = Date.now();
-            const eightHours = 8 * 60 * 60 * 1000;
-            const timeLeft = currentUser.lastBonusTime + eightHours - now;
+            const oneHour = 1 * 60 * 60 * 1000; // Изменено на 1 час
+            const timeLeft = currentUser.lastBonusTime + oneHour - now;
             
             if (timeLeft <= 0) {
                 bonusTimer.textContent = 'Доступно сейчас';
@@ -1511,14 +1529,14 @@
             const newUser = {
                 userid: currentUser.userid,
                 username: currentUser.username,
-                balance: 50000,
+                balance: 100000, // Изменено на 100,000₽
                 inventory: [],
                 lastBonusTime: null,
                 createdAt: new Date().toISOString()
             };
             
             currentUser = newUser;
-            balance = 50000;
+            balance = 100000;
             
             saveUserData();
             updateBalance();
@@ -1578,8 +1596,17 @@
                 nftModal.classList.remove('show');
             });
             
-            modalSellBtn.addEventListener('click', () => openSellModal(currentNFT));
-            modalTransferBtn.addEventListener('click', () => openTransferModal(currentNFT));
+            modalSellBtn.addEventListener('click', () => {
+                if (currentNFT) {
+                    openSellModal(currentNFT);
+                }
+            });
+            
+            modalTransferBtn.addEventListener('click', () => {
+                if (currentNFT) {
+                    openTransferModal(currentNFT);
+                }
+            });
             
             cancelSellBtn.addEventListener('click', () => {
                 sellModal.classList.remove('show');
@@ -1615,4 +1642,4 @@
         });
     </script>
 </body>
-                                                                         </html>
+    </html>
