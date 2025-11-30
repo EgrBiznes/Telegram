@@ -915,6 +915,7 @@
         let currentSelectedModel = null;
         let currentSelectedBackground = null;
         let currentUser = null;
+        let bonusTimerInterval = null;
         
         // Элементы DOM
         const mainApp = document.getElementById('main-app');
@@ -1077,7 +1078,7 @@
                 currentUserid.textContent = currentUser.userid;
                 updateBalance();
                 updateInventory();
-                updateBonusTimer();
+                startBonusTimer(); // Запускаем таймер бонуса
                 initRoulettes();
                 
                 showLoading(false);
@@ -1158,9 +1159,8 @@
 
         // Функция расчета стоимости NFT на основе процентов
         function calculateNFTPrice(nft) {
-            // Чем меньше шанс, тем дороже NFT
-            // Базовая формула: (100 / шанс) * множитель
-            const baseMultiplier = 1600; // Базовый множитель стоимости
+            // УВЕЛИЧЕН МНОЖИТЕЛЬ ДЛЯ БОЛЬШЕЙ СТОИМОСТИ
+            const baseMultiplier = 1650; // Увеличено с 1600 до 2000
             
             const modelValue = (100 / nft.model.chance) * baseMultiplier;
             const bgValue = (100 / nft.background.chance) * (baseMultiplier / 2);
@@ -1411,87 +1411,102 @@
             currentNFT = null;
         }
 
-        // Функция передачи NFT
+        // Функция передачи NFT - ИСПРАВЛЕНА
         function transferNFT() {
-            if (!currentNFT) return;
-            
+            if (!currentNFT) {
+                showNotification('Ошибка: NFT не выбран');
+                return;
+            }
+
             const userid = transferUserid.value.trim();
             if (!userid) {
                 showNotification('Введите ID пользователя получателя');
                 return;
             }
-            
+
             if (balance < 10000) {
                 showNotification('Недостаточно средств для передачи');
                 return;
             }
-            
+
             // Проверяем, не пытаемся ли передать самому себе
             if (userid === currentUser.userid) {
                 showNotification('Нельзя передать NFT самому себе');
                 return;
             }
-            
+
+            // Загружаем данные получателя
             const receiverData = loadUserData(userid);
             if (!receiverData) {
                 showNotification('Пользователь с таким ID не найден');
                 return;
             }
-            
+
+            // Находим индекс NFT в инвентаре
             const nftIndex = currentUser.inventory.findIndex(item => item.id === currentNFT.id);
             if (nftIndex === -1) {
-                showNotification('NFT не найден в инвентаре');
+                showNotification('Ошибка: NFT не найден в инвентаре');
                 return;
             }
-            
-            // Списываем стоимость передачи
-            balance -= 10000;
-            
-            // Удаляем NFT у текущего пользователя
-            const transferredNFT = currentUser.inventory.splice(nftIndex, 1)[0];
-            
-            // Добавляем NFT получателю
-            if (!receiverData.inventory) {
-                receiverData.inventory = [];
+
+            try {
+                // Списываем стоимость передачи
+                balance -= 10000;
+                
+                // Удаляем NFT у текущего пользователя
+                const transferredNFT = currentUser.inventory.splice(nftIndex, 1)[0];
+                
+                // Добавляем NFT получателю
+                if (!receiverData.inventory) {
+                    receiverData.inventory = [];
+                }
+                receiverData.inventory.push(transferredNFT);
+                
+                // Сохраняем данные ОБОИХ пользователей
+                saveUserData(); // Сохраняем данные отправителя
+                localStorage.setItem(`nft_user_${userid}`, JSON.stringify(receiverData)); // Сохраняем данные получателя
+                
+                // Обновляем интерфейс
+                updateBalance();
+                updateInventory();
+                
+                // Закрываем модальные окна
+                nftModal.classList.remove('show');
+                transferModal.classList.remove('show');
+                
+                showNotification(`✅ NFT успешно передан пользователю ${receiverData.username || userid}!`, true);
+                
+                currentNFT = null;
+                
+            } catch (error) {
+                console.error('Ошибка при передаче NFT:', error);
+                showNotification('Произошла ошибка при передаче NFT');
             }
-            receiverData.inventory.push(transferredNFT);
-            
-            // Сохраняем данные обоих пользователей
-            saveUserData();
-            localStorage.setItem(`nft_user_${userid}`, JSON.stringify(receiverData));
-            
-            updateBalance();
-            updateInventory();
-            
-            nftModal.classList.remove('show');
-            transferModal.classList.remove('show');
-            
-            showNotification(`✅ NFT передан пользователю ${receiverData.username || 'с ID ' + userid}!`, true);
-            
-            currentNFT = null;
         }
 
         // Функция получения бонуса
         function claimBonus() {
             const now = Date.now();
-            const oneHour = 1 * 60 * 60 * 1000; // Изменено на 1 час
+            const oneHour = 1 * 60 * 60 * 1000;
             
             if (currentUser.lastBonusTime && (now - currentUser.lastBonusTime) < oneHour) {
                 showNotification('Бонус еще не доступен!');
                 return;
             }
             
-            balance += 15000; // Изменено на 15,000₽
+            balance += 15000;
             currentUser.lastBonusTime = now;
             
+            // СОХРАНЯЕМ ДАННЫЕ СРАЗУ ПОСЛЕ ИЗМЕНЕНИЯ
             saveUserData();
+            
             updateBalance();
             updateBonusTimer();
             
             showNotification('🎉 Вы получили бонус 15,000₽!', true);
         }
 
-        // Функция обновления таймера бонуса
+        // Функция обновления таймера бонуса - ИСПРАВЛЕНА
         function updateBonusTimer() {
             if (!currentUser.lastBonusTime) {
                 bonusTimer.textContent = 'Доступно сейчас';
@@ -1500,8 +1515,9 @@
             }
             
             const now = Date.now();
-            const oneHour = 1 * 60 * 60 * 1000; // Изменено на 1 час
-            const timeLeft = currentUser.lastBonusTime + oneHour - now;
+            const oneHour = 1 * 60 * 60 * 1000;
+            const timePassed = now - currentUser.lastBonusTime;
+            const timeLeft = oneHour - timePassed;
             
             if (timeLeft <= 0) {
                 bonusTimer.textContent = 'Доступно сейчас';
@@ -1509,10 +1525,21 @@
             } else {
                 const hours = Math.floor(timeLeft / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
                 
-                bonusTimer.textContent = `Следующий бонус через: ${hours}ч ${minutes}м`;
+                bonusTimer.textContent = `Следующий бонус через: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 bonusSection.classList.add('disabled');
             }
+        }
+
+        // Добавляем авто-обновление таймера каждую секунду
+        function startBonusTimer() {
+            updateBonusTimer();
+            // Очищаем предыдущий интервал, если он существует
+            if (bonusTimerInterval) {
+                clearInterval(bonusTimerInterval);
+            }
+            bonusTimerInterval = setInterval(updateBonusTimer, 1000);
         }
 
         // Функция переключения вкладок
@@ -1529,7 +1556,7 @@
             const newUser = {
                 userid: currentUser.userid,
                 username: currentUser.username,
-                balance: 100000, // Изменено на 100,000₽
+                balance: 100000,
                 inventory: [],
                 lastBonusTime: null,
                 createdAt: new Date().toISOString()
@@ -1637,6 +1664,10 @@
                 
                 window.addEventListener('beforeunload', function() {
                     if (currentUser) saveUserData();
+                    // Очищаем интервал при закрытии страницы
+                    if (bonusTimerInterval) {
+                        clearInterval(bonusTimerInterval);
+                    }
                 });
             }
         });
