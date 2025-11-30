@@ -98,6 +98,7 @@
         .roulette-column {
             flex: 1;
             max-width: 200px;
+            position: relative;
         }
 
         .roulette-title {
@@ -117,7 +118,7 @@
         }
 
         .roulette-items {
-            transition: transform 4s cubic-bezier(0.1, 0.4, 0.2, 1);
+            transition: transform 2s cubic-bezier(0.1, 0.8, 0.2, 1);
         }
 
         .roulette-item {
@@ -151,23 +152,35 @@
             background-position: center;
         }
 
-        .selected-indicator {
+        /* ИСПРАВЛЕННЫЕ СТРЕЛКИ - ПЕРЕВЕРНУТЫЕ И БЕЗ ЛИНИИ */
+        .side-arrows {
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 4px;
-            background: #ffde7d;
-            box-shadow: 0 0 10px #ffde7d;
+            height: 100%;
+            pointer-events: none;
             z-index: 10;
         }
 
-        .top-indicator {
-            top: 0;
+        .side-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
         }
 
-        .bottom-indicator {
-            bottom: 0;
+        .left-arrow {
+            left: 5px;
+            border-right: 20px solid #667eea;
+        }
+
+        .right-arrow {
+            right: 5px;
+            border-left: 20px solid #667eea;
         }
 
         .nft-preview {
@@ -233,7 +246,7 @@
             margin: 10px 0;
         }
 
-        /* Стили для инвентаря */
+        /* Остальные стили остаются без изменений */
         .inventory-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -721,8 +734,11 @@
                     <div class="roulette-column">
                         <div class="roulette-title">Модели</div>
                         <div class="roulette" id="model-roulette">
-                            <div class="selected-indicator top-indicator"></div>
-                            <div class="selected-indicator bottom-indicator"></div>
+                            <!-- СТРЕЛКИ ПО БОКАМ - ПЕРЕВЕРНУТЫЕ И БЕЗ ЛИНИИ -->
+                            <div class="side-arrows">
+                                <div class="side-arrow left-arrow"></div>
+                                <div class="side-arrow right-arrow"></div>
+                            </div>
                             <div class="roulette-items" id="model-roulette-items">
                                 <!-- Модели будут добавлены через JS -->
                             </div>
@@ -732,8 +748,11 @@
                     <div class="roulette-column">
                         <div class="roulette-title">Фоны</div>
                         <div class="roulette" id="bg-roulette">
-                            <div class="selected-indicator top-indicator"></div>
-                            <div class="selected-indicator bottom-indicator"></div>
+                            <!-- СТРЕЛКИ ПО БОКАМ - ПЕРЕВЕРНУТЫЕ И БЕЗ ЛИНИИ -->
+                            <div class="side-arrows">
+                                <div class="side-arrow left-arrow"></div>
+                                <div class="side-arrow right-arrow"></div>
+                            </div>
                             <div class="roulette-items" id="bg-roulette-items">
                                 <!-- Фоны будут добавлены через JS -->
                             </div>
@@ -1186,18 +1205,24 @@
             modelRouletteItems.innerHTML = '';
             bgRouletteItems.innerHTML = '';
             
-            // Добавляем 5 случайных моделей в рулетку
-            const randomModels = getRandomItems(models, 5);
-            randomModels.forEach(model => {
+            // Добавляем 10 случайных моделей в рулетку (2 полных набора)
+            const allModels = [...models, ...models];
+            const allBackgrounds = [...backgrounds, ...backgrounds];
+            
+            // Перемешиваем элементы
+            const shuffledModels = [...allModels].sort(() => 0.5 - Math.random());
+            const shuffledBackgrounds = [...allBackgrounds].sort(() => 0.5 - Math.random());
+            
+            // Добавляем 10 моделей в рулетку
+            shuffledModels.slice(0, 10).forEach(model => {
                 const item = document.createElement('div');
                 item.className = 'roulette-item model-item';
                 item.innerHTML = `<img src="${model.image}" class="roulette-model" alt="${model.name}">`;
                 modelRouletteItems.appendChild(item);
             });
             
-            // Добавляем 5 случайных фонов в рулетку
-            const randomBackgrounds = getRandomItems(backgrounds, 5);
-            randomBackgrounds.forEach(bg => {
+            // Добавляем 10 фонов в рулетку
+            shuffledBackgrounds.slice(0, 10).forEach(bg => {
                 const item = document.createElement('div');
                 item.className = 'roulette-item background-item';
                 item.innerHTML = `<div class="roulette-bg" style="background-image: url('${bg.image}')"></div>`;
@@ -1237,7 +1262,76 @@
             return Math.round(modelValue + bgValue);
         }
 
-        // Функция запуска анимации рулетки - УЛУЧШЕННАЯ ВЕРСИЯ
+        // Функция обновления рулеток с выбранными элементами
+        function updateRoulettesWithSelection(selectedModel, selectedBackground) {
+            // Очищаем рулетки
+            modelRouletteItems.innerHTML = '';
+            bgRouletteItems.innerHTML = '';
+            
+            // Создаем массивы с выбранными элементами на 4-й позиции (центр)
+            const modelItems = [];
+            const bgItems = [];
+            
+            // Заполняем модели - 10 элементов
+            for (let i = 0; i < 10; i++) {
+                if (i === 4) {
+                    // 4-я позиция - выбранная модель (центр)
+                    modelItems.push(selectedModel);
+                } else {
+                    // Случайная модель, но не выбранная
+                    let randomModel;
+                    do {
+                        randomModel = models[Math.floor(Math.random() * models.length)];
+                    } while (randomModel.id === selectedModel.id);
+                    modelItems.push(randomModel);
+                }
+            }
+            
+            // Заполняем фоны - 10 элементов
+            for (let i = 0; i < 10; i++) {
+                if (i === 4) {
+                    // 4-я позиция - выбранный фон (центр)
+                    bgItems.push(selectedBackground);
+                } else {
+                    // Случайный фон, но не выбранный
+                    let randomBg;
+                    do {
+                        randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+                    } while (randomBg.id === selectedBackground.id);
+                    bgItems.push(randomBg);
+                }
+            }
+            
+            // Перемешиваем элементы (кроме 4-й позиции)
+            for (let i = 0; i < 10; i++) {
+                if (i !== 4) {
+                    const randomIndex = Math.floor(Math.random() * 10);
+                    if (randomIndex !== 4) {
+                        // Меняем местами
+                        [modelItems[i], modelItems[randomIndex]] = [modelItems[randomIndex], modelItems[i]];
+                        [bgItems[i], bgItems[randomIndex]] = [bgItems[randomIndex], bgItems[i]];
+                    }
+                }
+            }
+            
+            // Отрисовываем модели
+            modelItems.forEach(model => {
+                const item = document.createElement('div');
+                item.className = 'roulette-item model-item';
+                item.innerHTML = `<img src="${model.image}" class="roulette-model" alt="${model.name}">`;
+                modelRouletteItems.appendChild(item);
+            });
+            
+            // Отрисовываем фоны
+            bgItems.forEach(bg => {
+                const item = document.createElement('div');
+                item.className = 'roulette-item background-item';
+                item.innerHTML = `<div class="roulette-bg" style="background-image: url('${bg.image}')"></div>`;
+                bgRouletteItems.appendChild(item);
+            });
+        }
+
+        // Функция запуска анимации рулетки - ИСПРАВЛЕННАЯ ВЕРСИЯ
         function startRouletteAnimation() {
             if (isSpinning) return;
             
@@ -1245,9 +1339,12 @@
             updateBalance();
             showLoading(true, "Прокручиваем рулетки...");
             
-            // Выбираем случайные модель и фон по шансам
+            // Выбираем случайные модель и фон по шансам ДО анимации
             const selectedModel = getRandomWithChance(models);
             const selectedBackground = getRandomWithChance(backgrounds);
+            
+            // Обновляем рулетки с выбранными элементами на 4-й позиции (центр)
+            updateRoulettesWithSelection(selectedModel, selectedBackground);
             
             // Запускаем анимацию рулетки
             const modelRoulette = document.getElementById('model-roulette-items');
@@ -1262,16 +1359,12 @@
             // Даем время для сброса
             setTimeout(() => {
                 // Включаем анимацию
-                modelRoulette.style.transition = 'transform 4s cubic-bezier(0.1, 0.4, 0.2, 1)';
-                bgRoulette.style.transition = 'transform 4s cubic-bezier(0.1, 0.4, 0.2, 1)';
+                modelRoulette.style.transition = 'transform 2s cubic-bezier(0.1, 0.8, 0.2, 1)';
+                bgRoulette.style.transition = 'transform 2s cubic-bezier(0.1, 0.8, 0.2, 1)';
                 
-                // Прокручиваем рулетки несколько раз для лучшей анимации
-                // Делаем 4 полных оборота (4 * 500px = 2000px) плюс немного для случайности
-                const modelExtraScroll = Math.random() * 500;
-                const bgExtraScroll = Math.random() * 500;
-                
-                modelRoulette.style.transform = `translateY(-${2000 + modelExtraScroll}px)`;
-                bgRoulette.style.transform = `translateY(-${2000 + bgExtraScroll}px)`;
+                // Прокручиваем ровно 4 элемента (400px) чтобы 4-й элемент оказался в центре под указателем
+                modelRoulette.style.transform = 'translateY(-400px)';
+                bgRoulette.style.transform = 'translateY(-400px)';
                 
                 // После завершения анимации
                 setTimeout(() => {
@@ -1289,7 +1382,7 @@
                     createNFT(selectedModel, selectedBackground);
                     
                     updateBalance();
-                }, 4000);
+                }, 2000);
             }, 100);
         }
 
@@ -1684,4 +1777,4 @@
         });
     </script>
 </body>
-                    </html>
+    </html>
