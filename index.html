@@ -1237,7 +1237,7 @@
             return Math.round(modelValue + bgValue);
         }
 
-        // Функция запуска анимации рулетки
+        // Функция запуска анимации рулетки - УЛУЧШЕННАЯ ВЕРСИЯ
         function startRouletteAnimation() {
             if (isSpinning) return;
             
@@ -1265,9 +1265,13 @@
                 modelRoulette.style.transition = 'transform 4s cubic-bezier(0.1, 0.4, 0.2, 1)';
                 bgRoulette.style.transition = 'transform 4s cubic-bezier(0.1, 0.4, 0.2, 1)';
                 
-                // Прокручиваем рулетки (больше оборотов для лучшей анимации)
-                modelRoulette.style.transform = 'translateY(-1500px)';
-                bgRoulette.style.transform = 'translateY(-1500px)';
+                // Прокручиваем рулетки несколько раз для лучшей анимации
+                // Делаем 4 полных оборота (4 * 500px = 2000px) плюс немного для случайности
+                const modelExtraScroll = Math.random() * 500;
+                const bgExtraScroll = Math.random() * 500;
+                
+                modelRoulette.style.transform = `translateY(-${2000 + modelExtraScroll}px)`;
+                bgRoulette.style.transform = `translateY(-${2000 + bgExtraScroll}px)`;
                 
                 // После завершения анимации
                 setTimeout(() => {
@@ -1680,4 +1684,4 @@
         });
     </script>
 </body>
-</html>
+                    </html>
