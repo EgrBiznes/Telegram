@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFT Creator | Telegram Mini App</title>
+    <title>NFT App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -35,21 +35,6 @@
             backdrop-filter: blur(10px);
             position: relative;
             padding-bottom: 100px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #ff6b6b, #ffa36c, #ffde7d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
-        }
-
-        .subtitle {
-            color: #b8b8d9;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
         }
 
         .balance-container {
@@ -611,6 +596,43 @@
             font-size: 0.8rem;
         }
 
+        /* УЛУЧШЕННАЯ КНОПКА ТРЕЙДОВ */
+        .trades-btn {
+            position: absolute;
+            top: 20px;
+            right: 120px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa36c);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .trades-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+            background: linear-gradient(45deg, #ffa36c, #ff6b6b);
+        }
+
+        .trades-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .trades-btn::before {
+            content: "🔄";
+            font-size: 1.2rem;
+        }
+
         .welcome-message {
             background: rgba(100, 255, 218, 0.2);
             border: 1px solid #64ffda;
@@ -702,7 +724,6 @@
             border: 3px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Новые стили для улучшенной анимации кейса */
         .case-roulette-placeholder {
             height: 300px;
             display: flex;
@@ -788,6 +809,151 @@
             font-size: 0.9rem;
             border: 1px solid rgba(255, 87, 108, 0.3);
         }
+
+        .trades-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding-right: 10px;
+        }
+
+        .trade-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .trade-item:hover {
+            border-color: rgba(156, 39, 176, 0.5);
+            background: rgba(156, 39, 176, 0.05);
+        }
+
+        .trade-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .trade-nft-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .trade-nft-info {
+            flex: 1;
+        }
+
+        .trade-nft-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .trade-user-info {
+            font-size: 0.9rem;
+            color: #b8b8d9;
+        }
+
+        .trade-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .status-pending {
+            background: rgba(255, 222, 125, 0.2);
+            color: #ffde7d;
+            border: 1px solid rgba(255, 222, 125, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .trade-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .trade-action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .accept-btn {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .decline-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: linear-gradient(45deg, #e67e22, #d35400);
+            color: white;
+        }
+
+        .empty-trades {
+            text-align: center;
+            color: #b8b8d9;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .trades-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .trade-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            color: #b8b8d9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .trade-tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .trade-timestamp {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: right;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -821,6 +987,31 @@
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="cancel-reset-btn">Отмена</button>
                 <button class="modal-btn confirm" id="confirm-reset-btn">Сбросить данные</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="trades-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-trades-btn">×</button>
+            <div class="modal-title">🔄 Трейды (Передачи)</div>
+            
+            <div class="trades-tabs">
+                <button class="trade-tab active" data-trade-tab="incoming">Входящие</button>
+                <button class="trade-tab" data-trade-tab="outgoing">Исходящие</button>
+                <button class="trade-tab" data-trade-tab="history">История</button>
+            </div>
+            
+            <div class="trades-list" id="incoming-trades">
+                <!-- Входящие передачи будут здесь -->
+            </div>
+            
+            <div class="trades-list" id="outgoing-trades" style="display: none;">
+                <!-- Исходящие передачи будут здесь -->
+            </div>
+            
+            <div class="trades-list" id="trades-history" style="display: none;">
+                <!-- История передач будет здесь -->
             </div>
         </div>
     </div>
@@ -887,10 +1078,11 @@
         <div class="user-info">
             ID: <span id="current-userid">-</span>
         </div>
+        <!-- УЛУЧШЕННАЯ КНОПКА ТРЕЙДОВ -->
+        <button class="trades-btn" id="trades-btn">Трейды</button>
         <button class="settings-btn" id="settings-btn">Настройки</button>
         
-        <h1>NFT Creator</h1>
-        <p class="subtitle">Создай уникальные NFT и коллекционируй их</p>
+        <!-- ЗАГОЛОВОК И ОПИСАНИЕ УБРАНЫ -->
         
         <div class="welcome-message" id="welcome-message">
             Добро пожаловать! Ваш аккаунт автоматически создан.
@@ -1191,7 +1383,10 @@
         const settingsBalance = document.getElementById('settings-balance');
         const settingsInventory = document.getElementById('settings-inventory');
         const settingsBtn = document.getElementById('settings-btn');
+        const tradesBtn = document.getElementById('trades-btn');
         const settingsModal = document.getElementById('settings-modal');
+        const tradesModal = document.getElementById('trades-modal');
+        const closeTradesBtn = document.getElementById('close-trades-btn');
         const closeSettingsBtn = document.getElementById('close-settings-btn');
         const closeSettingsBtn2 = document.getElementById('close-settings-btn2');
         const resetDataBtn = document.getElementById('reset-data-btn');
@@ -1254,12 +1449,384 @@
         const upgradeCost = document.getElementById('upgrade-cost');
         const closeUpgradeBtn = document.getElementById('close-upgrade-btn');
         const confirmUpgradeBtn = document.getElementById('confirm-upgrade-btn');
+        const incomingTradesContainer = document.getElementById('incoming-trades');
+        const outgoingTradesContainer = document.getElementById('outgoing-trades');
+        const tradesHistoryContainer = document.getElementById('trades-history');
 
         // Текущий выбранный NFT для операций
         let currentNFT = null;
 
         // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
+
+        // ========== СИСТЕМА ТРЕЙДОВ ==========
+        const tradesKey = "nft_trades";
+
+        // Получить все трейды
+        function getAllTrades() {
+            const trades = localStorage.getItem(tradesKey);
+            return trades ? JSON.parse(trades) : [];
+        }
+
+        // Сохранить все трейды
+        function saveAllTrades(trades) {
+            localStorage.setItem(tradesKey, JSON.stringify(trades));
+        }
+
+        // Создать новый трейд
+        function createTrade(nft, senderId, receiverId) {
+            const trades = getAllTrades();
+            const newTrade = {
+                id: Date.now() + Math.random(),
+                nft: nft,
+                senderId: senderId,
+                receiverId: receiverId,
+                senderName: currentUser.username,
+                status: "pending",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            trades.push(newTrade);
+            saveAllTrades(trades);
+            
+            // Сохраняем уведомление о трейде для получателя
+            const receiverNotifications = JSON.parse(localStorage.getItem(`nft_notifications_${receiverId}`)) || [];
+            receiverNotifications.push({
+                type: "trade_incoming",
+                tradeId: newTrade.id,
+                senderId: senderId,
+                senderName: currentUser.username,
+                nftName: nft.model.name,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem(`nft_notifications_${receiverId}`, JSON.stringify(receiverNotifications));
+            
+            return newTrade;
+        }
+
+        // Обновить статус трейда
+        function updateTradeStatus(tradeId, status) {
+            const trades = getAllTrades();
+            const tradeIndex = trades.findIndex(t => t.id === tradeId);
+            
+            if (tradeIndex !== -1) {
+                trades[tradeIndex].status = status;
+                trades[tradeIndex].updatedAt = new Date().toISOString();
+                saveAllTrades(trades);
+                
+                const trade = trades[tradeIndex];
+                
+                if (status === "completed") {
+                    const senderNotifications = JSON.parse(localStorage.getItem(`nft_notifications_${trade.senderId}`)) || [];
+                    senderNotifications.push({
+                        type: "trade_accepted",
+                        tradeId: tradeId,
+                        receiverId: trade.receiverId,
+                        nftName: trade.nft.model.name,
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem(`nft_notifications_${trade.senderId}`, JSON.stringify(senderNotifications));
+                } else if (status === "cancelled") {
+                    const senderNotifications = JSON.parse(localStorage.getItem(`nft_notifications_${trade.senderId}`)) || [];
+                    senderNotifications.push({
+                        type: "trade_declined",
+                        tradeId: tradeId,
+                        receiverId: trade.receiverId,
+                        nftName: trade.nft.model.name,
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem(`nft_notifications_${trade.senderId}`, JSON.stringify(senderNotifications));
+                }
+                
+                return true;
+            }
+            return false;
+        }
+
+        // Удалить трейд
+        function removeTrade(tradeId) {
+            const trades = getAllTrades();
+            const filteredTrades = trades.filter(t => t.id !== tradeId);
+            saveAllTrades(filteredTrades);
+        }
+
+        // Получить входящие трейды для пользователя
+        function getIncomingTrades(userId) {
+            const trades = getAllTrades();
+            return trades.filter(t => t.receiverId === userId && t.status === "pending");
+        }
+
+        // Получить исходящие трейды для пользователя
+        function getOutgoingTrades(userId) {
+            const trades = getAllTrades();
+            return trades.filter(t => t.senderId === userId && t.status === "pending");
+        }
+
+        // Получить историю трейдов для пользователя
+        function getTradeHistory(userId) {
+            const trades = getAllTrades();
+            return trades.filter(t => 
+                (t.senderId === userId || t.receiverId === userId) && 
+                (t.status === "completed" || t.status === "cancelled")
+            );
+        }
+
+        // Принять трейд
+        function acceptTrade(tradeId) {
+            const trades = getAllTrades();
+            const trade = trades.find(t => t.id === tradeId);
+            
+            if (!trade) {
+                showNotification("Трейд не найден!", false, true);
+                return false;
+            }
+            
+            if (trade.receiverId !== currentUser.userid) {
+                showNotification("Вы не можете принять этот трейд!", false, true);
+                return false;
+            }
+            
+            let receiverData = loadUserData(trade.receiverId);
+            if (!receiverData) {
+                showNotification("Получатель не найден!", false, true);
+                return false;
+            }
+            
+            if (!receiverData.inventory) {
+                receiverData.inventory = [];
+            }
+            receiverData.inventory.push(trade.nft);
+            
+            localStorage.setItem(`nft_user_${trade.receiverId}`, JSON.stringify(receiverData));
+            
+            updateTradeStatus(tradeId, "completed");
+            
+            if (trade.receiverId === currentUser.userid) {
+                currentUser.inventory.push(trade.nft);
+                updateInventory();
+                showNotification(`✅ Вы приняли NFT "${trade.nft.model.name}"!`, true);
+            }
+            
+            updateTradesDisplay();
+            return true;
+        }
+
+        // Отклонить трейд
+        function declineTrade(tradeId) {
+            const trades = getAllTrades();
+            const trade = trades.find(t => t.id === tradeId);
+            
+            if (!trade) {
+                showNotification("Трейд не найден!", false, true);
+                return false;
+            }
+            
+            if (trade.receiverId !== currentUser.userid) {
+                showNotification("Вы не можете отклонить этот трейд!", false, true);
+                return false;
+            }
+            
+            let senderData = loadUserData(trade.senderId);
+            if (senderData) {
+                if (!senderData.inventory) {
+                    senderData.inventory = [];
+                }
+                senderData.inventory.push(trade.nft);
+                localStorage.setItem(`nft_user_${trade.senderId}`, JSON.stringify(senderData));
+            }
+            
+            updateTradeStatus(tradeId, "cancelled");
+            
+            showNotification(`❌ Вы отклонили передачу NFT "${trade.nft.model.name}"`, false, true);
+            updateTradesDisplay();
+            return true;
+        }
+
+        // Отменить трейд (для отправителя)
+        function cancelTrade(tradeId) {
+            const trades = getAllTrades();
+            const trade = trades.find(t => t.id === tradeId);
+            
+            if (!trade) {
+                showNotification("Трейд не найден!", false, true);
+                return false;
+            }
+            
+            if (trade.senderId !== currentUser.userid) {
+                showNotification("Вы не можете отменить этот трейд!", false, true);
+                return false;
+            }
+            
+            let senderData = loadUserData(trade.senderId);
+            if (senderData) {
+                if (!senderData.inventory) {
+                    senderData.inventory = [];
+                }
+                senderData.inventory.push(trade.nft);
+                localStorage.setItem(`nft_user_${trade.senderId}`, JSON.stringify(senderData));
+                
+                if (trade.senderId === currentUser.userid) {
+                    currentUser.inventory.push(trade.nft);
+                    updateInventory();
+                }
+            }
+            
+            removeTrade(tradeId);
+            
+            showNotification(`🗑️ Вы отменили передачу NFT "${trade.nft.model.name}"`, true);
+            updateTradesDisplay();
+            return true;
+        }
+
+        // Отобразить трейды
+        function updateTradesDisplay() {
+            const incomingTrades = getIncomingTrades(currentUser.userid);
+            incomingTradesContainer.innerHTML = '';
+            
+            if (incomingTrades.length === 0) {
+                incomingTradesContainer.innerHTML = '<div class="empty-trades">Нет входящих передач</div>';
+            } else {
+                incomingTrades.forEach(trade => {
+                    const tradeElement = createTradeElement(trade, 'incoming');
+                    incomingTradesContainer.appendChild(tradeElement);
+                });
+            }
+            
+            const outgoingTrades = getOutgoingTrades(currentUser.userid);
+            outgoingTradesContainer.innerHTML = '';
+            
+            if (outgoingTrades.length === 0) {
+                outgoingTradesContainer.innerHTML = '<div class="empty-trades">Нет исходящих передач</div>';
+            } else {
+                outgoingTrades.forEach(trade => {
+                    const tradeElement = createTradeElement(trade, 'outgoing');
+                    outgoingTradesContainer.appendChild(tradeElement);
+                });
+            }
+            
+            const tradeHistory = getTradeHistory(currentUser.userid);
+            tradesHistoryContainer.innerHTML = '';
+            
+            if (tradeHistory.length === 0) {
+                tradesHistoryContainer.innerHTML = '<div class="empty-trades">История передач пуста</div>';
+            } else {
+                tradeHistory.forEach(trade => {
+                    const tradeElement = createTradeElement(trade, 'history');
+                    tradesHistoryContainer.appendChild(tradeElement);
+                });
+            }
+        }
+
+        // Создать элемент трейда
+        function createTradeElement(trade, type) {
+            const div = document.createElement('div');
+            div.className = 'trade-item';
+            
+            const isSender = trade.senderId === currentUser.userid;
+            const isReceiver = trade.receiverId === currentUser.userid;
+            
+            let statusText = "";
+            let statusClass = "";
+            
+            if (type === 'history') {
+                if (trade.status === "completed") {
+                    statusText = isSender ? "Передано" : "Получено";
+                    statusClass = "status-completed";
+                } else {
+                    statusText = "Отменено";
+                    statusClass = "status-cancelled";
+                }
+            } else {
+                statusText = "Ожидание";
+                statusClass = "status-pending";
+            }
+            
+            const timestamp = new Date(trade.createdAt).toLocaleString('ru-RU');
+            
+            div.innerHTML = `
+                <div class="trade-info">
+                    <img src="${trade.nft.model.image}" class="trade-nft-image" alt="${trade.nft.model.name}">
+                    <div class="trade-nft-info">
+                        <div class="trade-nft-name">${trade.nft.model.name}</div>
+                        <div class="trade-user-info">
+                            ${isSender ? 
+                                `Кому: ${trade.receiverId}` : 
+                                `От: ${trade.senderName || trade.senderId}`
+                            }
+                        </div>
+                        <div class="trade-status ${statusClass}">${statusText}</div>
+                    </div>
+                </div>
+                <div class="trade-timestamp">${timestamp}</div>
+            `;
+            
+            if (type === 'incoming' && trade.status === "pending") {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'trade-actions';
+                actionsDiv.innerHTML = `
+                    <button class="trade-action-btn accept-btn" data-trade-id="${trade.id}">Принять</button>
+                    <button class="trade-action-btn decline-btn" data-trade-id="${trade.id}">Отклонить</button>
+                `;
+                div.appendChild(actionsDiv);
+                
+                actionsDiv.querySelector('.accept-btn').addEventListener('click', () => {
+                    if (acceptTrade(trade.id)) {
+                        tradesModal.classList.remove('show');
+                    }
+                });
+                
+                actionsDiv.querySelector('.decline-btn').addEventListener('click', () => {
+                    if (declineTrade(trade.id)) {
+                        tradesModal.classList.remove('show');
+                    }
+                });
+            } else if (type === 'outgoing' && trade.status === "pending") {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'trade-actions';
+                actionsDiv.innerHTML = `
+                    <button class="trade-action-btn cancel-btn" data-trade-id="${trade.id}">Отменить</button>
+                `;
+                div.appendChild(actionsDiv);
+                
+                actionsDiv.querySelector('.cancel-btn').addEventListener('click', () => {
+                    if (cancelTrade(trade.id)) {
+                        tradesModal.classList.remove('show');
+                    }
+                });
+            }
+            
+            return div;
+        }
+
+        // Открыть модальное окно трейдов
+        function openTradesModal() {
+            updateTradesDisplay();
+            tradesModal.classList.add('show');
+        }
+
+        // Функция закрытия трейдов
+        function closeTradesModal() {
+            tradesModal.classList.remove('show');
+        }
+
+        // Функция переключения вкладок трейдов
+        function switchTradeTab(tabType) {
+            document.querySelectorAll('.trade-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[data-trade-tab="${tabType}"]`).classList.add('active');
+            
+            incomingTradesContainer.style.display = 'none';
+            outgoingTradesContainer.style.display = 'none';
+            tradesHistoryContainer.style.display = 'none';
+            
+            if (tabType === 'incoming') {
+                incomingTradesContainer.style.display = 'block';
+            } else if (tabType === 'outgoing') {
+                outgoingTradesContainer.style.display = 'block';
+            } else {
+                tradesHistoryContainer.style.display = 'block';
+            }
+        }
 
         // Функция для показа уведомления
         function showNotification(message, isSuccess = false, isError = false) {
@@ -1614,13 +2181,24 @@
             
             let totalValue = 0;
             
+            const allTrades = getAllTrades();
+            const pendingTrades = allTrades.filter(t => 
+                t.status === "pending" && 
+                (t.senderId === currentUser.userid || t.receiverId === currentUser.userid)
+            );
+            
+            const nftsInTrades = pendingTrades.map(t => t.nft.id);
+            
             currentUser.inventory.forEach(nft => {
+                if (nftsInTrades.includes(nft.id)) {
+                    return;
+                }
+                
                 totalValue += nft.sellPrice;
                 
                 const nftElement = document.createElement('div');
                 nftElement.className = 'inventory-item';
                 
-                // Отображаем NFT без фона, если он из кейса
                 const imageContainerStyle = nft.fromCase ? 
                     "position: relative; width: 100%; height: 120px; border-radius: 10px; overflow: hidden; background: transparent;" :
                     `position: relative; width: 100%; height: 120px; border-radius: 10px; overflow: hidden; background-image: url('${nft.background.image}'); background-size: cover;`;
@@ -1692,7 +2270,6 @@
             modalTotalChance.textContent = nft.totalChance + '%';
             modalSellPrice.textContent = nft.sellPrice.toLocaleString() + '₽';
             
-            // Скрываем кнопку улучшения, если у NFT уже есть фон
             modalUpgradeBtn.style.display = nft.fromCase ? 'block' : 'none';
             
             nftModal.classList.add('show');
@@ -1732,7 +2309,6 @@
                 return;
             }
             
-            // Инициализируем рулетку для кейса
             initCaseRoulette(caseData.models);
             caseOpeningAnimation.style.display = 'none';
             caseResult.style.display = 'none';
@@ -1765,14 +2341,12 @@
         function initUpgradeRoulette() {
             upgradeRouletteItems.innerHTML = '';
             
-            // Сбрасываем состояние улучшения
             isUpgradeSpinning = false;
             confirmUpgradeBtn.disabled = false;
             confirmUpgradeBtn.textContent = 'Улучшить';
             closeUpgradeBtn.disabled = false;
             closeUpgradeModalBtn.style.pointerEvents = 'auto';
             
-            // Создаем случайный список фонов для рулетки
             const allBackgrounds = [...backgrounds, ...backgrounds, ...backgrounds];
             const shuffledBackgrounds = [...allBackgrounds].sort(() => 0.5 - Math.random());
             
@@ -1783,14 +2357,11 @@
                 upgradeRouletteItems.appendChild(item);
             });
             
-            // Сбрасываем позицию рулетки
             upgradeRouletteItems.style.transition = 'none';
             upgradeRouletteItems.style.transform = 'translateY(-400px)';
             
-            // Цена улучшения всегда 4000
             upgradeCost.textContent = '4,000';
             
-            // Выбираем случайный фон для центра
             currentUpgradeBackground = getRandomWithChance(backgrounds);
         }
 
@@ -1821,10 +2392,8 @@
             
             const selectedModel = getRandomWithChance(caseData.models);
             
-            // Обновляем рулетку с выбранной моделью в центре
             updateCaseRouletteWithSelection(selectedModel);
             
-            // Запускаем анимацию прокрутки
             caseRouletteItems.style.transition = 'none';
             caseRouletteItems.style.transform = 'translateY(0)';
             
@@ -1838,7 +2407,6 @@
                 setTimeout(() => {
                     isCaseSpinning = false;
                     
-                    // Создаем NFT без фона (только модель)
                     const newNFT = {
                         id: Date.now() + Math.random(),
                         model: selectedModel,
@@ -1853,18 +2421,15 @@
                     saveUserData();
                     updateInventory();
                     
-                    // Показываем результат
                     document.getElementById('case-roulette-container').style.display = 'none';
                     caseResult.style.display = 'block';
                     
-                    // Показываем результат
                     caseResultPreview.innerHTML = `
                         <img src="${selectedModel.image}" style="width: 100%; height: 100%; object-fit: contain;" alt="${selectedModel.name}">
                     `;
                     caseResultName.textContent = selectedModel.name;
                     caseResultDescription.textContent = `Вы получили: ${selectedModel.name} (${selectedModel.rarity})`;
                     
-                    // Оставляем только одну кнопку "Закрыть"
                     openCaseBtn.style.display = 'none';
                     closeCaseBtn.textContent = 'Закрыть';
                     closeCaseBtn.style.width = '100%';
@@ -1921,7 +2486,7 @@
                 return;
             }
             
-            const upgradePrice = 4000; // Постоянная цена
+            const upgradePrice = 4000;
             
             if (balance < upgradePrice) {
                 showNotification(`Недостаточно средств для улучшения! Требуется ${upgradePrice}₽`, false, true);
@@ -1930,16 +2495,13 @@
             
             isUpgradeSpinning = true;
             
-            // Блокируем кнопки
             confirmUpgradeBtn.disabled = true;
             confirmUpgradeBtn.textContent = 'Улучшается...';
             closeUpgradeBtn.disabled = true;
             closeUpgradeModalBtn.style.pointerEvents = 'none';
             
-            // Обновляем рулетку с выбранным фоном в центре
             updateUpgradeRouletteWithSelection(currentUpgradeBackground);
             
-            // Запускаем анимацию прокрутки
             upgradeRouletteItems.style.transition = 'none';
             upgradeRouletteItems.style.transform = 'translateY(0)';
             
@@ -1948,14 +2510,12 @@
                 upgradeRouletteItems.style.transform = 'translateY(-500px)';
                 
                 setTimeout(() => {
-                    // Обновляем баланс
                     balance -= upgradePrice;
                     
-                    // Обновляем фон NFT
                     const nftIndex = currentUser.inventory.findIndex(item => item.id === upgradeNFT.id);
                     if (nftIndex !== -1) {
                         currentUser.inventory[nftIndex].background = currentUpgradeBackground;
-                        currentUser.inventory[nftIndex].fromCase = false; // Убираем маркер кейса
+                        currentUser.inventory[nftIndex].fromCase = false;
                         currentUser.inventory[nftIndex].totalChance = ((upgradeNFT.model.chance * currentUpgradeBackground.chance) / 100).toFixed(4);
                         currentUser.inventory[nftIndex].sellPrice = calculateNFTPrice({ 
                             model: upgradeNFT.model, 
@@ -1972,7 +2532,6 @@
                         showNotification('Ошибка: NFT не найден в инвентаре', false, true);
                     }
                     
-                    // Разблокируем кнопки
                     isUpgradeSpinning = false;
                     confirmUpgradeBtn.disabled = false;
                     confirmUpgradeBtn.textContent = 'Улучшить';
@@ -2072,23 +2631,19 @@
             }
             
             balance -= 10000;
+            
             const transferredNFT = currentUser.inventory.splice(nftIndex, 1)[0];
             
-            if (!receiverData.inventory) {
-                receiverData.inventory = [];
-            }
-            receiverData.inventory.push(transferredNFT);
+            createTrade(transferredNFT, currentUser.userid, userid);
             
             saveUserData();
-            localStorage.setItem(`nft_user_${userid}`, JSON.stringify(receiverData));
-            
             updateBalance();
             updateInventory();
             
             nftModal.classList.remove('show');
             transferModal.classList.remove('show');
             
-            showNotification(`✅ NFT передан пользователю ${receiverData.username || 'с ID ' + userid}!`, true);
+            showNotification(`✅ Запрос на передачу NFT отправлен пользователю ${receiverData.username || 'с ID ' + userid}! Получатель должен принять передачу в разделе "Трейды".`, true);
             
             currentNFT = null;
         }
@@ -2208,10 +2763,13 @@
             
             initializeUser();
             
+            // Добавляем обработчики для кнопок
             settingsBtn.addEventListener('click', openSettings);
+            tradesBtn.addEventListener('click', openTradesModal);
             
             closeSettingsBtn.addEventListener('click', closeSettings);
             closeSettingsBtn2.addEventListener('click', closeSettings);
+            closeTradesBtn.addEventListener('click', closeTradesModal);
             
             resetDataBtn.addEventListener('click', function() {
                 confirmResetModal.classList.add('show');
@@ -2227,6 +2785,14 @@
                 tab.addEventListener('click', () => {
                     const tabId = tab.getAttribute('data-tab');
                     switchToTab(tabId);
+                });
+            });
+            
+            // Обработчики для вкладок трейдов
+            document.querySelectorAll('.trade-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-trade-tab');
+                    switchTradeTab(tabType);
                 });
             });
             
@@ -2279,7 +2845,6 @@
             
             closeCaseBtn.addEventListener('click', () => {
                 caseModal.classList.remove('show');
-                // Сбрасываем кнопки при закрытии
                 openCaseBtn.style.display = 'block';
                 closeCaseBtn.style.width = '';
                 openCaseBtn.textContent = 'Открыть кейс';
@@ -2301,7 +2866,7 @@
             
             bonusSection.addEventListener('click', claimBonus);
             
-            [nftModal, sellModal, transferModal, settingsModal, confirmResetModal, caseModal, upgradeModal].forEach(modal => {
+            [nftModal, sellModal, transferModal, settingsModal, confirmResetModal, caseModal, upgradeModal, tradesModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('show');
@@ -2324,4 +2889,4 @@
         });
     </script>
 </body>
-    </html>
+                                </html>
